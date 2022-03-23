@@ -32,6 +32,8 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
+/build/
 
 ### VS Code ###
 .vscode/
+src/java/UPF2022SS4.KoonsDiarySpring/resources
