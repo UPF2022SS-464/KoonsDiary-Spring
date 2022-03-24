@@ -27,7 +27,7 @@ class UserServiceImplTest {
     @Test
     public void right_signUp_success() throws Exception{
         User user = User.builder()
-                .userid("dldlswo97220")
+                .username("dldlswo97220")
                 .password("cucumber52")
                 .nickname("잉쿤")
                 .email("test@gmail.com")
@@ -39,7 +39,7 @@ class UserServiceImplTest {
     @Test
     public void right_signUp_fail() throws Exception{
         User user = User.builder()
-                .userid(null)
+                .username(null)
                 .password(null)
                 .nickname(null)
                 .email(null)
@@ -52,14 +52,14 @@ class UserServiceImplTest {
     @Test
     public void right_signUp_duplicateId() throws Exception{
         User user1 = User.builder()
-                .userid("dldlswo97220")
+                .username("dldlswo97220")
                 .password("cucumber52")
                 .nickname("잉쿤")
                 .email("test1@gmail.com")
                 .build();
 
         User user2 = User.builder()
-                .userid("dldlswo97220")
+                .username("dldlswo97220")
                 .password("cucumber52")
                 .nickname("잉쿤")
                 .email("test2@gmail.com")
