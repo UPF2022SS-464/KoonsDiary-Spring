@@ -9,8 +9,7 @@ import java.util.*;
 @Entity
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @ToString
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +17,7 @@ public class User {
     private Long id;
 
     @Column(unique = true)
-    private String userid;
+    private String username;
 
     private String password;
 
@@ -30,7 +29,7 @@ public class User {
 
     private Long kakaoKey;
 
-    private String salt;
+    private String token;
 
     private String fcmToken;
 
@@ -42,4 +41,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<GroupDiaryComment> groupDiaryComments = new ArrayList<>();
+
+    public User(){
+
+    }
+
 }
