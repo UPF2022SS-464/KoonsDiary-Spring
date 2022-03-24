@@ -31,18 +31,18 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findByName(String userName) {
+    public User findByName(String username) {
         return jqf.selectFrom(user)
-                .where(user.userid.eq(userName))
-                .fetch();
+                .where(user.username.eq(username))
+                .fetchOne();
     }
 
     @Override
-    public List<User> findByEmail(String email){
+    public User findByEmail(String email){
         return jqf.select(user)
                 .from(user)
                 .where(user.email.eq(email))
-                .fetch();
+                .fetchOne();
     }
 
     @Override

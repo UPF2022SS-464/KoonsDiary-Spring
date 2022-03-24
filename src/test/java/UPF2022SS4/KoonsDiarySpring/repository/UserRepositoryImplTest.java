@@ -28,7 +28,7 @@ class UserRepositoryImplTest {
     public void save_rightData_Success() throws  Exception{
         // given
         User user = User.builder()
-                .userid("orlando")
+                .username("orlando")
                 .password("cucumber52")
                 .nickname("ingkoon")
                 .email("ing97220@naver.com")

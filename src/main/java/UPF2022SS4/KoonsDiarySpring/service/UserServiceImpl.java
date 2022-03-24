@@ -14,7 +14,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor()
 public class UserServiceImpl implements UserService{
 
@@ -24,13 +24,13 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public DefaultResponse join(User user) {
         try{
-                if (!validateDuplicateUserId(user)){
+                if (validateDuplicateUserId(user)){
                     return DefaultResponse.builder()
                             .status(StatusCode.CONFLICT)
                             .message(ResponseMessage.DUPLICATED_USER)
                             .build();
                 }
-                else if(!validateDuplicateUserEmail(user)){
+                else if(validateDuplicateUserEmail(user)){
                     return DefaultResponse.builder()
                             .status(StatusCode.CONFLICT)
                             .message(ResponseMessage.DUPLICATED_EMAIL)
@@ -52,8 +52,8 @@ public class UserServiceImpl implements UserService{
 
     //회원 중복 검사
     public boolean validateDuplicateUserId(User user){
-        List<User> findUsers = userJpaRepository.findByName(user.getUserid());
-        if (!findUsers.isEmpty()){
+        User findUser = userJpaRepository.findByName(user.getUsername());
+        if (findUser == null){
             return false;
         }
         return true;
@@ -61,8 +61,8 @@ public class UserServiceImpl implements UserService{
 
     //이메일을 통한 검사
     public boolean validateDuplicateUserEmail(User user){
-        List<User> findUsers = userJpaRepository.findByEmail(user.getEmail());
-        if (!findUsers.isEmpty()){
+        User findUser = userJpaRepository.findByEmail(user.getEmail());
+        if (findUser == null){
             return false;
         }
         return true;
@@ -70,7 +70,17 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public String logIn(String userId, String pwd) {
-        return null;
+    public List<User> findUsers() {
+        return userJpaRepository.findAll();
+    }
+
+    @Override
+    public User findUsername(String username){
+        return userJpaRepository.findByName(username);
+    }
+
+    @Override
+    public User findUserEmail(String email){
+        return userJpaRepository.findByEmail(email);
     }
 }

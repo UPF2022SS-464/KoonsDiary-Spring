@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface UserRepository{
 
-    public List<User> findByName(String userName);
-    public List<User> findByEmail(String email);
+    public User findByName(String username);
+    public User findByEmail(String email);
     public List<User> findByKakaoKey(Long kakaoKey);
     public List<User> findAll();
 }
