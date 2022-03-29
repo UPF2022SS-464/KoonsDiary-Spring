@@ -22,24 +22,44 @@ public class AuthService {
     private final UserJpaRepository userJpaRepository;
     private final JwtService jwtService;
 
+    //회원가입시 로그인까지 함께 전달
     public DefaultResponse signUpLogin(final SignUpRequest signUpRequest){
         final User user = userJpaRepository.findByName(signUpRequest.getUserId());
 
         //비밀번호 일치 여부에 대한 부분은 추가해야된다.
 
-        //토큰을 생성 후 , 메시지 응답과 함께 전달
-        final String tokenDto = jwtService.create(user.getId());
+        // Access, refresh token을 생성 후 , 메시지 응답과 함께 전달
+        final String accessTokenDto = jwtService.createAccessToken(user.getId());
+        final String refreshTokenDTo = jwtService.createRefreshToken();
 
         SignUpResponse signUpResponse = new SignUpResponse(
-                tokenDto,
+                accessTokenDto,
+                refreshTokenDTo,
                 user.getUsername()
         );
         return DefaultResponse.response(StatusCode.OK, ResponseMessage.LOGIN_SUCCESS, signUpResponse);
     }
 
 
+    /*
+    1차적으로 유저의 아이디와 비밀번호를 대조
+    2차적으로 refresh token의 만료기간 확인
+
+    만료시 refresh token 재발급
+    만료 이전일 경우 access token 발급
+
+     */
     public DefaultResponse login(final LoginRequest loginRequest){
         final User user = userJpaRepository.findByName(loginRequest.getUserId());
+
+        try{
+            if (user.getPassword().equals(loginRequest.getPassword())){
+            }
+
+        }catch (Exception e){
+            return DefaultResponse.response(StatusCode.UNAUTHORIZED, ResponseMessage.LOGIN_FAIL);
+        }
+
 
         //회원이 존재하지 않을 경우에 대한 응답
         if(user == null){
@@ -52,8 +72,8 @@ public class AuthService {
         //비밀번호 일치 여부에 대한 부분은 추가해야된다.
 
         //토큰을 생성 후 , 메시지 응답과 함께 전달
-        final String tokenDto = jwtService.create(user.getId());
-        LoginResponse loginResponse = new LoginResponse(user.getId(), user.getToken(), user.getUsername());
+        final String tokenDto = jwtService.createAccessToken(user.getId());
+        LoginResponse loginResponse = new LoginResponse(tokenDto, user.getUsername());
         return DefaultResponse.response(StatusCode.OK, ResponseMessage.LOGIN_SUCCESS, loginResponse);
     }
 }

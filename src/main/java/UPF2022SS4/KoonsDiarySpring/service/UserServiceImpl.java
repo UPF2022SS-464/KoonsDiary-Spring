@@ -24,6 +24,8 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public DefaultResponse join(User user) {
         try{
+                String pwd = user.getPassword();
+                
                 if (validateDuplicateUserId(user)){
                     return DefaultResponse.builder()
                             .status(StatusCode.CONFLICT)

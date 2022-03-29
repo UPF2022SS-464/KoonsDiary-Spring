@@ -15,7 +15,7 @@ public class ResponseMessage {
     public static final String DUPLICATED_EMAIL     = "이미 등록된 이메일입니다.";
 
     public static final String LOGIN_SUCCESS        = "로그인 성공";
-    public static final String LOGIN_FAIL           = "존재하지 않는 유저입니다.";
+    public static final String LOGIN_FAIL           = "아이디 혹은 비밀번호 오류입니다.";
 
     // etc
     public static final String DB_ERROR                    = "디비 에러";
