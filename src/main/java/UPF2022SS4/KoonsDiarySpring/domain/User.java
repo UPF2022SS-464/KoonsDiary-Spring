@@ -29,7 +29,10 @@ public class User {
 
     private Long kakaoKey;
 
-    private String token;
+    @Column(length = 1000)
+    @OneToOne(mappedBy = "member", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private RefreshToken refreshToken;
+
 
     private String fcmToken;
 
@@ -42,8 +45,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<GroupDiaryComment> groupDiaryComments = new ArrayList<>();
 
-    public User(){
+    public User(){}
 
+    public void setRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
 }
