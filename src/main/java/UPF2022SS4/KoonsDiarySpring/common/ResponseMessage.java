@@ -5,6 +5,8 @@ public class ResponseMessage {
     //User
     public static final String USER_CREATE_SUCCESS  = "회원 등록 성공";
     public static final String USER_CREATE_FAIL     = "회원 등록 실패";
+    public static final String USER_UPDATE_SUCCESS  = "회원 정보 갱신 성공";
+    public static final String USER_UPDATE_FAIL     = "회원 정보 갱신 성공";
     public static final String USER_DELETE_SUCCESS  = "회원 삭제 성공";
     public static final String USER_DELETE_FAIL     = "회원 삭제 실패";
     public static final String USER_SEARCH_SUCCESS  = "회원 조회 성공";

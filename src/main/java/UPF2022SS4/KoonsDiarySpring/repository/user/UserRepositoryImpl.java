@@ -1,5 +1,5 @@
 
-package UPF2022SS4.KoonsDiarySpring.repository;
+package UPF2022SS4.KoonsDiarySpring.repository.user;
 
 import UPF2022SS4.KoonsDiarySpring.domain.QUser;
 import UPF2022SS4.KoonsDiarySpring.domain.User;

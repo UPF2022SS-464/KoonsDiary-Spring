@@ -4,7 +4,7 @@ import UPF2022SS4.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS4.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS4.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS4.KoonsDiarySpring.domain.User;
-import UPF2022SS4.KoonsDiarySpring.repository.UserJpaRepository;
+import UPF2022SS4.KoonsDiarySpring.repository.user.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

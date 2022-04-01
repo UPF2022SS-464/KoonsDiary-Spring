@@ -1,10 +1,7 @@
 package UPF2022SS4.KoonsDiarySpring.domain;
 
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -28,12 +25,9 @@ public class RefreshToken {
     @Column(nullable = false)
     private String value;
 
-    public RefreshToken(final String value){
+    public RefreshToken(final User user, final String value){
+        this.user = user;
         this.value = value;
-    }
-
-    public static RefreshToken of(final String value){
-        return new RefreshToken(value);
     }
 
     public  void addUser(final User user){
@@ -44,6 +38,10 @@ public class RefreshToken {
     public void deleteUser(final User user) {
         this.user = null;
         user.setRefreshToken(null);
+    }
+
+    public void renewalRefreshToken(final String value){
+        this.value = value;
     }
 //    public RefreshToken(){} //-> 접근을 위한 일반 생성자 선언
 }

@@ -1,16 +1,13 @@
 package UPF2022SS4.KoonsDiarySpring.repository;
 
 import UPF2022SS4.KoonsDiarySpring.domain.User;
+import UPF2022SS4.KoonsDiarySpring.repository.user.UserJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -25,7 +22,7 @@ class UserRepositoryImplTest {
 
     // MethodName_StateUnderTest_ExpectedBehavior
     @Test
-    public void save_rightData_Success() throws  Exception{
+    public void save_User_Success() throws  Exception{
         // given
         User user = User.builder()
                 .username("orlando")
@@ -42,7 +39,7 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    public void save_rightDate_Error() throws Exception{
+    public void save_Data_Error() throws Exception{
 
         // given
 

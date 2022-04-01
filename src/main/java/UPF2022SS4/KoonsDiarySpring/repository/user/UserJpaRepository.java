@@ -1,4 +1,4 @@
-package UPF2022SS4.KoonsDiarySpring.repository;
+package UPF2022SS4.KoonsDiarySpring.repository.user;
 
 import UPF2022SS4.KoonsDiarySpring.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
