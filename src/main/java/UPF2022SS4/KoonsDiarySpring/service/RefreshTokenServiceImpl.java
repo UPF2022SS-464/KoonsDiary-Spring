@@ -28,6 +28,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
     }
 
     @Override
+    @Transactional
     public String updateToken(String token) {
         RefreshToken findToken = refreshTokenJpaRepository.findByValue(token);
         String renewalToken = jwtService.createRefreshToken();

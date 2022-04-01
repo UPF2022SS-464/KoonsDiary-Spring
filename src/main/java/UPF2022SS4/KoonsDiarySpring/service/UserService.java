@@ -11,6 +11,7 @@ public interface UserService {
 
     public DefaultResponse join(User user);
     public List<User> findUsers();
+    public User findById(Long id);
     public User findUsername(String username);
     public User findUserEmail(String email);
 
