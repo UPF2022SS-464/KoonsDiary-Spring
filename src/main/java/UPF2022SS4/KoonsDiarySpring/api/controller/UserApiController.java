@@ -8,6 +8,7 @@ import UPF2022SS4.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS4.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS4.KoonsDiarySpring.domain.User;
 import UPF2022SS4.KoonsDiarySpring.service.AuthService;
+import UPF2022SS4.KoonsDiarySpring.service.JwtService;
 import UPF2022SS4.KoonsDiarySpring.service.RefreshTokenService;
 import UPF2022SS4.KoonsDiarySpring.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +30,13 @@ public class UserApiController {
     private AuthService authService;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private JwtService jwtService;
     @Autowired
     private RefreshTokenService refreshTokenService;
 
-    @PostMapping(value = "/signup")
-    public DefaultResponse signUp(@RequestBody final SignUpRequest signUpRequest){
+    @PostMapping(value = "/user")
+    public DefaultResponse saveUser(@RequestBody final SignUpRequest signUpRequest){
         try{
             User findUser = userService.findUserEmail(signUpRequest.getEmail());
             if (findUser != null){
@@ -82,7 +84,8 @@ public class UserApiController {
             if(findUser == null){
                 return DefaultResponse.response(
                         StatusCode.UNAUTHORIZED,
-                        ResponseMessage.INVALID_USER);
+                        ResponseMessage.NOT_FOUND_USER
+                    );
                 }
 
             /* 아이디 검증 이후의 부분,
@@ -91,26 +94,39 @@ public class UserApiController {
             * token이 만료되었을 경우 refresh token을 재발급 하고 access token을 발급한다.
             * */
             boolean checkExpirationDate =  authService.checkExpirationDate(refreshToken);
-
-            if(!checkExpirationDate){
-                refreshToken = refreshTokenService.updateToken(authService.createRefreshToken());
-                return authService.login(loginRequest, refreshToken);
-                }
+            System.out.println(checkExpirationDate);
+//            if(!checkExpirationDate){
+//                refreshToken = refreshTokenService.updateToken(authService.createRefreshToken());
+//                return authService.login(loginRequest, refreshToken);
+//                }
 
             return authService.login(loginRequest, refreshToken);
             }
             catch (Exception e){
                 log.error(e.getMessage());
+
                 return DefaultResponse.response(
                         StatusCode.INTERNAL_SERVER_ERROR,
                         ResponseMessage.INTERNAL_SERVER_ERROR);
             }
-
         }
 
     //유저 정보 get api
     @GetMapping(value = "/user")
     public DefaultResponse getUser(@RequestHeader("Authorization") final String header){
+        try{
+            if (header == null){
+                return DefaultResponse.response(
+                        StatusCode.UNAUTHORIZED,
+                        ResponseMessage.UNAUTHORIZED
+                );
+
+                Long userId = jwtService.decodeAccessToken(header);
+                User findUser = userService.findById(userId);
+            }
+        }catch (Exception e){
+
+        }
         return null;
         }
     }

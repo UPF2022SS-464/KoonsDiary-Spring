@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -70,11 +71,18 @@ public class UserServiceImpl implements UserService{
         return true;
     }
 
+    @Override
+    public User findById(Long id){
+        Optional<User> user = userJpaRepository.findById(id);
+        return user.get();
+    }
 
     @Override
     public List<User> findUsers() {
         return userJpaRepository.findAll();
     }
+
+
 
     @Override
     public User findUsername(String username){

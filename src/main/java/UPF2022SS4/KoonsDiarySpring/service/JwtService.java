@@ -30,31 +30,30 @@ public class JwtService {
 
     // access token 생성
     public String createAccessToken(final Long id){
-        try{
-            JWTCreator.Builder b = JWT.create();
+//        try{
+//            JWTCreator.Builder b = JWT.create();
+//            b.withIssuer(ISSUER);
+//            b.withClaim("id",id);
+//            b.withExpiresAt(accessExpiresAt());
+//            return b.sign(Algorithm.HMAC256(SECRET_ACCESS));
+//        }
+//        catch (JWTCreationException jwtCreationException ){
+//            log.info(jwtCreationException.getLocalizedMessage());
+//        }
+//        return null;
+        JWTCreator.Builder b = JWT.create();
             b.withIssuer(ISSUER);
             b.withClaim("id",id);
             b.withExpiresAt(accessExpiresAt());
             return b.sign(Algorithm.HMAC256(SECRET_ACCESS));
-        }
-        catch (JWTCreationException jwtCreationException ){
-            log.info(jwtCreationException.getLocalizedMessage());
-        }
-        return null;
     }
 
     // refresh token 생성 메서드
     public String createRefreshToken(){
-        try{
             JWTCreator.Builder b = JWT.create();
             b.withIssuer(ISSUER);
             b.withExpiresAt(refreshExpiresAt());
             return b.sign(Algorithm.HMAC256(SECRET_REFRESH));
-        }
-        catch (JWTCreationException jwtCreationException ){
-            log.info(jwtCreationException.getLocalizedMessage());
-        }
-        return null;
     }
 
     //access 토큰 만료 날짜 지정
@@ -105,8 +104,8 @@ public class JwtService {
 
             //토큰 검증
             DecodedJWT decodedJWT = jwtVerifier.verify(refreshToken);
-
-            // 토큰 payload 반환, 날짜에 대한 정보 혹은 1
+            System.out.println(" = " + decodedJWT.getExpiresAt());
+            // 토큰 payload 반환, 날짜에 대한 정보
             return decodedJWT.getExpiresAt()
                     .toInstant()
                     .atZone(ZoneId.systemDefault())
@@ -117,7 +116,7 @@ public class JwtService {
         } catch (Exception e){
             log.error(e.getMessage());
         }
-        return null;
+        return LocalDate.now();
     }
 
     public static class Token{
@@ -144,7 +143,4 @@ public class JwtService {
             this.token = token;
         }
     }
-
-
-
 }
