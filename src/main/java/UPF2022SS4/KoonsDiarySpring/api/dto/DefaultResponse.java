@@ -18,9 +18,16 @@ public class DefaultResponse<T> {
         this.message = message;
         this.data = null;
     }
+//
+//    public static<T> DefaultResponse<T> response(final int status, final String message){
+//        return response(status, message);
+//    }
 
     public static<T> DefaultResponse<T> response(final int status, final String message){
-        return response(status, message);
+        return DefaultResponse.<T>builder()
+                .status(status)
+                .message(message)
+                .build();
     }
 
     public static<T> DefaultResponse<T> response(final int status, final String message, final T data) {

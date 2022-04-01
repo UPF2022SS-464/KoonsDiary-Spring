@@ -9,7 +9,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class LoginResponse {
 
-    private String token;
-
     private String userId;
+
+    private String accesstoken;
+
+    private String refreshToken;
 }

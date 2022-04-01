@@ -10,6 +10,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -94,7 +96,7 @@ public class JwtService {
     }
 
     // 리프레시 토큰 해독 메서드
-    public Long decodeRefreshToken(final String refreshToken){
+    public LocalDate decodeRefreshToken(final String refreshToken){
         try{
             // 토큰 해독 객체 생성
             final JWTVerifier jwtVerifier = require(Algorithm.HMAC256(SECRET_REFRESH))
@@ -105,13 +107,17 @@ public class JwtService {
             DecodedJWT decodedJWT = jwtVerifier.verify(refreshToken);
 
             // 토큰 payload 반환, 날짜에 대한 정보 혹은 1
-            return decodedJWT.getExpiresAt().getTime();
+            return decodedJWT.getExpiresAt()
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+
         }catch (JWTVerificationException jve){
             log.error(jve.getMessage());
         } catch (Exception e){
             log.error(e.getMessage());
         }
-        return -1L;
+        return null;
     }
 
     public static class Token{

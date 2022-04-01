@@ -16,12 +16,12 @@ public class User {
     @Column(name = "user_id",nullable = false)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
     private String password;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -29,8 +29,7 @@ public class User {
 
     private Long kakaoKey;
 
-    @Column(length = 1000)
-    @OneToOne(mappedBy = "member", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
 
 
