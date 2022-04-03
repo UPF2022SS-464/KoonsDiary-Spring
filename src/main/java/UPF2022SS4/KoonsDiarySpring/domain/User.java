@@ -46,8 +46,15 @@ public class User {
 
     public User(){}
 
+    // 재발급받은 리프레시 토큰 재저장
     public void setRefreshToken(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+
+    // 사용자 닉네임 변경
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
     }
 
 }
