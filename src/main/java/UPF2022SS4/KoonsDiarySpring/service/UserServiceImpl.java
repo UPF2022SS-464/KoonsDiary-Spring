@@ -25,8 +25,6 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public DefaultResponse join(User user) {
         try{
-                String pwd = user.getPassword();
-                
                 if (validateDuplicateUserId(user)){
                     return DefaultResponse.builder()
                             .status(StatusCode.CONFLICT)
@@ -82,8 +80,6 @@ public class UserServiceImpl implements UserService{
         return userJpaRepository.findAll();
     }
 
-
-
     @Override
     public User findUsername(String username){
         return userJpaRepository.findByName(username);
@@ -92,5 +88,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findUserEmail(String email){
         return userJpaRepository.findByEmail(email);
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(User user, String newNickname){
+        user.updateNickname(newNickname);
     }
 }

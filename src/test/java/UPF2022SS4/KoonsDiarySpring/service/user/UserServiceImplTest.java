@@ -1,8 +1,9 @@
-package UPF2022SS4.KoonsDiarySpring.service;
+package UPF2022SS4.KoonsDiarySpring.service.user;
 
 import UPF2022SS4.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS4.KoonsDiarySpring.domain.User;
 import UPF2022SS4.KoonsDiarySpring.repository.user.UserJpaRepository;
+import UPF2022SS4.KoonsDiarySpring.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,4 +69,6 @@ class UserServiceImplTest {
         System.out.println("dr1 = " + dr1);
         System.out.println("dr2 = " + dr2);
     }
+
+
 }

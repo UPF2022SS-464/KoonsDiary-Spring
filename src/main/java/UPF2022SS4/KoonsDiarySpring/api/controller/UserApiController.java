@@ -3,6 +3,8 @@ package UPF2022SS4.KoonsDiarySpring.api.controller;
 import UPF2022SS4.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS4.KoonsDiarySpring.api.dto.user.LoginRequest;
 import UPF2022SS4.KoonsDiarySpring.api.dto.user.SignUpRequest;
+import UPF2022SS4.KoonsDiarySpring.api.dto.user.UpdateUserRequest;
+import UPF2022SS4.KoonsDiarySpring.api.dto.user.UserInfoResponse;
 import UPF2022SS4.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS4.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS4.KoonsDiarySpring.domain.RefreshToken;
@@ -120,14 +122,47 @@ public class UserApiController {
                         StatusCode.UNAUTHORIZED,
                         ResponseMessage.UNAUTHORIZED
                 );
-
-                Long userId = jwtService.decodeAccessToken(header);
-                User findUser = userService.findById(userId);
             }
-        }catch (Exception e){
+            Long userId = jwtService.decodeAccessToken(header);
+            User findUser = userService.findById(userId);
 
+            UserInfoResponse userInfoResponse= UserInfoResponse.builder()
+                    .userName(findUser.getUsername())
+                    .nickName(findUser.getNickname())
+                    .email(findUser.getEmail())
+                    .build();
+
+            DefaultResponse response = DefaultResponse.response(
+                    StatusCode.OK,
+                    ResponseMessage.USER_SEARCH_SUCCESS,
+                    userInfoResponse
+            );
+            return response;
+
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse.response(
+                    StatusCode.DB_ERROR,
+                    ResponseMessage.USER_SEARCH_FAIL
+            );
         }
-        return null;
+    }
+
+    @PatchMapping(value="/user")
+    public DefaultResponse updateUser(
+            @RequestHeader("Authorization") final String header,
+            @RequestBody UpdateUserRequest updateUserRequest
+            ){
+        try{
+            Long userId = jwtService.decodeAccessToken(header);
+            User findUser = userService.findById(userId);
+            userService.updateUser(findUser, updateUserRequest.getNickname());
+
+            //사용자가 공유일기에 작성했던 모든 기록들의 닉네임을 변경해야 할 필요가 있다.
+            return DefaultResponse.response(StatusCode.OK, ResponseMessage.USER_UPDATE_SUCCESS);
+        }catch (Exception e){
+            return DefaultResponse.response(StatusCode.DB_ERROR,ResponseMessage.USER_UPDATE_FAIL);
+            }
         }
     }
 
