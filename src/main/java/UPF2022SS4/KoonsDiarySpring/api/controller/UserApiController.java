@@ -1,10 +1,7 @@
 package UPF2022SS4.KoonsDiarySpring.api.controller;
 
 import UPF2022SS4.KoonsDiarySpring.api.dto.DefaultResponse;
-import UPF2022SS4.KoonsDiarySpring.api.dto.user.LoginRequest;
-import UPF2022SS4.KoonsDiarySpring.api.dto.user.SignUpRequest;
-import UPF2022SS4.KoonsDiarySpring.api.dto.user.UpdateUserRequest;
-import UPF2022SS4.KoonsDiarySpring.api.dto.user.UserInfoResponse;
+import UPF2022SS4.KoonsDiarySpring.api.dto.user.*;
 import UPF2022SS4.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS4.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS4.KoonsDiarySpring.domain.RefreshToken;
@@ -16,11 +13,7 @@ import UPF2022SS4.KoonsDiarySpring.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.Console;
-import java.time.LocalDate;
 
 @Slf4j
 @RestController
@@ -148,12 +141,19 @@ public class UserApiController {
         }
     }
 
+    //유저 정보(닉네임) 변경 api
     @PatchMapping(value="/user")
     public DefaultResponse updateUser(
             @RequestHeader("Authorization") final String header,
             @RequestBody UpdateUserRequest updateUserRequest
             ){
         try{
+            if (header == null){
+                return DefaultResponse.response(
+                        StatusCode.UNAUTHORIZED,
+                        ResponseMessage.UNAUTHORIZED
+                );
+            }
             Long userId = jwtService.decodeAccessToken(header);
             User findUser = userService.findById(userId);
             userService.updateUser(findUser, updateUserRequest.getNickname());
@@ -162,6 +162,39 @@ public class UserApiController {
             return DefaultResponse.response(StatusCode.OK, ResponseMessage.USER_UPDATE_SUCCESS);
         }catch (Exception e){
             return DefaultResponse.response(StatusCode.DB_ERROR,ResponseMessage.USER_UPDATE_FAIL);
+            }
+        }
+
+    // 회원정보 삭제 api
+    @DeleteMapping(value = "/user")
+    public DefaultResponse deleteUser(
+            @RequestHeader("Authorization") final String header
+            ){
+
+        try {
+            if(header == null){
+                return DefaultResponse.response(
+                        StatusCode.UNAUTHORIZED,
+                        ResponseMessage.UNAUTHORIZED
+                );
+            }
+            Long userId = jwtService.decodeAccessToken(header);
+            User findUser = userService.findById(userId);
+            userService.deleteUser(findUser.getId());
+
+            return DefaultResponse
+                    .response(
+                            StatusCode.OK,
+                            ResponseMessage.USER_DELETE_SUCCESS
+                    );
+
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse
+                    .response(
+                            StatusCode.DB_ERROR,
+                            ResponseMessage.USER_DELETE_FAIL
+                    );
             }
         }
     }

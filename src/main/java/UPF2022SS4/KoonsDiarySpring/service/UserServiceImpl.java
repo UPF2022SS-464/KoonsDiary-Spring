@@ -95,4 +95,10 @@ public class UserServiceImpl implements UserService{
     public void updateUser(User user, String newNickname){
         user.updateNickname(newNickname);
     }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long id){
+        userJpaRepository.deleteById(id);
+    }
 }
