@@ -1,14 +1,14 @@
 package UPF2022SS4.KoonsDiarySpring.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 import static javax.persistence.FetchType.*;
 
 @Entity
-@Getter @Setter
+@Getter @Builder
+@AllArgsConstructor
 public class DiaryImage {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,6 @@ public class DiaryImage {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "diary_id")
     private Diary diary;
-
 
     @Column(nullable = false)
     private String image_path;

@@ -26,4 +26,6 @@ public class GroupUser {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String status;
+
 }

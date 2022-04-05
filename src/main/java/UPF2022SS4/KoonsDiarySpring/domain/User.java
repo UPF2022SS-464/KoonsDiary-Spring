@@ -32,11 +32,10 @@ public class User {
     @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
 
-
     private String fcmToken;
 
-    @OneToMany(mappedBy = "user")
-    private List<Diary> diarys = new ArrayList<>();
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<Diary> diaryList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<GroupUser> groupUsers = new ArrayList<>();
