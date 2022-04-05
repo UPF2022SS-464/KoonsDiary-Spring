@@ -1,6 +1,7 @@
 
 package UPF2022SS4.KoonsDiarySpring.repository.user;
 
+import UPF2022SS4.KoonsDiarySpring.domain.Diary;
 import UPF2022SS4.KoonsDiarySpring.domain.QUser;
 import UPF2022SS4.KoonsDiarySpring.domain.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,14 +11,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Repository
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
-//    private final EntityManager em;
+    private final EntityManager em;
     private final JPAQueryFactory jqf;
 
     QUser user  = QUser.user;

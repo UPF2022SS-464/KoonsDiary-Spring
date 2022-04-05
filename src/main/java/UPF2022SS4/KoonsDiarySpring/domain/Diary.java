@@ -1,11 +1,9 @@
 package UPF2022SS4.KoonsDiarySpring.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,9 +12,11 @@ import java.util.List;
 import static javax.persistence.FetchType.*;
 
 @Entity
-@Table(name = "diarys")
-@Getter @Setter
+@Table(name = "diary")
+@Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Diary {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class Diary {
     private User user;
 
     @Column(nullable = false)
-    private Date writeDate;
+    private LocalDate writeDate;
 
     @Column(nullable = false)
     private LocalDateTime editionDate;
@@ -40,8 +40,13 @@ public class Diary {
     private int emotion;
 
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
-    private List<DiaryImage> diaryImages = new ArrayList<>();
+    private List<DiaryImage> diaryImageList = new ArrayList<>();
 
     @Column(nullable = false)
     private String thumbnailPath;
+
+    public void setUser(User user){
+        this.user = user;
+    }
+
 }

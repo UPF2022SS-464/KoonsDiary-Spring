@@ -19,6 +19,20 @@ public class ResponseMessage {
     public static final String LOGIN_SUCCESS        = "로그인 성공";
     public static final String LOGIN_FAIL           = "아이디 혹은 비밀번호 오류입니다.";
 
+    //Diary
+    public static final String INVALID_DIARY        = "존재하지 않는 다이어리 입니다.";
+
+    public static final String DIARY_POST_SUCCESS   = "다이어리 작성 성공";
+    public static final String DIARY_POST_FAIL      = "다이어리 작성 실패";
+    public static final String DIARY_GET_SUCCESS    = "다이어리 조회 성공";
+    public static final String DIARY_GET_FAIL       = "다이어리 조회 실패";
+    public static final String DIARY_PATCH_SUCCESS  = "다이어리 수정 성공";
+    public static final String DIARY_PATCH_FAIL     = "다이어리 수정 실패";
+    public static final String DIARY_DELETE_SUCCESS = "다이어리 삭제 성공";
+    public static final String Diary_DELETE_FAIL    = "다이어리 삭제 실패";
+
+
+
     // etc
     public static final String DB_ERROR                    = "디비 에러";
     public static final String INTERNAL_SERVER_ERROR       = "서버 내부 에러";
