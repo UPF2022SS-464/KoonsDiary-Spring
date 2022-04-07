@@ -23,5 +23,4 @@ public class DiaryImage {
     private String image_path;
 
     private String comment;
-
 }

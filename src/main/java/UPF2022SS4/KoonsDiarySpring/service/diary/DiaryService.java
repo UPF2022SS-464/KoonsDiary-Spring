@@ -1,7 +1,8 @@
-package UPF2022SS4.KoonsDiarySpring.service;
+package UPF2022SS4.KoonsDiarySpring.service.diary;
 
 
 import UPF2022SS4.KoonsDiarySpring.api.dto.DefaultResponse;
+import UPF2022SS4.KoonsDiarySpring.api.dto.diary.GetDiaryListRequest;
 import UPF2022SS4.KoonsDiarySpring.api.dto.diary.GetDiaryRequest;
 import UPF2022SS4.KoonsDiarySpring.api.dto.diary.PostDiaryRequest;
 import UPF2022SS4.KoonsDiarySpring.domain.Diary;
@@ -15,7 +16,7 @@ public interface DiaryService {
 
     public DefaultResponse getDiary(GetDiaryRequest getDiaryRequest);
 
-    public DefaultResponse getDiaryList(User user);
+    public DefaultResponse getDiaryList(GetDiaryListRequest getDiaryListRequest);
 
     public DefaultResponse patchDiary(Diary diary);
 

@@ -9,7 +9,7 @@ import UPF2022SS4.KoonsDiarySpring.domain.User;
 import UPF2022SS4.KoonsDiarySpring.service.AuthService;
 import UPF2022SS4.KoonsDiarySpring.service.JwtService;
 import UPF2022SS4.KoonsDiarySpring.service.RefreshTokenService;
-import UPF2022SS4.KoonsDiarySpring.service.UserService;
+import UPF2022SS4.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PostDiaryRequest {
 
-    private User user;
+    private Long user;
 
     private LocalDate writeDate;
 
