@@ -24,6 +24,9 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
     - name: Set up secret Key
       shell: bash
       env:
@@ -44,9 +47,6 @@ jobs:
         mysql database: 'koonsdiary'
         mysql user: 'koonda'
         mysql password: ${{ secrets.MYSQL_PASSWORD }}
-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
       
     - name: Build with Gradle
       run: ./gradlew build -x test
