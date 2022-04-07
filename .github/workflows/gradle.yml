@@ -31,8 +31,7 @@ jobs:
       run: |
         mkdir src/test/resources -p
         touch src/test/resources/application.yml
-        echo $SECRETS_DB_Test > test_enc.txt
-        cat test_enc.txt | base64 -d > src/test/resources/application.yml
+        echo $SECRETS_DB_Test | base64 -d > src/test/resources/application.yml
 
     - name: Setup MySQL
       uses: samin/mysql-action@v1
