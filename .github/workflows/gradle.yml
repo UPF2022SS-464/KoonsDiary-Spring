@@ -23,6 +23,16 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
+    - name: Set up secret Key
+      shell: bash
+      env:
+        SECRETS_DB: ${{secrets.MYSQL}}
+        SECRETS_DB_Test: ${{secrets.MYSQL_TEST}}
+      run: |
+        touch src/main/resources/application.yml
+        echo $SECRETS_DB > src/main/resources/application.yml
+        touch src/test/resources/application.yml
+        echo $SECRETS_DB_Test > src/test/resources/application.yml
 
     - name: Setup MySQL
       uses: samin/mysql-action@v1
