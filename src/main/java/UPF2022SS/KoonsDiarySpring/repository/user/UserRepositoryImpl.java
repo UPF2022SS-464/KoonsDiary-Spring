@@ -18,7 +18,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final EntityManager em;
     private final JPAQueryFactory jqf;
-
+    //11
     QUser user  = QUser.user;
 
 
