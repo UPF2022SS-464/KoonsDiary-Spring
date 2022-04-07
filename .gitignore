@@ -36,4 +36,5 @@ out/
 
 ### VS Code ###
 .vscode/
-src/java/UPF2022SS4.KoonsDiarySpring/resources
+src/main/resources/application.yml
+src/test/resources/application.yml
