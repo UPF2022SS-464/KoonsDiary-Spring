@@ -21,24 +21,23 @@ public class DiaryRepositoryImpl implements DiaryRepository{
     private final JPAQueryFactory jqf;
     private EntityManager em;
     private UserJpaRepository userJpaRepository;
-    QDiary diary  = QDiary.diary;
-    QUser user = QUser.user;
+    QDiary qdiary = QDiary.diary;
+    QUser quser = QUser.user;
 
-    //도든 다이어리 리스트 반환
+    //모든 다이어리 리스트 반환
     @Override
     public List<Diary> findAllById(Long userId) {
 //        Optional<User> findUser = userJpaRepository.findById(userId);
-        return jqf.select(diary)
-                .from(diary)
-                .where(diary.user.id.eq(userId))
+        return jqf.select(qdiary)
+                .from(qdiary)
+                .where(qdiary.user.id.eq(userId))
                 .fetch();
     }
 
     @Override
     public List<Diary> findAllByUser(User user) {
-        return jqf.select(diary)
-                .from(diary)
-                .where(diary.user.eq(user))
+        return jqf.select(qdiary)
+                .from(quser)
                 .fetch();
     }
 
@@ -47,13 +46,4 @@ public class DiaryRepositoryImpl implements DiaryRepository{
         diary.setUser(user);
         em.persist(diary);
     }
-
-    //하나의 다이어리에 대한 정보 반환
-//    @Override
-//    public Diary findById(Long id) {
-//        return jqf.select(diary)
-//                .from(diary)
-//                .where(diary.id.eq(id))
-//                .fetchOne();
-//    }
 }

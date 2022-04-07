@@ -1,4 +1,4 @@
-package UPF2022SS4.KoonsDiarySpring.service;
+package UPF2022SS4.KoonsDiarySpring.service.user;
 
 import UPF2022SS4.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS4.KoonsDiarySpring.domain.User;

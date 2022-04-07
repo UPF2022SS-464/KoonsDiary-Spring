@@ -1,12 +1,15 @@
-package UPF2022SS4.KoonsDiarySpring.service;
+package UPF2022SS4.KoonsDiarySpring.service.diary;
 
 import UPF2022SS4.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS4.KoonsDiarySpring.api.dto.diary.*;
 import UPF2022SS4.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS4.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS4.KoonsDiarySpring.domain.Diary;
+import UPF2022SS4.KoonsDiarySpring.domain.DiaryImage;
 import UPF2022SS4.KoonsDiarySpring.domain.User;
+import UPF2022SS4.KoonsDiarySpring.repository.diary.DiaryImageJpaRepository;
 import UPF2022SS4.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
+import UPF2022SS4.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +25,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DiaryServiceImpl implements DiaryService{
 
+
     @Autowired
     private DiaryJpaRepository diaryJpaRepository;
+    @Autowired
+    private DiaryImageJpaRepository diaryImageJpaRepository;
+    @Autowired
+    private UserService userService;
 
     @Override
     @Transactional
@@ -34,19 +42,23 @@ public class DiaryServiceImpl implements DiaryService{
                     ResponseMessage.DIARY_POST_FAIL
             );
         }
+
+
         try{
+
             Diary diary = Diary.builder()
-                            .user(postDiaryRequest.getUser())
+                            .user(userService.findById( postDiaryRequest.getUser()))
                             .writeDate(postDiaryRequest.getWriteDate())
                             .editionDate(postDiaryRequest.getEditionDate())
                             .content(postDiaryRequest.getContent())
                             .emotion(postDiaryRequest.getEmotion())
-                            .diaryImageList(postDiaryRequest.getDiaryImageList())
+                            .diaryImageList(postDiaryRequest.getDiaryImageList()) //이부분을 조심하자
                             .thumbnailPath(postDiaryRequest.getThumbnailPath())
                             .build();
             System.out.println("diary = " + diary.getId() + diary.getUser().getNickname() + diary.getContent());
 
             diaryJpaRepository.save(diary);
+
 
             PostDiaryResponse response = new PostDiaryResponse(diary.getId(),
                     diary.getUser(),
@@ -100,16 +112,19 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DefaultResponse getDiaryList(User user) {
+    public DefaultResponse getDiaryList(GetDiaryListRequest getDiaryListRequest) {
 
-        if(user == null){
+        User findUser = userService.findById(getDiaryListRequest.getUserId());
+
+        if(findUser == null){
             return DefaultResponse.response(
                     StatusCode.BAD_REQUEST,
                     ResponseMessage.USER_SEARCH_FAIL
             );
         }
         try{
-            List<Diary> diaryList= diaryJpaRepository.findAllByUser(user);
+
+            List<Diary> diaryList = diaryJpaRepository.findAllByUser(findUser);
 
             GetDiaryListResponse diaryListResponse = GetDiaryListResponse
                     .builder()

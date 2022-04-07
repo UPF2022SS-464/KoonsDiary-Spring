@@ -43,6 +43,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<GroupDiaryComment> groupDiaryComments = new ArrayList<>();
 
+
     public User(){}
 
     // 재발급받은 리프레시 토큰 재저장

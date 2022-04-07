@@ -5,7 +5,7 @@ import UPF2022SS4.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS4.KoonsDiarySpring.domain.Diary;
 import UPF2022SS4.KoonsDiarySpring.domain.User;
 import UPF2022SS4.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
-import UPF2022SS4.KoonsDiarySpring.service.UserService;
+import UPF2022SS4.KoonsDiarySpring.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
