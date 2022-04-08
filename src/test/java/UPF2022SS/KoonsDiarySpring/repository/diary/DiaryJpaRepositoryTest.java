@@ -58,29 +58,28 @@ class DiaryJpaRepositoryTest {
 
     @Test
     void findByAllUser_diary_success(){
-//        User user = User.builder()
-//                .username("test")
-//                .password("cucumber52")
-//                .email("test@gmail.com")
-//                .nickname("test")
-//                .build();
-//
-//        userJpaRepository.save(user);
-//        em.persist(user);
-//
-//        String content = "Test Content";
-//
-//        Diary diary = Diary.builder()
-//                .user(user)
-//                .writeDate(LocalDate.now())
-//                .editionDate(LocalDateTime.now())
-//                .content(content)
-//                .emotion(1)
-//                .thumbnailPath("koon이 잡아먹어 버린 썸네일 주소")
-//                .build();
-//
-//        diaryJpaRepository.save(diary);
-//        diary.setUser(user);
+        User user = User.builder()
+                .username("koon")
+                .password("cucumber52")
+                .email("koon@gmail.com")
+                .nickname("koon")
+                .build();
+
+        userJpaRepository.save(user);
+
+        String content = "Test Content";
+
+        Diary diary = Diary.builder()
+                .user(user)
+                .writeDate(LocalDate.now())
+                .editionDate(LocalDateTime.now())
+                .content(content)
+                .emotion(1)
+                .thumbnailPath("koon이 잡아먹어 버린 썸네일 주소")
+                .build();
+
+        diaryJpaRepository.save(diary);
+        diary.setUser(user);
         User test = userJpaRepository.findByName("test");
         List<Diary> diaries = diaryJpaRepository.findAllById(test.getId());
 
