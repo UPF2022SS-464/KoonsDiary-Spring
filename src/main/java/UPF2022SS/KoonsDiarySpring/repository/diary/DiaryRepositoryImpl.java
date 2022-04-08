@@ -34,16 +34,11 @@ public class DiaryRepositoryImpl implements DiaryRepository{
                 .fetch();
     }
 
-    @Override
-    public List<Diary> findAllByUser(User user) {
-        return jqf.select(qdiary)
-                .from(quser)
-                .fetch();
-    }
-
-    @Override
-    public void saveDiary(Diary diary, User user) {
-        diary.setUser(user);
-        em.persist(diary);
-    }
+//    @Override
+//    public List<Diary> findAllByUser(User user) {
+//        return jqf.select(quser.diaryList.get())
+//                .from(quser)
+//                .where(quser.eq(user))
+//                .fetch();
+//    }
 }
