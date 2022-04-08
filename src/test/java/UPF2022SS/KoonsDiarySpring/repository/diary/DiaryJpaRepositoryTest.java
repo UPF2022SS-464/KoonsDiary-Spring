@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -57,6 +58,38 @@ class DiaryJpaRepositoryTest {
     }
 
     @Test
+    void findById_diary_success(){
+        User user = User.builder()
+                .username("koon")
+                .password("cucumber52")
+                .email("koon@gmail.com")
+                .nickname("koon")
+                .build();
+
+        userJpaRepository.save(user);
+
+        String content = "Test Content";
+
+        Diary diary = Diary.builder()
+                .user(user)
+                .writeDate(LocalDate.now())
+                .editionDate(LocalDateTime.now())
+                .content(content)
+                .emotion(1)
+                .thumbnailPath("koon이 잡아먹어 버린 썸네일 주소")
+                .build();
+
+        diaryJpaRepository.save(diary);
+        diary.setUser(user);
+        Optional<User> test = userJpaRepository.findById(user.getId());
+        List<Diary> diaries = diaryJpaRepository.findAllById(test.get().getId());
+
+        for (Diary diary1 : diaries) {
+            System.out.println("diary1 = " + diary1);
+        }
+    }
+
+    @Test
     void findByAllUser_diary_success(){
         User user = User.builder()
                 .username("koon")
@@ -80,7 +113,7 @@ class DiaryJpaRepositoryTest {
 
         diaryJpaRepository.save(diary);
         diary.setUser(user);
-        User test = userJpaRepository.findByName("test");
+        User test = userJpaRepository.findByName(user.getNickname());
         List<Diary> diaries = diaryJpaRepository.findAllById(test.getId());
 
         for (Diary diary1 : diaries) {
