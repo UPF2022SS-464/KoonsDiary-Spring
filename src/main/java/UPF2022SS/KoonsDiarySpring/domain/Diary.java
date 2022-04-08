@@ -38,6 +38,7 @@ public class Diary {
     @Column(nullable = false)
     private int emotion;
 
+    @Builder.Default
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
     private List<DiaryImage> diaryImageList = new ArrayList<>();
 
@@ -46,6 +47,7 @@ public class Diary {
 
     public void setUser(User user){
         this.user = user;
+        user.getDiaryList().add(this);
     }
 
 }

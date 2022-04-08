@@ -34,15 +34,17 @@ public class User {
 
     private String fcmToken;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Diary> diaryList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<GroupUser> groupUsers = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<GroupDiaryComment> groupDiaryComments = new ArrayList<>();
-
 
     public User(){}
 
@@ -51,10 +53,8 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-
     // 사용자 닉네임 변경
     public void updateNickname(String nickname){
         this.nickname = nickname;
     }
-
 }

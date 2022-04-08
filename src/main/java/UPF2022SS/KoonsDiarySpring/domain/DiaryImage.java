@@ -23,4 +23,9 @@ public class DiaryImage {
     private String image_path;
 
     private String comment;
+
+    public void setDiary(Diary diary){
+        this.diary = diary;
+        diary.getDiaryImageList().add(this);
+    }
 }
