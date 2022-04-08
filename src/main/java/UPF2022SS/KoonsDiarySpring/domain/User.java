@@ -36,15 +36,15 @@ public class User {
 
     @Builder.Default
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<Diary> diaryList = new ArrayList<>();
+    private List<Diary> diaryList = new ArrayList<Diary>();
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
-    private List<GroupUser> groupUsers = new ArrayList<>();
+    private List<GroupUser> groupUsers = new ArrayList<GroupUser>();
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
-    private List<GroupDiaryComment> groupDiaryComments = new ArrayList<>();
+    private List<GroupDiaryComment> groupDiaryComments = new ArrayList<GroupDiaryComment>();
 
     public User(){}
 

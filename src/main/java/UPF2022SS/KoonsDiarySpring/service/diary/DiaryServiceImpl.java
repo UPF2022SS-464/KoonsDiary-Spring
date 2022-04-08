@@ -123,7 +123,7 @@ public class DiaryServiceImpl implements DiaryService{
         }
         try{
 
-            List<Diary> diaryList = diaryJpaRepository.findAllByUser(findUser);
+            List<Diary> diaryList = diaryJpaRepository.findAllById(findUser.getId());
 
             GetDiaryListResponse diaryListResponse = GetDiaryListResponse
                     .builder()

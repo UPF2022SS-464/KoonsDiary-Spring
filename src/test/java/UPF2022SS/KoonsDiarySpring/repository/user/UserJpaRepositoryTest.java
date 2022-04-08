@@ -24,10 +24,10 @@ class UserJpaRepositoryTest {
     @Test
     void getByUsername_user_success(){
         User user = User.builder()
-                .username("test")
+                .username("koon")
                 .password("cucumber52")
-                .email("test@gmail.com")
-                .nickname("test")
+                .email("koon@gmail.com")
+                .nickname("koon")
                 .build();
 
         userJpaRepository.save(user);
@@ -39,10 +39,10 @@ class UserJpaRepositoryTest {
     @Test
     void getByUserEmail_user_success() throws Exception{
         User user = User.builder()
-                .username("test")
+                .username("koon")
                 .password("cucumber52")
-                .email("test@gmail.com")
-                .nickname("test")
+                .email("koon@gmail.com")
+                .nickname("koon")
                 .build();
 
         userJpaRepository.save(user);
@@ -55,10 +55,10 @@ class UserJpaRepositoryTest {
     @Test
     void findAll_user_success(){
         User user = User.builder()
-                .username("test")
+                .username("koon")
                 .password("cucumber52")
-                .email("test@gmail.com")
-                .nickname("test")
+                .email("koon@gmail.com")
+                .nickname("koon")
                 .build();
         User user2 = User.builder()
                 .username("test123")
