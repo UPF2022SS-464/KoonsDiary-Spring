@@ -67,7 +67,6 @@ class UserJpaRepositoryTest {
                 .nickname("test123")
                 .build();
 
-
         userJpaRepository.save(user);
         userJpaRepository.save(user2);
 
