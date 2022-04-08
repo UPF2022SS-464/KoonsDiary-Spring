@@ -30,22 +30,17 @@ public class JwtService {
 
     // access token 생성
     public String createAccessToken(final Long id){
-//        try{
-//            JWTCreator.Builder b = JWT.create();
-//            b.withIssuer(ISSUER);
-//            b.withClaim("id",id);
-//            b.withExpiresAt(accessExpiresAt());
-//            return b.sign(Algorithm.HMAC256(SECRET_ACCESS));
-//        }
-//        catch (JWTCreationException jwtCreationException ){
-//            log.info(jwtCreationException.getLocalizedMessage());
-//        }
-//        return null;
-        JWTCreator.Builder b = JWT.create();
+        try{
+            JWTCreator.Builder b = JWT.create();
             b.withIssuer(ISSUER);
             b.withClaim("id",id);
             b.withExpiresAt(accessExpiresAt());
             return b.sign(Algorithm.HMAC256(SECRET_ACCESS));
+        }
+        catch (JWTCreationException jwtCreationException ){
+            log.info(jwtCreationException.getLocalizedMessage());
+        }
+        return null;
     }
 
     // refresh token 생성 메서드
