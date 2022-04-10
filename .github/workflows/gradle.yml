@@ -63,13 +63,13 @@ jobs:
       - name: Make zip file
         run: zip -r -qq -j ./KoonsDiary-Spring.zip ./deploy
 
-#      # S3 버킷 확인
-#      - name: Check to AWS S3
-#        env:
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#        run: |
-#          aws s3 ls
+      # S3 버킷 확인
+      - name: Check to AWS S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 ls
 
       # S3 버킷을 copy
       - name: Deliver to AWS S3
