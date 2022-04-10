@@ -72,7 +72,7 @@ jobs:
         aws s3 cp \
         --region ap-northeast-2 \
         --acl private \ 
-        ./deploy/KoonsDiary-Spring.zip s3://koonsdiary/
+        ./KoonsDiary-Spring.zip s3://koonsdiary/KoonsDiary-Spring.zip
 
 
 
