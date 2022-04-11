@@ -8,7 +8,7 @@ ABSDIR=$(dirname $ABSPATH)
 source ${ABSDIR}/profile.sh
 
 REPOSITORY=/home/ubuntu/app
-PROJECT_NAME=koonsdiary
+PROJECT_NAME=KoonsDiary-Spring
 
 echo "> Build 파일 복사"
 echo "> cp $REPOSITORY/deploy/*.jar $REPOSITORY/"

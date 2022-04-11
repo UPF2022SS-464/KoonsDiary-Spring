@@ -16,7 +16,7 @@ function find_idle_profile()
     fi
 
     # IDLE_PROFILE : nginx와 연결되지 않은 profile
-    if [ ${CURRENT_PROFILE} == test ]
+    if [ ${CURRENT_PROFILE} == test1 ]
     then
       IDLE_PROFILE=test2
     else
