@@ -19,7 +19,7 @@ public class ProfileController {
         List<String> profiles = Arrays.asList(env.getActiveProfiles());
 //        List<String> realProfiles = Arrays.asList("real1", "real2");
 
-        List<String> testProfiles = Arrays.asList("test");
+        List<String> testProfiles = Arrays.asList("test1", "test2");
         String defaultProfile = profiles.isEmpty()? "default" : profiles.get(0);
 
         // test 값 반환
