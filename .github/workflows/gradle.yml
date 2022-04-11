@@ -81,7 +81,7 @@ jobs:
           aws s3 cp \
           --region ap-northeast-2 \
           --acl private \
-          ./KoonsDiary-Spring.zip s3://koonsdiary/koonsdiary/
+          ./KoonsDiary-Spring.zip s3://koonsdiary/
 
       - name: Deploy
         env:
@@ -90,7 +90,7 @@ jobs:
         run: |
           aws deploy create-deployment \
           --application-name koonsdiary \
-          --deployment-group-name koonsdiary-group \
+          --deployment-group-name koonsdiary-test \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=koonsdiary,bundleType=zip,key=koonsdiary.zip \
+          --s3-location bucket=koonsdiary,bundleType=zip,key=KoonsDiary-Spring.zip \
           --region ap-northeast-2
