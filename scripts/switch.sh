@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# !/usr/bin/env bash
 
 # switch.sh
 # nginx 연결 설정 스위치
