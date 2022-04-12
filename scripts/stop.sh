@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# !/usr/bin/env bash
 
 # stop.sh
 # 서버 중단을 위한 스크립트

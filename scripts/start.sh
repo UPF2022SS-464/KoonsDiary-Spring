@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# !/usr/bin/env bash
 
 # start.sh
 # 서버 구동을 위한 스크립트
