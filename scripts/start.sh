@@ -7,7 +7,7 @@ ABSPATH=$(readlink -f $0)
 ABSDIR=$(dirname $ABSPATH)
 . ${ABSDIR}/profile.sh
 
-REPOSITORY=/home/ubuntu/app
+REPOSITORY=/home/koonda/app
 PROJECT_NAME=KoonsDiary-Spring
 
 echo "> Build 파일 복사"
