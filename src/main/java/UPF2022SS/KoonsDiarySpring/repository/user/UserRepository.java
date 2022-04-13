@@ -9,6 +9,7 @@ import java.util.List;
 public interface UserRepository{
     public User findByName(String username);
     public User findByEmail(String email);
+    public List<User> findByNameContain(String username);
     public List<User> findByKakaoKey(Long kakaoKey);
     public List<User> findAll();
 }
