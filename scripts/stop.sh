@@ -1,4 +1,4 @@
-# !/usr/bin/env bash
+ # ln -s /bin/sh bash
 
 # stop.sh
 # 서버 중단을 위한 스크립트
@@ -7,7 +7,9 @@ ABSPATH=$(readlink -f $0)
 # ABSDIR : 현재 stop.sh 파일 위치의 경로
 ABSDIR=$(dirname $ABSPATH)
 # import profile.sh
-source ${ABSDIR}/profile.sh
+# source ${ABSDIR}/profile.sh
+. ./profile.sh
+
 
 IDLE_PORT=$(find_idle_port)
 

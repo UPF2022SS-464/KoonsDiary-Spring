@@ -13,7 +13,7 @@ plugins {
 
 group = 'UPF2022SS.464'
 //version = '0.0.1-SNAPSHOT'
-version = '0.0.1-SNAPSHOT-' + new Date().format("yyyyMMddHHmmss")
+version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {

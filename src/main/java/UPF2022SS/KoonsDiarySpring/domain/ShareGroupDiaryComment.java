@@ -12,17 +12,17 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter @Setter
-@Table(name = "group_diary_comment")
+@Table(name = "share_group_diary_comment")
 @NoArgsConstructor
-public class GroupDiaryComment {
+public class ShareGroupDiaryComment {
 
     @Id @GeneratedValue
-    @Column(name = "group_diary_comment_id", nullable = false)
+    @Column(name = "share_group_diary_comment_id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "group_diary_id",nullable = false)
-    private GroupDiary groupDiary;
+    @JoinColumn(name = "share_group_diary_id",nullable = false)
+    private ShareGroupDiary shareGroupDiary;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false)

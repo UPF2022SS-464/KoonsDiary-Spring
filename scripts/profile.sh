@@ -3,7 +3,7 @@
 # profile.sh
 # 미사용 중인 profile을 잡는다.
 
-function find_idle_profile()
+find_idle_profile()
 {
     # curl 결과로 연결할 서비스 결정
     RESPONSE_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/profile)
@@ -29,7 +29,7 @@ function find_idle_profile()
 }
 
 # 쉬고 있는 profile의 port 찾기
-function find_idle_port()
+find_idle_port()
 {
     IDLE_PROFILE=$(find_idle_profile)
 

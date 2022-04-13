@@ -11,26 +11,21 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter @Setter
-@Table(name = "group_invite")
+@Table(name = "share_group_member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GroupInvite {
-
+public class ShareGroupUser {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "group_invite_id")
+    @Column(name = "share_group_member_id")
     private Long id;
 
-
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @JoinColumn(name = "share_group_id")
+    private ShareGroup shareGroup;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "fcm_token")
-    private User fcmToken;
-
+    private String status;
 
 }

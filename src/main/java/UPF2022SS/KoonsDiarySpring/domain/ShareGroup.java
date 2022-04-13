@@ -13,12 +13,12 @@ import java.util.List;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
-@Table(name = "group")
+@Table(name = "share_group")
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Group {
+public class ShareGroup {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "group_id", nullable = false)
+    @Column(name = "share_group_id", nullable = false)
     private Long id;
 
     @Column(nullable = false)
@@ -31,9 +31,10 @@ public class Group {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "group")
-    private List<GroupUser> groupUsers = new ArrayList<>();
+    @OneToMany(mappedBy = "shareGroup")
+    private List<ShareGroupUser> shareGroupUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "group")
-    private List<GroupInvite> groupInvites = new ArrayList<>();
+    @OneToMany(mappedBy = "shareGroup",
+            targetEntity = ShareGroupInvite.class)
+    private List<ShareGroupInvite> shareGroupInvites = new ArrayList<>();
 }
