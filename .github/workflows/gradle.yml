@@ -28,7 +28,18 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Set up secret Key
+      - name: Set up secret Key - main
+        shell: bash
+        env:
+          SECRETS_DB_Test: ${{secrets.MYSQL_MAIN}}
+        run: |
+          mkdir src/main/resources -p
+          touch src/main/resources/application.yml
+          echo $SECRETS_DB_Test > main_enc.txt
+          cat main_enc.txt | base64 -d > src/main/resources/application.yml
+        
+
+      - name: Set up secret Key - secret
         shell: bash
         env:
           SECRETS_DB_Test: ${{secrets.MYSQL_TEST}}
