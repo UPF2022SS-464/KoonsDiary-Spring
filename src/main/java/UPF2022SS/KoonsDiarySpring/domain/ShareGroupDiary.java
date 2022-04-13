@@ -15,17 +15,17 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter @Setter
-@Table(name = "group_diary")
+@Table(name = "share_group_diary")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GroupDiary {
+public class ShareGroupDiary {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "group_diary_id")
+    @Column(name = "share_group_diary_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "group_id")
-    private Group group;
+    @JoinColumn(name = "share_group_id")
+    private ShareGroup shareGroup;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
@@ -38,10 +38,10 @@ public class GroupDiary {
 
     private String thumbnailPath;
 
-    @OneToMany(mappedBy = "groupDiary", cascade = CascadeType.ALL)
-    private List<GroupDiaryImage> groupDiaryImages = new ArrayList<>();
+    @OneToMany(mappedBy = "shareGroupDiary", cascade = CascadeType.ALL)
+    private List<ShareGroupDiaryImage> shareGroupDiaryImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupDiary", cascade = CascadeType.ALL)
-    private List<GroupDiaryComment> groupDiaryComments = new ArrayList<>();
+    @OneToMany(mappedBy = "shareGroupDiary", cascade = CascadeType.ALL)
+    private List<ShareGroupDiaryComment> shareGroupDiaryComments = new ArrayList<>();
 
 }

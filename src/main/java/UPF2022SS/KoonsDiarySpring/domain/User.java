@@ -40,11 +40,11 @@ public class User {
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
-    private List<GroupUser> groupUsers = new ArrayList<GroupUser>();
+    private List<ShareGroupUser> shareGroupUsers = new ArrayList<ShareGroupUser>();
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
-    private List<GroupDiaryComment> groupDiaryComments = new ArrayList<GroupDiaryComment>();
+    private List<ShareGroupDiaryComment> shareGroupDiaryComments = new ArrayList<ShareGroupDiaryComment>();
 
     public User(){}
 
