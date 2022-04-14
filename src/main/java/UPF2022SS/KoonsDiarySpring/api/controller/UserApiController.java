@@ -1,9 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.api.controller;
 
-import UPF2022SS.KoonsDiarySpring.api.dto.user.LoginRequest;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpRequest;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.UpdateUserRequest;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.UserInfoResponse;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.*;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
@@ -17,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -198,6 +197,19 @@ public class UserApiController {
                             StatusCode.DB_ERROR,
                             ResponseMessage.USER_DELETE_FAIL
                     );
+            }
+        }
+
+        @PostMapping(value = "/user/find")
+        public DefaultResponse findUser(@RequestBody ContainedUserRequest cur){
+            List<User> users=  userService.findByContainedUser(cur);
+            try{
+                return null;
+            } catch (Exception e){
+                return DefaultResponse.response(
+                        StatusCode.DB_ERROR,
+                        ResponseMessage.INVALID_USER
+                );
             }
         }
     }

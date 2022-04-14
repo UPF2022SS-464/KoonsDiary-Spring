@@ -1,5 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.service.user;
 
+import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
@@ -10,8 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -88,6 +91,16 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findUserEmail(String email){
         return userJpaRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<User> findByContainedUser(ContainedUserRequest cur) {
+        List<User> userList = userJpaRepository.findByContainedName(cur.getNickname());
+        HashMap<Long, String> map = new HashMap<>();
+        for (User user : userList) {
+            map.put(user.getId(), user.getNickname());
+        }
+        return userList;
     }
 
     @Override

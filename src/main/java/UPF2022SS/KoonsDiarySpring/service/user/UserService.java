@@ -1,6 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.service.user;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ public interface UserService {
     public User findById(Long id);
     public User findUsername(String username);
     public User findUserEmail(String email);
+    public List<User> findByContainedUser(ContainedUserRequest cur);
     public void updateUser(User user, String newNickname);
     public void deleteUser(Long id);
 
