@@ -46,8 +46,9 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> findByNameContain(String username) {
-        return jqf.selectFrom(user)
+    public List<User> findByContainedName(String username) {
+        return jqf.select(user)
+                .from(user)
                 .where(user.nickname.contains(username))
                 .fetch();
     }

@@ -22,5 +22,9 @@ then
 else
   echo "> kill -15 $IDLE_PID"
   kill -15 ${IDLE_PID}
-  sleep 5
+  while [ -n ${IDLE_PID} ]; do
+      echo "> 애플리케이션 종료 중..."
+      sleep 5
+  done
+  echo "> 애필리케이션 종료"
 fi
