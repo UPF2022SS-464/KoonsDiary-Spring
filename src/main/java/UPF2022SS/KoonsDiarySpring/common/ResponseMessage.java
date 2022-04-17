@@ -32,6 +32,21 @@ public class ResponseMessage {
     public static final String Diary_DELETE_FAIL    = "다이어리 삭제 실패";
 
 
+    // Diary Image
+    public static final String INVALID_DIARY_IMAGE         = "존재하지 않는 다이어리 이미지 입니다.";
+
+    public static final String DIARY_IMAGE_POST_SUCCESS    = "다이어리 이미지 등록 성공";
+    public static final String DIARY_IMAGE_POST_FAIL       = "다이어리 이미지 등록 실패";
+    public static final String DIARY_IMAGE_GET_SUCCESS     = "다이어리 이미지 조회 성공";
+    public static final String DIARY_IMAGE_GET_FAIL        = "다이어리 이미지 조회 실패";
+    public static final String DIARY_IMAGE_PATCH_SUCCESS   = "다이어리 이미지 수정 성공";
+    public static final String DIARY_IMAGE_PATCH_FAIL      = "다이어리 이미지 수정 실패";
+    public static final String DIARY_IMAGE_DELETE_SUCCESS  = "다이어리 이미지 삭제 성공";
+    public static final String DIARY_IMAGE_DELETE_FAIL     = "다이어리 이미지 삭제 실패";
+
+    public static final String DIARY_IMAGE_MAPPING_SUCCESS = "다이어리 이미지 연결 완료";
+    public static final String DIARY_IMAGE_MAPPING_FAIL    = "다이어리 이미지 연결 실패";
+
 
     // etc
     public static final String DB_ERROR                    = "디비 에러";

@@ -27,6 +27,5 @@ public class DiaryImageRepositoryImpl implements DiaryImageRepository{
                 .from(qDiary)
                 .where(qDiary.id.eq(DiaryId))
                 .fetch();
-
     }
 }

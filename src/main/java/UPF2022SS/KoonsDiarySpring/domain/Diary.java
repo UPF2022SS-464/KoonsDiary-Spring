@@ -49,5 +49,4 @@ public class Diary {
         this.user = user;
         user.getDiaryList().add(this);
     }
-
 }
