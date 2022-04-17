@@ -1,16 +1,19 @@
 package UPF2022SS.KoonsDiarySpring.service.user;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -94,13 +97,29 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> findByContainedUser(ContainedUserRequest cur) {
+    public ContainedUserResponse findByContainedUser(ContainedUserRequest cur) {
         List<User> userList = userJpaRepository.findByContainedName(cur.getNickname());
-        HashMap<Long, String> map = new HashMap<>();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        List<HashMap<String, String>> mapList = new ArrayList<HashMap<String, String>>();
+
         for (User user : userList) {
-            map.put(user.getId(), user.getNickname());
+            HashMap<String, String> map= new HashMap<String, String>();
+            map.put("id", user.getId().toString());
+            map.put("nickname", user.getNickname());
+
+            mapList.add(map);
         }
-        return userList;
+        try {
+            String json = mapper.writeValueAsString(mapList);
+            ContainedUserResponse containedUserResponse = ContainedUserResponse.builder()
+                    .userListJsonData(json)
+                    .build();
+            return containedUserResponse;
+        } catch (Exception e){
+            return null;
+        }
     }
 
     @Override
