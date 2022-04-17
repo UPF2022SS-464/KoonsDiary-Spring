@@ -112,7 +112,8 @@ public class UserServiceImpl implements UserService{
             mapList.add(map);
         }
         try {
-            String json = mapper.writeValueAsString(mapList);
+            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapList);
+
             ContainedUserResponse containedUserResponse = ContainedUserResponse.builder()
                     .userListJsonData(json)
                     .build();

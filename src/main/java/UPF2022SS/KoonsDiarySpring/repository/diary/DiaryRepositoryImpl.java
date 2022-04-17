@@ -27,18 +27,9 @@ public class DiaryRepositoryImpl implements DiaryRepository{
     //모든 다이어리 리스트 반환
     @Override
     public List<Diary> findAllById(Long userId) {
-//        Optional<User> findUser = userJpaRepository.findById(userId);
         return jqf.select(qdiary)
                 .from(qdiary)
                 .where(qdiary.user.id.eq(userId))
                 .fetch();
     }
-
-//    @Override
-//    public List<Diary> findAllByUser(User user) {
-//        return jqf.select(quser.diaryList.get())
-//                .from(quser)
-//                .where(quser.eq(user))
-//                .fetch();
-//    }
 }
