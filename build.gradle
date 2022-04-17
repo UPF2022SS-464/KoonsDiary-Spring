@@ -38,10 +38,11 @@ dependencies {
 	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.23'
 
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.2'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-//	runtimeOnly 'mysql:mysql-connector-java'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

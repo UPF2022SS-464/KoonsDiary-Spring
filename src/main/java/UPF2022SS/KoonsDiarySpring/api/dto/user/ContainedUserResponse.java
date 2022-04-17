@@ -14,5 +14,5 @@ import java.util.List;
 @AllArgsConstructor
 @Builder()
 public class ContainedUserResponse {
-    List<User> users;
+    String userListJsonData;
 }

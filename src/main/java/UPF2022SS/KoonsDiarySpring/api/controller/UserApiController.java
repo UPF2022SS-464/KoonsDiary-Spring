@@ -200,11 +200,16 @@ public class UserApiController {
             }
         }
 
+        //그룹 초대 시, 유저의 리스트를 찾기 위한 api
         @PostMapping(value = "/user/find")
         public DefaultResponse findUser(@RequestBody ContainedUserRequest cur){
-            List<User> users=  userService.findByContainedUser(cur);
+            ContainedUserResponse users=  userService.findByContainedUser(cur);
             try{
-                return null;
+                return DefaultResponse.response(
+                        StatusCode.OK,
+                        ResponseMessage.USER_SEARCH_SUCCESS,
+                        users
+                );
             } catch (Exception e){
                 return DefaultResponse.response(
                         StatusCode.DB_ERROR,
