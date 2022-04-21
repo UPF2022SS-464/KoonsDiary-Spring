@@ -47,7 +47,6 @@ public class ResponseMessage {
     public static final String DIARY_IMAGE_MAPPING_SUCCESS = "다이어리 이미지 연결 완료";
     public static final String DIARY_IMAGE_MAPPING_FAIL    = "다이어리 이미지 연결 실패";
 
-
     // etc
     public static final String DB_ERROR                    = "디비 에러";
     public static final String INTERNAL_SERVER_ERROR       = "서버 내부 에러";

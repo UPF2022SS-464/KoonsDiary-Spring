@@ -7,11 +7,14 @@ import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiaryRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 public interface DiaryService {
     // 다이어리에 대한 CRUD
-    public DefaultResponse postDiary(PostDiaryRequest postDiaryRequest);
+    public DefaultResponse postDiary(PostDiaryRequest postDiaryRequest, String header,List<String> files);
 
     public DefaultResponse getDiary(GetDiaryRequest getDiaryRequest);
 

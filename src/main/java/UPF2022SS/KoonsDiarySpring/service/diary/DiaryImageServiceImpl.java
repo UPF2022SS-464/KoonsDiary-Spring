@@ -7,10 +7,12 @@ import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.DiaryImage;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryImageJpaRepository;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,26 +24,19 @@ public class DiaryImageServiceImpl implements DiaryImageService{
 
     @Autowired
     private DiaryImageJpaRepository diaryImageJpaRepository;
+
     @Override
-    public DefaultResponse saveImage(PostDiaryImageRequest postDiaryImageRequest) {
+    public DiaryImage saveImage(String filename, String comment) {
         try{
             DiaryImage diaryImage = DiaryImage.builder()
-                    .image_path(postDiaryImageRequest.getImage_path())
-                    .comment(postDiaryImageRequest.getComment())
+                    .image_path(filename)
+                    .comment(comment)
                     .build();
-
             diaryImageJpaRepository.save(diaryImage);
-            return DefaultResponse.response(
-                    StatusCode.OK,
-                    ResponseMessage.DIARY_IMAGE_POST_SUCCESS
-
-            );
+            return diaryImage;
         }catch (Exception e){
-            return DefaultResponse.response(StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.DIARY_IMAGE_POST_FAIL,
-                    e.getMessage()
-                    );
-        }
+            return DiaryImage.builder().build();
+            }
     }
 
     @Override
