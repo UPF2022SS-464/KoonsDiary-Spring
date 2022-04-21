@@ -2,6 +2,7 @@ package UPF2022SS.KoonsDiarySpring.api.dto.diary;
 
 import UPF2022SS.KoonsDiarySpring.domain.DiaryImage;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,8 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PostDiaryRequest {
 
-    private Long user;
-
     private LocalDate writeDate;
 
     private LocalDateTime editionDate;
@@ -24,7 +23,7 @@ public class PostDiaryRequest {
 
     private int emotion;
 
-    private List<DiaryImage> diaryImageList;
+    private List<String> comment;
 
     private String thumbnailPath;
 }

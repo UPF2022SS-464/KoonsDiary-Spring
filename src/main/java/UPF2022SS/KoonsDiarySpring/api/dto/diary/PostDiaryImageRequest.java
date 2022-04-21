@@ -14,8 +14,6 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDiaryImageRequest {
-
     private String image_path;
-
     private String comment;
 }

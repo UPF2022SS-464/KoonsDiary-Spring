@@ -31,23 +31,52 @@ jobs:
       - name: Set up secret Key - main
         shell: bash
         env:
-          SECRETS_DB_Test: ${{secrets.MYSQL_MAIN}}
+#          SECRETS_DB_Test: ${{secrets.MYSQL_MAIN}}
+          YML_SETTING: ${{secrets.YML_SETTING}}
+          SECRET_AWS_S3: ${{secrets.AWS_S3}}
+          SECRET_AWS_S3_CREDENTIALS: ${{secrets.AWS_S3_CREDENTAILS}}
+          SECRET_AZURE_KEY: ${{secrets.AZURE_KEY}}
+
         run: |
-          mkdir src/main/resources -p
           touch src/main/resources/application.yml
-          echo $SECRETS_DB_Test > main_enc.txt
+          echo $YML_SETTING > main_enc.txt
           cat main_enc.txt | base64 -d > src/main/resources/application.yml
+          
+          touch src/main/resources/application-aws.yml
+          echo $SECRET_AWS_S3 > aws_enc.txt
+          cat aws_enc.txt | base64 -d > src/main/resources/application-aws.yml
+          
+          touch src/main/resources/application-credentials.yml
+          echo $SECRET_AWS_S3_CREDENTIALS > credentials_enc.txt
+          cat credentials_enc.txt | base64 -d > src/main/resources/application-credentials.yml
+          
+          touch src/main/resources/application-azure.yml
+          echo $SECRET_AZURE_KEY > azure_enc.txt
+          cat azure_enc.txt | base64 -d > src/main/resources/application-azure.yml
         
 
-      - name: Set up secret Key - secret
+      - name: Set up secret Key - test
         shell: bash
         env:
-          SECRETS_DB_Test: ${{secrets.MYSQL_TEST}}
+#          SECRETS_DB_Test: ${{secrets.MYSQL_TEST}}
+          YML_SETTING: ${{secrets.YML_SETTING}}
+          SECRET_AWS_S3: ${{secrets.AWS_S3}}
+          SECRET_AWS_S3_CREDENTIALS: ${{secrets.AWS_S3_CREDENTAILS}}
+          SECRET_AZURE_KEY: ${{secrets.AZURE_KEY}}
         run: |
           mkdir src/test/resources -p
           touch src/test/resources/application.yml
-          echo $SECRETS_DB_Test > test_enc.txt
+          echo $YML_SETTING > test_enc.txt
           cat test_enc.txt | base64 -d > src/test/resources/application.yml
+          touch src/test/resources/application-aws.yml
+          echo $SECRET_AWS_S3 > test_aws_enc.txt
+          cat test_aws_enc.txt | base64 -d > src/test/resources/application-aws.yml
+          touch src/test/resources/application-credentials.yml
+          echo $SECRET_AWS_S3_CREDENTIALS > test_credentials_enc.txt
+          cat test_credentials_enc.txt | base64 -d > src/test/resources/application-credentials.yml
+          touch src/test/resources/application-azure.yml
+          echo $SECRET_AZURE_KEY > test_azure_enc.txt
+          cat test_azure_enc.txt | base64 -d > src/test/resources/application-azure.yml
 
       - name: Setup MySQL
         uses: samin/mysql-action@v1

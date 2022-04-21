@@ -1,5 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.domain;
 
+import UPF2022SS.KoonsDiarySpring.domain.Enum.EmotionStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,6 +37,7 @@ public class Diary {
     private String content;
 
     @Column(nullable = false)
+//    @Enumerated(EnumType.STRING)
     private int emotion;
 
     @Builder.Default
@@ -48,5 +50,12 @@ public class Diary {
     public void setUser(User user){
         this.user = user;
         user.getDiaryList().add(this);
+    }
+
+    public void setDiaryImageList(List<DiaryImage> diaryImageList){
+        this.diaryImageList = diaryImageList;
+        for (DiaryImage diaryImage : diaryImageList) {
+            diaryImage.setDiary(this);
+        }
     }
 }
