@@ -136,8 +136,15 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public DefaultResponse getDiary(GetDiaryRequest getDiaryRequest) {
         try{
+            String token = getDiaryRequest.getAccessToken();
+
+            Long userId = jwtService.decodeAccessToken(token);
+
+            User user = userService.findById(userId);
             Optional<Diary> diary = diaryJpaRepository.findById(getDiaryRequest.getId());
+
             System.out.println("diary = " + diary.get().getUser().getId() + diary.get().getUser().getNickname());
+
             GetDiaryResponse response = GetDiaryResponse.builder()
                     .id(diary.get().getId())
                     .user(diary.get().getUser())
@@ -166,7 +173,8 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public DefaultResponse getDiaryList(GetDiaryListRequest getDiaryListRequest) {
 
-        User findUser = userService.findById(getDiaryListRequest.getUserId());
+        Long userId = jwtService.decodeAccessToken(getDiaryListRequest.getAccessToken());
+        User findUser = userService.findById(userId);
 
         if(findUser == null){
             return DefaultResponse.response(
@@ -174,6 +182,7 @@ public class DiaryServiceImpl implements DiaryService{
                     ResponseMessage.USER_SEARCH_FAIL
             );
         }
+
         try{
 
             List<Diary> diaryList = diaryJpaRepository.findAllById(findUser.getId());
@@ -193,7 +202,8 @@ public class DiaryServiceImpl implements DiaryService{
             log.error(e.getMessage());
             return DefaultResponse.response(
                     StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.DIARY_GET_FAIL
+                    ResponseMessage.DIARY_GET_FAIL,
+                    e.getMessage()
             );
         }
     }

@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetDiaryRequest {
-
+    private String accessToken;
     private Long id;
 }

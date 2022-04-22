@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetDiaryListRequest {
-
+    private String accessToken;
     private Long userId;
 }
