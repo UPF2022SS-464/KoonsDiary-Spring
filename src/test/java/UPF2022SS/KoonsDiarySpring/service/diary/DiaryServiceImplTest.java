@@ -57,7 +57,6 @@ class DiaryServiceImplTest {
                 .editionDate(LocalDateTime.now())
                 .content("어제의 꿈은 오늘 잊혀지기 위해 존재한다.")
                 .comment(comment)
-                .thumbnailPath("1")
                 .build();
 
         //이부분을 헤더를 빼고유저 객체가 들어갈 수 있게하자.
