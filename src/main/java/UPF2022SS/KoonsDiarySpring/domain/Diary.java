@@ -42,7 +42,7 @@ public class Diary {
 
     @Builder.Default
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
-    private List<DiaryImage> diaryImageList = new ArrayList<>();
+    private List<DiaryImage> diaryImageList = new ArrayList<DiaryImage>();
 
     @Column(nullable = false)
     private String thumbnailPath;
@@ -54,8 +54,8 @@ public class Diary {
 
     public void setDiaryImageList(List<DiaryImage> diaryImageList){
         this.diaryImageList = diaryImageList;
-        for (DiaryImage diaryImage : diaryImageList) {
-            diaryImage.setDiary(this);
-        }
+//        for (DiaryImage diaryImage : diaryImageList) {
+//            diaryImage.setDiary(this);
+//        }
     }
 }

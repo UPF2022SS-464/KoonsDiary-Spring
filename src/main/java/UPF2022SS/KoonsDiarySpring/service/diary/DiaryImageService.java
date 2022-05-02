@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 public interface DiaryImageService {
-    public DiaryImage saveImage(String fileName, String comment);
+    public DiaryImage saveImage(String fileName, String comment, Diary diary);
 
     public DefaultResponse setImageId(DiaryImage diaryImage, Diary diary);
 
