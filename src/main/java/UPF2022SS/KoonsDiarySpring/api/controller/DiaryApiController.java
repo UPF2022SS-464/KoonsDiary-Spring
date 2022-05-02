@@ -1,6 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.api.controller;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiaryRequest;
+import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.diary.DiaryService;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
@@ -26,6 +27,10 @@ public class DiaryApiController {
     private DiaryService diaryService;
     @Autowired
     private UploadService uploadService;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping(value = "/diary")
     public DefaultResponse postDiary(
@@ -42,6 +47,7 @@ public class DiaryApiController {
                 );
             }
 
+            //파일 이름이 들어갈 배열
             List<String> fileUrls = new ArrayList<String>();
 
             for (MultipartFile file : files) {
@@ -49,7 +55,9 @@ public class DiaryApiController {
                 fileUrls.add(fileUrl);
             }
 
-            DefaultResponse response =  diaryService.postDiary(postDiaryRequest, header, fileUrls);
+            Long id = jwtService.decodeAccessToken(header);
+
+            DefaultResponse response =  diaryService.postDiary(postDiaryRequest, id, fileUrls);
             return response;
 
         } catch (Exception e){

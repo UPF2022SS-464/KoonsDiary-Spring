@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 public class LoginRequest {
 
     private String userId;
+
     private String password;
+
     private String RefreshToken;
 
 }

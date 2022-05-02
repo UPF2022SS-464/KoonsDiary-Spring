@@ -80,7 +80,8 @@ class DiaryJpaRepositoryTest {
                 .build();
 
         diaryJpaRepository.save(diary);
-        diary.setUser(user);
+
+
         Optional<User> test = userJpaRepository.findById(user.getId());
         List<Diary> diaries = diaryJpaRepository.findAllById(test.get().getId());
 

@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-
 @Slf4j
 @Service
 @Transactional
@@ -26,10 +25,11 @@ public class DiaryImageServiceImpl implements DiaryImageService{
     private DiaryImageJpaRepository diaryImageJpaRepository;
 
     @Override
-    public DiaryImage saveImage(String filename, String comment) {
+    public DiaryImage saveImage(String filename, String comment, Diary diary) {
         try{
             DiaryImage diaryImage = DiaryImage.builder()
                     .image_path(filename)
+                    .diary(diary)
                     .comment(comment)
                     .build();
             diaryImageJpaRepository.save(diaryImage);

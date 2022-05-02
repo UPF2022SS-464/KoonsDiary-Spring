@@ -9,6 +9,7 @@ import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.User;
+import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.service.diary.sub.AnalyticService;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.diary.sub.UploadService;
@@ -31,19 +32,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DiaryServiceImpl implements DiaryService{
 
-
     @Autowired
     private DiaryJpaRepository diaryJpaRepository;
     @Autowired
     private DiaryImageJpaRepository diaryImageJpaRepository;
+
     @Autowired
     private DiaryImageService diaryImageService;
+
     @Autowired
     private AnalyticService analyticService;
-
-
     @Autowired
-    private UserService userService;
+    private UserJpaRepository userJpaRepository;
     @Autowired
     private UploadService uploadService;
     @Autowired
@@ -53,7 +53,7 @@ public class DiaryServiceImpl implements DiaryService{
     @Transactional
     public DefaultResponse postDiary(
             PostDiaryRequest postDiaryRequest,
-            String header,
+            Long userId,
             List<String> files) {
 
         //DTO 체크
@@ -63,13 +63,10 @@ public class DiaryServiceImpl implements DiaryService{
                     ResponseMessage.DIARY_POST_FAIL
             );
         }
-
-        //유저 정보 확인
-        Long userId = jwtService.decodeAccessToken(header);
-        User findUser = userService.findById(userId);
+        Optional<User> user = userJpaRepository.findById(userId);
 
         //유저 유효성 검사
-        if (findUser ==null){
+        if (user == null){
             return DefaultResponse.response(
                     StatusCode.UNAUTHORIZED,
                     ResponseMessage.INVALID_USER
@@ -80,11 +77,12 @@ public class DiaryServiceImpl implements DiaryService{
         TextAnalyticsClient client = analyticService.authenticateClient();
         int emotion = analyticService.AnalysisSentiment(client,postDiaryRequest.getContent());
 
+        List<DiaryImage> diaryImageList = new ArrayList<>();
 
         try{
             //다이어리 이미지 세팅 전에 다이어리 객체 세팅
             Diary diary = Diary.builder()
-                            .user(findUser)
+                            .user(user.get())
                             .writeDate(postDiaryRequest.getWriteDate())
                             .editionDate(postDiaryRequest.getEditionDate())
                             .content(postDiaryRequest.getContent())
@@ -94,17 +92,21 @@ public class DiaryServiceImpl implements DiaryService{
 
             diaryJpaRepository.save(diary);
 
-            List<DiaryImage> diaryImageList = new ArrayList<>();
-
             //image path와 comment에 대한 반복문을 위해 지정
             Iterator<String> fileIterator = files.iterator();
             Iterator<String> commentIterator = postDiaryRequest.getComment().iterator();
 
             // 반복문을 통한 이미지 저장 밋 배열 내 데이터 추가
             while (fileIterator.hasNext() && commentIterator.hasNext()) {
-                DiaryImage diaryImage = diaryImageService.saveImage(
-                        fileIterator.next(),
-                        commentIterator.next());
+
+                DiaryImage diaryImage = DiaryImage
+                        .builder()
+                        .image_path(fileIterator.next())
+                        .comment(commentIterator.next())
+                        .diary(diary)
+                        .build();
+
+                diaryImageJpaRepository.save(diaryImage);
 
                 diaryImageList.add(diaryImage);
             }
@@ -128,7 +130,8 @@ public class DiaryServiceImpl implements DiaryService{
             log.error(e.getMessage());
             return DefaultResponse.response(
                     StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.DIARY_POST_FAIL
+                    ResponseMessage.DIARY_POST_FAIL,
+                    e.getMessage()
             );
         }
     }
@@ -140,7 +143,7 @@ public class DiaryServiceImpl implements DiaryService{
 
             Long userId = jwtService.decodeAccessToken(token);
 
-            User user = userService.findById(userId);
+            Optional<User> user = userJpaRepository.findById(userId);
             Optional<Diary> diary = diaryJpaRepository.findById(getDiaryRequest.getId());
 
             System.out.println("diary = " + diary.get().getUser().getId() + diary.get().getUser().getNickname());
@@ -152,7 +155,7 @@ public class DiaryServiceImpl implements DiaryService{
                     .editionDate(diary.get().getEditionDate())
                     .content(diary.get().getContent())
                     .emotion(diary.get().getEmotion())
-                    .diaryImageList(diary.orElseThrow().getDiaryImageList())
+//                    .diaryImageList(diary.orElseThrow().getDiaryImageList())
                     .build();
 
             return DefaultResponse.response(
@@ -174,7 +177,7 @@ public class DiaryServiceImpl implements DiaryService{
     public DefaultResponse getDiaryList(GetDiaryListRequest getDiaryListRequest) {
 
         Long userId = jwtService.decodeAccessToken(getDiaryListRequest.getAccessToken());
-        User findUser = userService.findById(userId);
+        Optional<User> findUser = userJpaRepository.findById(userId);
 
         if(findUser == null){
             return DefaultResponse.response(
@@ -185,7 +188,7 @@ public class DiaryServiceImpl implements DiaryService{
 
         try{
 
-            List<Diary> diaryList = diaryJpaRepository.findAllById(findUser.getId());
+            List<Diary> diaryList = diaryJpaRepository.findAllById(findUser.get().getId());
 
             GetDiaryListResponse diaryListResponse = GetDiaryListResponse
                     .builder()
@@ -241,7 +244,6 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     private Boolean validateCheckDiary(Diary diary){
-
         return null;
     }
 }

@@ -15,15 +15,13 @@ import java.util.List;
 @AllArgsConstructor
 public class PostDiaryRequest {
 
+    //유저에 대한 정보는 Header의 토큰으로 받아옵니다.
+
     private LocalDate writeDate;
 
     private LocalDateTime editionDate;
 
     private String content;
 
-    private int emotion;
-
     private List<String> comment;
-
-    private String thumbnailPath;
 }
