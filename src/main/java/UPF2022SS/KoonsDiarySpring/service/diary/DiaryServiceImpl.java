@@ -136,18 +136,17 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DefaultResponse getDiary(User user, GetDiaryRequest getDiaryRequest) {
+    public DefaultResponse getDiary(User user, Long id) {
         try{
 //            Long userId = jwtService.decodeAccessToken(token);
 //
 //            Optional<User> user = userJpaRepository.findById(userId);
-            Optional<Diary> diary = diaryJpaRepository.findById(user.getId());
+            Optional<Diary> diary = diaryJpaRepository.findById(id);
 
             System.out.println("diary = " + diary.get().getUser().getId() + diary.get().getUser().getNickname());
 
             GetDiaryResponse response = GetDiaryResponse.builder()
                     .id(diary.get().getId())
-                    .user(diary.get().getUser())
                     .writeDate(diary.get().getWriteDate())
                     .editionDate(diary.get().getEditionDate())
                     .content(diary.get().getContent())
@@ -231,6 +230,9 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     @Transactional
     public DefaultResponse deleteDiary(Diary diary) {
+
+
+
         if(diary == null){
             return DefaultResponse.response(
                     StatusCode.BAD_REQUEST,

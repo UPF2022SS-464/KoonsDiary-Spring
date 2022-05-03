@@ -1,6 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.api.controller;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.GetDiaryListRequest;
+import UPF2022SS.KoonsDiarySpring.api.dto.diary.GetDiaryRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiaryRequest;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
@@ -92,5 +93,30 @@ public class DiaryApiController {
         }
         DefaultResponse response = diaryService.getDiaryList(user);
         return response;
+    }
+
+    @GetMapping(value = "/diary/{id}")
+    public DefaultResponse getDiaryV1(
+            @RequestHeader String header, @PathVariable Long id
+            ){
+
+        if(header == null){
+            return DefaultResponse
+                    .response(
+                            StatusCode.UNAUTHORIZED,
+                            ResponseMessage.UNAUTHORIZED
+                    );
+        }
+        User user = (User)userService.findById(jwtService.decodeAccessToken(header));
+        if(user == null){
+            return DefaultResponse
+                    .response(
+                            StatusCode.BAD_REQUEST,
+                            ResponseMessage.NOT_FOUND_USER
+                    );
+        }
+        DefaultResponse response = diaryService.getDiary(user, id);
+
+        return null;
     }
 }
