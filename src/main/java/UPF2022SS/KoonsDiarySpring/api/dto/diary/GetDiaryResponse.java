@@ -18,8 +18,6 @@ public class GetDiaryResponse {
 
     private Long id;
 
-    private User user;
-
     private LocalDate writeDate;
 
     private LocalDateTime editionDate;
