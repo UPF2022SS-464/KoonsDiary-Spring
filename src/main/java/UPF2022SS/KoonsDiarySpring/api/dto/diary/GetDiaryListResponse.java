@@ -12,5 +12,5 @@ import java.util.List;
 @Getter @Builder
 @AllArgsConstructor
 public class GetDiaryListResponse {
-    private List<Diary>  diaryList;
+    private String diaryListJsonData;
 }

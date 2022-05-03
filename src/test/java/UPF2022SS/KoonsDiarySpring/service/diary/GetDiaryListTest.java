@@ -53,7 +53,7 @@ class GetDiaryListTest {
                     .user(user1)
                     .writeDate(LocalDate.now())
                     .editionDate(LocalDateTime.now())
-                    .content("테스트 내용입니다.")
+                    .content("테스트 내용입니다."+Integer.toString(i))
                     .thumbnailPath("11")
                     .emotion(4)
                     .build();

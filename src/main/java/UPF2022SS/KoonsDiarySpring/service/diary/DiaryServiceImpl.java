@@ -1,6 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.*;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
 import UPF2022SS.KoonsDiarySpring.domain.DiaryImage;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryImageJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
@@ -15,16 +16,14 @@ import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.diary.sub.UploadService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import com.azure.ai.textanalytics.TextAnalyticsClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -181,14 +180,28 @@ public class DiaryServiceImpl implements DiaryService{
 //                    ResponseMessage.USER_SEARCH_FAIL
 //            );
 //        }
+        List<Diary> diaryList = diaryJpaRepository.findAllById(user.getId());
 
+        ObjectMapper mapper = new ObjectMapper();
+        List<HashMap<String, String>> mapList = new ArrayList<HashMap<String, String>>();
+
+        for (Diary diary : diaryList) {
+            HashMap<String, String> map= new HashMap<String, String>();
+            map.put("id", diary.getId().toString());
+            map.put("writeDate", diary.getWriteDate().toString());
+            map.put("content", diary.getContent());
+            map.put("thumbnail", diary.getThumbnailPath());
+            map.put("emotion", Integer.toString(diary.getEmotion()));
+
+            mapList.add(map);
+        }
         try{
-
-            List<Diary> diaryList = diaryJpaRepository.findAllById(user.getId());
+            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapList);
+//            List<Diary> diaryList = diaryJpaRepository.findAllById(user.getId());
 
             GetDiaryListResponse diaryListResponse = GetDiaryListResponse
                     .builder()
-                    .diaryList(diaryList)
+                    .diaryListJsonData(json)
                     .build();
 
             return DefaultResponse.response(
