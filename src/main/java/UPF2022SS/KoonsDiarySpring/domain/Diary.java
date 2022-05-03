@@ -1,6 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.domain;
 
 import UPF2022SS.KoonsDiarySpring.domain.Enum.EmotionStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.fasterxml.jackson.annotation.JsonFormat.*;
 import static javax.persistence.FetchType.*;
 
 @Entity
@@ -28,9 +30,11 @@ public class Diary {
     private User user;
 
     @Column(nullable = false)
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate writeDate;
 
     @Column(nullable = false)
+    @JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime editionDate;
 
     @Column(nullable = false)
