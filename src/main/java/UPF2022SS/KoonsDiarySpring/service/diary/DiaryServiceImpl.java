@@ -137,14 +137,12 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DefaultResponse getDiary(GetDiaryRequest getDiaryRequest) {
+    public DefaultResponse getDiary(User user, GetDiaryRequest getDiaryRequest) {
         try{
-            String token = getDiaryRequest.getAccessToken();
-
-            Long userId = jwtService.decodeAccessToken(token);
-
-            Optional<User> user = userJpaRepository.findById(userId);
-            Optional<Diary> diary = diaryJpaRepository.findById(getDiaryRequest.getId());
+//            Long userId = jwtService.decodeAccessToken(token);
+//
+//            Optional<User> user = userJpaRepository.findById(userId);
+            Optional<Diary> diary = diaryJpaRepository.findById(user.getId());
 
             System.out.println("diary = " + diary.get().getUser().getId() + diary.get().getUser().getNickname());
 
@@ -174,21 +172,19 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DefaultResponse getDiaryList(GetDiaryListRequest getDiaryListRequest) {
+    public DefaultResponse getDiaryList(User user) {
 
-        Long userId = jwtService.decodeAccessToken(getDiaryListRequest.getAccessToken());
-        Optional<User> findUser = userJpaRepository.findById(userId);
-
-        if(findUser == null){
-            return DefaultResponse.response(
-                    StatusCode.BAD_REQUEST,
-                    ResponseMessage.USER_SEARCH_FAIL
-            );
-        }
+//        Optional<User> findUser = userJpaRepository.findById(userId);
+//        if(User == null){
+//            return DefaultResponse.response(
+//                    StatusCode.BAD_REQUEST,
+//                    ResponseMessage.USER_SEARCH_FAIL
+//            );
+//        }
 
         try{
 
-            List<Diary> diaryList = diaryJpaRepository.findAllById(findUser.get().getId());
+            List<Diary> diaryList = diaryJpaRepository.findAllById(user.getId());
 
             GetDiaryListResponse diaryListResponse = GetDiaryListResponse
                     .builder()
