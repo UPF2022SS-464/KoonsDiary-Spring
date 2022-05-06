@@ -23,7 +23,7 @@ public interface DiaryService {
 
     public DefaultResponse patchDiary(Diary diary);
 
-    public DefaultResponse deleteDiary(Diary diary);
+    public DefaultResponse deleteDiary(Long id);
 
     // 감정 분석 api 서비스
 
