@@ -1,8 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.api.controller;
 
-import UPF2022SS.KoonsDiarySpring.api.dto.diary.GetDiaryListRequest;
-import UPF2022SS.KoonsDiarySpring.api.dto.diary.GetDiaryRequest;
-import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiaryRequest;
+import UPF2022SS.KoonsDiarySpring.api.dto.diary.*;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.diary.DiaryService;
@@ -97,7 +95,7 @@ public class DiaryApiController {
 
     @GetMapping(value = "/diary/{id}")
     public DefaultResponse getDiaryV1(
-            @RequestHeader String header, @PathVariable Long id
+            @RequestHeader final String header, @PathVariable Long id
             ){
 
         if(header == null){
@@ -118,5 +116,37 @@ public class DiaryApiController {
         DefaultResponse response = diaryService.getDiary(user, id);
 
         return null;
+    }
+
+    @DeleteMapping(value = "/diary")
+    public DefaultResponse deleteDiary(
+            @RequestHeader final String header,
+            @RequestPart final DeleteDiaryRequest request
+            ){
+        try{
+            if(header == null){
+                return DefaultResponse.response(StatusCode.UNAUTHORIZED,
+                        ResponseMessage.UNAUTHORIZED
+                        );
+            }
+            User findUser = (User) userService.findById(jwtService.decodeAccessToken(header));
+
+            if(findUser == null){
+                return DefaultResponse.response(StatusCode.OK,
+                        ResponseMessage.NOT_FOUND_USER);
+            }
+
+            DefaultResponse response =   diaryService.deleteDiary(request.getId());
+
+            return response;
+        }
+        catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse.response(
+                    StatusCode.INTERNAL_SERVER_ERROR,
+                    ResponseMessage.INTERNAL_SERVER_ERROR,
+                    e.getMessage()
+            );
+        }
     }
 }

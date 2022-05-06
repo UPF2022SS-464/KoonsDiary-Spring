@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.*;
 
@@ -229,24 +230,33 @@ public class DiaryServiceImpl implements DiaryService{
     // return void value
     @Override
     @Transactional
-    public DefaultResponse deleteDiary(Diary diary) {
+    public DefaultResponse deleteDiary(Long id) {
 
+        Optional<Diary> diary = diaryJpaRepository.findById(id);
 
-
-        if(diary == null){
+        if(diary.isEmpty()){
             return DefaultResponse.response(
                     StatusCode.BAD_REQUEST,
                     ResponseMessage.INVALID_DIARY
             );
         }
+
         try {
-            diaryJpaRepository.delete(diary);
+            diaryJpaRepository.delete(diary.get());
+            DeleteDiaryResponse response = DeleteDiaryResponse
+                    .builder()
+                    .id(id)
+                    .build();
+
             return DefaultResponse.response(
                     StatusCode.OK,
-                    ResponseMessage.DIARY_DELETE_SUCCESS
+                    ResponseMessage.DIARY_DELETE_SUCCESS,
+                    response
             );
-
         }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            log.error(e.getMessage());
+            e.printStackTrace();
             return DefaultResponse.response(
                     StatusCode.INTERNAL_SERVER_ERROR,
                     ResponseMessage.Diary_DELETE_FAIL
