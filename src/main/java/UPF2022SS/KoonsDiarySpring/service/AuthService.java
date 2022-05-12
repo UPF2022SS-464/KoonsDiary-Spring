@@ -6,6 +6,7 @@ import UPF2022SS.KoonsDiarySpring.api.dto.user.LoginRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.LoginResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpResponse;
 import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
+import UPF2022SS.KoonsDiarySpring.repository.refreshToken.RefreshTokenJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
@@ -23,9 +24,14 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class AuthService {
 
+    @Autowired
     private final UserJpaRepository userJpaRepository;
+    @Autowired
+    private final RefreshTokenJpaRepository refreshTokenJpaRepository;
 
     private final PasswordEncoder passwordEncoder;
+
+    @Autowired
     private final JwtService jwtService;
 
     //회원가입시 로그인까지 함께 전달
@@ -110,11 +116,40 @@ public class AuthService {
         }
     }
 
-//    public  DefaultResponse TokenLogin(final String token){
-//     try{
-//
-//     }catch (Exception e){
-//
-//     }
-//    }
+    public  DefaultResponse TokenLogin(final String token){
+     try{
+         RefreshToken refreshToken = refreshTokenJpaRepository.findByValue(token);
+         User user = refreshToken.getUser();
+
+         //회원이 존재하지 않을 경우에 대한 응답
+        if (user == null) {
+            return DefaultResponse.builder()
+                    .status(StatusCode.DB_ERROR)
+                    .message(ResponseMessage.NOT_FOUND_USER)
+                    .build();
+        }
+
+         checkExpirationDate(user);
+
+         final String accessToken = jwtService.createAccessToken(user.getId());
+
+         LoginResponse loginResponse = new LoginResponse(
+                 user.getId(),
+                 user.getUsername(),
+                 accessToken,
+                 user.getRefreshToken().getValue()
+         );
+         return DefaultResponse.builder()
+                 .status(StatusCode.OK)
+                 .message(ResponseMessage.LOGIN_SUCCESS)
+                 .data(loginResponse)
+                 .build();
+     }catch (Exception e){
+        log.error(e.getMessage());
+        return DefaultResponse.response(
+                StatusCode.UNAUTHORIZED,
+                ResponseMessage.UNAUTHORIZED
+        );
+     }
+    }
 }

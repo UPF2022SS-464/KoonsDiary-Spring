@@ -109,10 +109,9 @@ public class UserApiController {
                         ResponseMessage.BAD_REQUEST
                 );
             }
+            DefaultResponse response = authService.TokenLogin(header);
+            return response;
 
-
-
-            return DefaultResponse.response(StatusCode.OK, ResponseMessage.USER_SEARCH_SUCCESS);
         }catch (Exception e){
             return DefaultResponse.response(
                     StatusCode.DB_ERROR,

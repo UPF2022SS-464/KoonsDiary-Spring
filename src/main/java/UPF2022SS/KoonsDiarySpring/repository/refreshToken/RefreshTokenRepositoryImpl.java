@@ -1,6 +1,8 @@
 package UPF2022SS.KoonsDiarySpring.repository.refreshToken;
 
+import UPF2022SS.KoonsDiarySpring.domain.QRefreshToken;
 import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -17,12 +19,12 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository{
 
     private EntityManager em;
 
-//    private final JPAQueryFactory jqf;
-//    QRefreshToken refreshToken = QRefreshToken.refreshToken;
+    private final JPAQueryFactory jqf;
+    QRefreshToken refreshToken = QRefreshToken.refreshToken;
 
     @Override
     public RefreshToken findByValue(String tokenValue) {
-        RefreshToken findToken = em.find(RefreshToken.class, tokenValue);
-        return findToken;
+        return em.find(RefreshToken.class, tokenValue);
         }
     }
+
