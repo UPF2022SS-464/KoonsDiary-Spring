@@ -27,7 +27,6 @@ public class JwtService {
     // @Value("${JWT.SECRET}") -> 배포시 들어갈 토큰 해시값
     private String SECRET_ACCESS = "TestAccess";
     private String SECRET_REFRESH = "TestRefresh";
-
     // access token 생성
     public String createAccessToken(final Long id){
         try{

@@ -15,6 +15,14 @@ public class DiaryImage {
     @Column(name = "diary_image_id")
     private Long id;
 
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "diary_id")
     private Diary diary;

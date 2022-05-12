@@ -2,6 +2,7 @@ package UPF2022SS.KoonsDiarySpring.service.diary;
 
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpRequest;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -35,18 +37,22 @@ public class DeleteDiaryTest {
     @Autowired
     private DiaryService diaryService;
 
+    @Autowired
+    private EntityManager em;
+
     @Test
     void delete_success_diary() throws Exception{
         User user = User.builder()
-                .username("test1")
+                .username("test")
                 .password("cucumber52")
-                .email("test1@gmail.com")
-                .nickname("test1")
+                .email("test@gmail.com")
+                .nickname("test")
+                .imagePath("imagePath1")
                 .build();
 
         userService.join(user);
 
-        user = userService.findUsername("test1");
+        User findUser = userService.findUserEmail(user.getUsername());
 
         Diary diary = Diary.builder()
                 .user(user)
@@ -69,18 +75,19 @@ public class DeleteDiaryTest {
     void delete_fail_diary() throws Exception{
         //given
         User user = User.builder()
-                .username("test1")
+                .username("test")
                 .password("cucumber52")
-                .email("test1@gmail.com")
-                .nickname("test1")
+                .email("test@gmail.com")
+                .nickname("test")
+                .imagePath("imagePath1")
                 .build();
 
         userService.join(user);
 
-        user = userService.findUsername("test1");
+        User findUser = userService.findUsername("test");
 
         Diary diary = Diary.builder()
-                .user(user)
+                .user(findUser)
                 .writeDate(LocalDate.now())
                 .editionDate(LocalDateTime.now())
                 .content("테스트 내용입니다.")

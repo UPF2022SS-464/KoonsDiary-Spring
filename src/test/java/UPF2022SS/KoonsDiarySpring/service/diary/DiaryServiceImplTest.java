@@ -2,6 +2,7 @@ package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiaryRequest;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpRequest;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
@@ -38,9 +39,10 @@ class DiaryServiceImplTest {
                 .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
+                .imagePath("imagePath1")
                 .build();
 
-        DefaultResponse response = userService.join(user);
+        userService.join(user);
 
         User findUser = userService.findUsername(user.getUsername());
         List<String> comment = new ArrayList<>();

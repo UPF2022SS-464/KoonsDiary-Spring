@@ -3,6 +3,7 @@ package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.GetDiaryListRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.GetDiaryRequest;
+import UPF2022SS.KoonsDiarySpring.api.dto.diary.PatchDiaryRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiaryRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
@@ -10,6 +11,8 @@ import UPF2022SS.KoonsDiarySpring.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.sound.midi.Patch;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,9 +24,13 @@ public interface DiaryService {
 
     public DefaultResponse getDiaryList(User user);
 
-    public DefaultResponse patchDiary(Diary diary);
+    public DefaultResponse patchDiary(PatchDiaryRequest request, List<String> files);
 
     public DefaultResponse deleteDiary(Long id);
+
+    public DefaultResponse getDiaryByLocalDate(User user, LocalDate date);
+
+    public DefaultResponse getDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
 
     // 감정 분석 api 서비스
 

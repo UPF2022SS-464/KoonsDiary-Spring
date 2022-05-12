@@ -2,10 +2,12 @@ package UPF2022SS.KoonsDiarySpring.service.user;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpRequest;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.service.AuthService;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,6 +31,9 @@ class UserServiceTest {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private EntityManager em;
+
     @Test
     void join_user_success() {
         User user = User.builder()
@@ -35,6 +41,7 @@ class UserServiceTest {
                 .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
+                .imagePath("imagePath1")
                 .build();
 
         DefaultResponse response = userService.join(user);
@@ -48,6 +55,7 @@ class UserServiceTest {
                 .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
+                .imagePath("imagePath1")
                 .build();
 
         DefaultResponse response = userService.join(user);
@@ -69,11 +77,13 @@ class UserServiceTest {
                 .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
+                .imagePath("imagePath1")
                 .build();
 
-        userService.join(user);
-        User username = userService.findUsername(user.getUsername());
+        DefaultResponse response = userService.join(user);
+        System.out.println("response = " + response);
 
+        User username = userService.findUsername(user.getNickname());
         System.out.println("username = " + username);
     }
 
@@ -84,9 +94,10 @@ class UserServiceTest {
                 .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
+                .imagePath("imagePath1")
                 .build();
 
-        userService.join(user);
+        DefaultResponse response = userService.join(user);
         User findUser = userService.findUserEmail(user.getEmail());
 
         System.out.println("username = " + findUser);
@@ -99,12 +110,16 @@ class UserServiceTest {
                 .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
+                .imagePath("imagePath1")
                 .build();
-        userService.join(user);
-        User findUser = userService.findUsername(user.getUsername());
 
+        DefaultResponse response = userService.join(user);
+
+        User findUser = userService.findUsername(user.getUsername());
         String nickName= "orly";
         findUser.updateNickname(nickName);
+        Assertions.assertThat(nickName).isEqualTo(findUser.getNickname());
+        System.out.println("findUser.getNickname() = " + findUser.getNickname());
     }
 
     @Test
@@ -114,9 +129,12 @@ class UserServiceTest {
                 .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
+                .imagePath("imagePath1")
                 .build();
-        userService.join(user);
+
+        DefaultResponse response = userService.join(user);
         User findUser = userService.findUsername(user.getUsername());
+
 
         userService.deleteUser(findUser.getId());
     }
@@ -128,16 +146,20 @@ class UserServiceTest {
                 .password("cucumber52")
                 .email("test1@gmail.com")
                 .nickname("test1")
+                .imagePath("imagePath1")
                 .build();
-        userService.join(user1);
+
+        DefaultResponse response1 = userService.join(user1);
 
         User user2 = User.builder()
                 .username("test2")
                 .password("cucumber52")
                 .email("test2@gmail.com")
                 .nickname("test2")
+                .imagePath("imagePath2")
                 .build();
-        userService.join(user2);
+
+        DefaultResponse response2 = userService.join(user2);
 
         ContainedUserRequest cur = new ContainedUserRequest("te");
 

@@ -24,6 +24,5 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository{
     public RefreshToken findByValue(String tokenValue) {
         RefreshToken findToken = em.find(RefreshToken.class, tokenValue);
         return findToken;
-    }
-
+        }
     }

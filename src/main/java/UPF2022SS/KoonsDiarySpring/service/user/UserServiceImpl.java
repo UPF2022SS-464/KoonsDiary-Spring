@@ -2,14 +2,25 @@ package UPF2022SS.KoonsDiarySpring.service.user;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.LoginRequest;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpRequest;
+import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.User;
+import UPF2022SS.KoonsDiarySpring.service.AuthService;
+import UPF2022SS.KoonsDiarySpring.service.RefreshTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,35 +42,43 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public DefaultResponse join(User user) {
         try{
-                if (validateDuplicateUserId(user)){
+                //아이디와 이메일에 대한 유효성 검사
+                if (validateDuplicateUserId(user.getUsername())){
                     return DefaultResponse.builder()
                             .status(StatusCode.CONFLICT)
                             .message(ResponseMessage.DUPLICATED_USER)
                             .build();
                 }
-                else if(validateDuplicateUserEmail(user)){
+                else if(validateDuplicateUserEmail(user.getEmail())){
                     return DefaultResponse.builder()
                             .status(StatusCode.CONFLICT)
                             .message(ResponseMessage.DUPLICATED_EMAIL)
                             .build();
                     }
-            userJpaRepository.save(user);
-            return DefaultResponse.builder()
-                    .status(StatusCode.OK)
-                    .message(ResponseMessage.USER_CREATE_SUCCESS)
-                    .build();
+
+                //토큰 설정
+
+                userJpaRepository.save(user);
+
+                DefaultResponse response = DefaultResponse.builder()
+                        .status(StatusCode.OK)
+                        .message(ResponseMessage.USER_CREATE_SUCCESS)
+                        .build();
+            return response;
         }
         catch (Exception e){
+            log.error(e.getMessage());
             return DefaultResponse.builder()
                     .status(StatusCode.DB_ERROR)
                     .message(ResponseMessage.DB_ERROR)
+                    .data(e.getMessage())
                     .build();
         }
     }
 
     //회원 중복 검사
-    public boolean validateDuplicateUserId(User user){
-        User findUser = userJpaRepository.findByName(user.getUsername());
+    public boolean validateDuplicateUserId(String userId){
+        User findUser = userJpaRepository.findByName(userId);
         if (findUser == null){
             return false;
         }
@@ -67,8 +86,8 @@ public class UserServiceImpl implements UserService{
     }
 
     //이메일을 통한 검사
-    public boolean validateDuplicateUserEmail(User user){
-        User findUser = userJpaRepository.findByEmail(user.getEmail());
+    public boolean validateDuplicateUserEmail(String userEmail){
+        User findUser = userJpaRepository.findByEmail(userEmail);
         if (findUser == null){
             return false;
         }
@@ -134,4 +153,14 @@ public class UserServiceImpl implements UserService{
     public void deleteUser(Long id){
         userJpaRepository.deleteById(id);
     }
+
+//    @Override
+//    public DefaultResponse login(LoginRequest loginRequest) {
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getUserId(), loginRequest.getPassword());
+//
+//        String id = authenticationToken.getName();
+//
+//        Authentication authentication = AuthenticationManagerBuilder.;
+//        return null;
+//    }
 }

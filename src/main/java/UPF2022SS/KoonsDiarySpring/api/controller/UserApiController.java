@@ -13,62 +13,63 @@ import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class UserApiController {
 
-
     @Autowired
     private AuthService authService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtService jwtService;
     @Autowired
     private RefreshTokenService refreshTokenService;
 
     @PostMapping(value = "/user")
-    public DefaultResponse saveUser(@RequestBody final SignUpRequest signUpRequest){
+    public DefaultResponse signUp(@RequestBody final SignUpRequest signUpRequest){
         try{
-            User findUser = userService.findUserEmail(signUpRequest.getEmail());
-            if (findUser != null){
-                return DefaultResponse.response(
-                        StatusCode.UNAUTHORIZED,
-                        ResponseMessage.DUPLICATED_USER);
-            }
-            User user = User.builder()
-                    .username(signUpRequest.getUserId())
-                    .password(signUpRequest.getPassword())
+            User user = User.builder().username(signUpRequest.getUserId())
                     .email(signUpRequest.getEmail())
+                    .password(passwordEncoder.encode(signUpRequest.getPassword()))
                     .nickname(signUpRequest.getNickname())
+                    .imagePath(signUpRequest.getImagePath())
                     .build();
 
-            RefreshToken refreshToken = new RefreshToken(user, authService.createRefreshToken());
-
-            userService.join(user);
-            refreshTokenService.save(refreshToken);
-
             //response 반환
-            return authService.signUpLogin(signUpRequest, refreshToken.getValue());
+            DefaultResponse invalidation = userService.join(user);
+
+            if(invalidation.getStatus() == 409 || invalidation.getStatus()==600)
+                return invalidation;
+
+            RefreshToken token = new RefreshToken(user, authService.createRefreshToken());
+            user.setRefreshToken(token);
+
+            DefaultResponse response = authService.signUpLogin(user, token.getValue());
+
+            return response;
 
         } catch (Exception e){
             log.error(e.getMessage());
             return DefaultResponse.response(
                     StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.NOT_CONTENT);
+                    ResponseMessage.NOT_CONTENT,
+                    e.getMessage()
+            );
         }
     }
-
-    @PostMapping(value = "/login")
+    //헤더 지울것
+    //회원가입 시 자동로그인, 로그인 시 자동로그인을 위해 리프레시토큰으로 자동로그인, 리퀘스트 로그인
+    @PostMapping(value = "/requestLogin")
     public DefaultResponse login(@RequestBody final LoginRequest loginRequest){
         try{
             User findUser;
-            String refreshToken = loginRequest.getRefreshToken();
             //아이디 형식이 이메일일 경우
             if (loginRequest.getUserId().contains("@")){
                 findUser = userService.findUserEmail(loginRequest.getUserId());
@@ -77,6 +78,7 @@ public class UserApiController {
             else{
                findUser = userService.findUsername(loginRequest.getUserId());
                 }
+
             //찾아낸 사용자가 없을 경우
             if(findUser == null){
                 return DefaultResponse.response(
@@ -85,19 +87,8 @@ public class UserApiController {
                     );
                 }
 
-            /* 아이디 검증 이후의 부분,
-            * refresh token의 만료일자를 확인 후,
-            * 만료 이전일 경우 access token을 발급한다.
-            * token이 만료되었을 경우 refresh token을 재발급 하고 access token을 발급한다.
-            * */
-            boolean checkExpirationDate =  authService.checkExpirationDate(refreshToken);
-            System.out.println(checkExpirationDate);
-//            if(!checkExpirationDate){
-//                refreshToken = refreshTokenService.updateToken(authService.createRefreshToken());
-//                return authService.login(loginRequest, refreshToken);
-//                }
-
-            return authService.login(loginRequest, refreshToken);
+            authService.checkExpirationDate(findUser);
+            return authService.requestLogin(loginRequest, findUser.getRefreshToken().getValue());
             }
             catch (Exception e){
                 log.error(e.getMessage());
@@ -105,6 +96,27 @@ public class UserApiController {
                 return DefaultResponse.response(
                         StatusCode.INTERNAL_SERVER_ERROR,
                         ResponseMessage.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        //토큰을 통한 로그인
+        @PostMapping(value = "/tokenLogin")
+        public DefaultResponse tokenLogin(@RequestHeader("Authorization") final String header){
+        try{
+            if (header == null){
+                return DefaultResponse.response(
+                        StatusCode.BAD_REQUEST,
+                        ResponseMessage.BAD_REQUEST
+                );
+            }
+
+
+
+            return DefaultResponse.response(StatusCode.OK, ResponseMessage.USER_SEARCH_SUCCESS);
+        }catch (Exception e){
+            return DefaultResponse.response(
+                    StatusCode.DB_ERROR,
+                    ResponseMessage.DB_ERROR);
             }
         }
 

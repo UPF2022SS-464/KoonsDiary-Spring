@@ -10,6 +10,5 @@ public interface UserRepository{
     public User findByName(String username);
     public User findByEmail(String email);
     public List<User> findByContainedName(String username);
-    public List<User> findByKakaoKey(Long kakaoKey);
     public List<User> findAll();
 }
