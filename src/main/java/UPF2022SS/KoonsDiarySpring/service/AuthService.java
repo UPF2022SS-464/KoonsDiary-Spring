@@ -16,12 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthService {
 
     @Autowired
@@ -119,6 +121,7 @@ public class AuthService {
     public  DefaultResponse TokenLogin(final String token){
      try{
          RefreshToken refreshToken = refreshTokenJpaRepository.findByValue(token);
+
          User user = refreshToken.getUser();
 
          //회원이 존재하지 않을 경우에 대한 응답

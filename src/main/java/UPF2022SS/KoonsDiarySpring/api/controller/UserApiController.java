@@ -59,11 +59,46 @@ public class UserApiController {
             log.error(e.getMessage());
             return DefaultResponse.response(
                     StatusCode.INTERNAL_SERVER_ERROR,
+                    ResponseMessage.INTERNAL_SERVER_ERROR,
+                    e.getMessage()
+            );
+        }
+    }
+    /*
+     * 유저네임, 닉네임, 이미지 아이디
+     * 카카오 로그인
+     */
+    @PostMapping(value = "/kakaoUser")
+    public DefaultResponse kakaoSignUp(@RequestBody final KakaoSignUpRequest kakaoSignUpRequest){
+        try{
+            User user = User.builder().username(kakaoSignUpRequest.getUserId())
+                    .nickname(kakaoSignUpRequest.getNickname())
+                    .imagePath(kakaoSignUpRequest.getImagePath())
+                    .build();
+
+            //response 반환
+            DefaultResponse invalidation = userService.join(user);
+
+            if(invalidation.getStatus() == 409 || invalidation.getStatus()==600)
+                return invalidation;
+
+            RefreshToken token = new RefreshToken(user, authService.createRefreshToken());
+            user.setRefreshToken(token);
+
+            DefaultResponse response = authService.signUpLogin(user, token.getValue());
+
+            return response;
+
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse.response(
+                    StatusCode.INTERNAL_SERVER_ERROR,
                     ResponseMessage.NOT_CONTENT,
                     e.getMessage()
             );
         }
     }
+
     //헤더 지울것
     //회원가입 시 자동로그인, 로그인 시 자동로그인을 위해 리프레시토큰으로 자동로그인, 리퀘스트 로그인
     @PostMapping(value = "/requestLogin")
@@ -100,7 +135,7 @@ public class UserApiController {
         }
 
         //토큰을 통한 로그인
-        @PostMapping(value = "/tokenLogin")
+        @GetMapping(value = "/tokenLogin")
         public DefaultResponse tokenLogin(@RequestHeader("Authorization") final String header){
         try{
             if (header == null){
@@ -113,6 +148,7 @@ public class UserApiController {
             return response;
 
         }catch (Exception e){
+            log.error(e.getMessage());
             return DefaultResponse.response(
                     StatusCode.DB_ERROR,
                     ResponseMessage.DB_ERROR);
