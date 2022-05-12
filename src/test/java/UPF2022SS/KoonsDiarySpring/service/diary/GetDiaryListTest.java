@@ -2,6 +2,7 @@ package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiaryRequest;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpRequest;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.User;
@@ -40,15 +41,16 @@ class GetDiaryListTest {
 
     @Test
     void getDiaryList() throws Exception{
-        User user1 = User.builder()
-                .username("test1")
+        User user = User.builder()
+                .username("test")
                 .password("cucumber52")
-                .email("test1@gmail.com")
-                .nickname("test1")
+                .email("test@gmail.com")
+                .nickname("test")
+                .imagePath("imagePath1")
                 .build();
-        userService.join(user1);
 
-        User user = userService.findUsername("test1");
+        userService.join(user);
+        User findUser = userService.findUsername("test");
 
         for(int i = 0;i<4; i++) {
             List<String> comment = new ArrayList<>();
@@ -67,7 +69,7 @@ class GetDiaryListTest {
                     .comment(comment)
                     .build();
 
-            diaryService.postDiary(postDiaryRequest, user.getId(), files);
+            diaryService.postDiary(postDiaryRequest, findUser.getId(), files);
         }
 
         DefaultResponse response = diaryService.getDiaryList(user);
@@ -78,15 +80,16 @@ class GetDiaryListTest {
     @Test
     void getDiary() throws Exception{
         User user = User.builder()
-                .username("test1")
+                .username("test")
                 .password("cucumber52")
-                .email("test1@gmail.com")
-                .nickname("test1")
+                .email("test@gmail.com")
+                .nickname("test")
+                .imagePath("imagePath1")
                 .build();
 
         userService.join(user);
 
-        user = userService.findUsername("test1");
+        User findUser = userService.findUsername("test");
 
         Diary diary = Diary.builder()
                 .user(user)
@@ -99,7 +102,7 @@ class GetDiaryListTest {
 
         diaryJpaRepository.save(diary);
 
-        DefaultResponse response = diaryService.getDiary(user, diary.getId());
+        DefaultResponse response = diaryService.getDiary(findUser, diary.getId());
         System.out.println("response = " + response);
     }
     //클래스에 트랜잭션 걸어두면 beforeeach 언노테이션 걸어도 메소드 호출 끝나는대로 데이터베이스가 빈다.

@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -139,9 +141,6 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public DefaultResponse getDiary(User user, Long id) {
         try{
-//            Long userId = jwtService.decodeAccessToken(token);
-//
-//            Optional<User> user = userJpaRepository.findById(userId);
             Optional<Diary> diary = diaryJpaRepository.findById(id);
 
             System.out.println("diary = " + diary.get().getUser().getId() + diary.get().getUser().getNickname());
@@ -152,7 +151,6 @@ public class DiaryServiceImpl implements DiaryService{
                     .editionDate(diary.get().getEditionDate())
                     .content(diary.get().getContent())
                     .emotion(diary.get().getEmotion())
-//                    .diaryImageList(diary.orElseThrow().getDiaryImageList())
                     .build();
 
             return DefaultResponse.response(
@@ -223,8 +221,62 @@ public class DiaryServiceImpl implements DiaryService{
     // return diary
     @Override
     @Transactional
-    public DefaultResponse patchDiary(Diary diary) {
-        return null;
+    public DefaultResponse patchDiary(PatchDiaryRequest request, List<String> files) {
+        try {
+            //다이어리 및 다이어리 리스트 가져오기
+            Diary diary = diaryJpaRepository.getById(request.getId());
+            List<DiaryImage> diaryImages= diaryImageJpaRepository.findByDiaryId(request.getId());
+
+            // 텍스트 분석을 통한 감정 추출에 대한 설정 및 구현
+            TextAnalyticsClient client = analyticService.authenticateClient();
+            int emotion = analyticService.AnalysisSentiment(client,request.getContent());
+
+            // 다이어리 내용과 감정 변경
+            diary.setEditionDate(LocalDateTime.now());
+            diary.setContent(request.getContent());
+            diary.setEmotion(emotion);
+
+            // iterator를 만들어서 해당 내용에 대해 반복문 수행 및 설정
+            Iterator<String> fileIterator = files.iterator();
+            Iterator<String> commentIterator =  request.getComment().iterator();
+            Iterator<DiaryImage> diaryImageIterator = diaryImages.listIterator();
+
+            while (fileIterator.hasNext()
+                    && commentIterator.hasNext()
+                    && diaryImageIterator.hasNext()
+            ) {
+                DiaryImage diaryImage = diaryImageIterator.next();
+                diaryImage.setImage_path(fileIterator.next());
+                diaryImage.setComment(commentIterator.next());
+                diaryImageJpaRepository.save(diaryImageIterator.next());
+            }
+
+            diaryJpaRepository.save(diary);
+
+            // 반환되고 난 이후에 대한 반환값 지정
+            PatchDiaryResponse patchDiaryResponse = PatchDiaryResponse
+                    .builder()
+                    .user(diary.getUser())
+                    .writeTime(diary.getWriteDate())
+                    .editionDate(diary.getEditionDate())
+                    .content(diary.getContent())
+                    .emotion(diary.getEmotion())
+                    .build();
+
+            DefaultResponse response = DefaultResponse.response(
+                    StatusCode.OK,
+                    ResponseMessage.DIARY_PATCH_SUCCESS,
+                    patchDiaryResponse
+            );
+            return response;
+        }
+        catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse.response(
+                    StatusCode.BAD_REQUEST,
+                    ResponseMessage.INVALID_DIARY
+            );
+        }
     }
 
     // return void value
@@ -261,6 +313,66 @@ public class DiaryServiceImpl implements DiaryService{
                     StatusCode.INTERNAL_SERVER_ERROR,
                     ResponseMessage.Diary_DELETE_FAIL
             );
+        }
+    }
+
+    @Override
+    public DefaultResponse getDiaryByLocalDate(User user, LocalDate date) {
+        try{
+            Diary diary = diaryJpaRepository.findByLocalDate(user.getId(), date);
+
+            DefaultResponse response = DefaultResponse.builder()
+                    .status(StatusCode.OK)
+                    .message(ResponseMessage.DIARY_GET_SUCCESS)
+                    .data(diary)
+                    .build();
+
+            return response;
+
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse.response(
+                    StatusCode.DB_ERROR,
+                    ResponseMessage.DIARY_GET_FAIL,
+                    e.getMessage());
+        }
+    }
+
+    @Override
+    public DefaultResponse getDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
+        try{
+            List<Diary> diaryList = diaryJpaRepository.findListByLocalDate(user.getId(),startDate, endDate);
+
+            ObjectMapper mapper = new ObjectMapper();
+            List<HashMap<String, String>> mapList = new ArrayList<HashMap<String, String>>();
+
+            for (Diary diary : diaryList) {
+                HashMap<String, String> map= new HashMap<String, String>();
+                map.put("id", diary.getId().toString());
+                map.put("writeDate", diary.getWriteDate().toString());
+                map.put("content", diary.getContent());
+                map.put("thumbnail", diary.getThumbnailPath());
+                map.put("emotion", Integer.toString(diary.getEmotion()));
+
+                mapList.add(map);
+            }
+
+            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapList);
+
+            DefaultResponse response = DefaultResponse.builder()
+                    .status(StatusCode.OK)
+                    .message(ResponseMessage.DIARY_GET_SUCCESS)
+                    .data(json)
+                    .build();
+
+            return response;
+
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse.response(
+                    StatusCode.DB_ERROR,
+                    ResponseMessage.DIARY_GET_FAIL,
+                    e.getMessage());
         }
     }
 

@@ -36,6 +36,7 @@ class DiaryJpaRepositoryTest {
                 .password("cucumber52")
                 .email("koon@gmail.com")
                 .nickname("koon")
+                .imagePath("imagePath1")
                 .build();
 
         userJpaRepository.save(user);
@@ -64,6 +65,7 @@ class DiaryJpaRepositoryTest {
                 .password("cucumber52")
                 .email("koon@gmail.com")
                 .nickname("koon")
+                .imagePath("imagePath1")
                 .build();
 
         userJpaRepository.save(user);
@@ -97,6 +99,7 @@ class DiaryJpaRepositoryTest {
                 .password("cucumber52")
                 .email("koon@gmail.com")
                 .nickname("koon")
+                .imagePath("imagePath1")
                 .build();
 
         userJpaRepository.save(user);

@@ -27,10 +27,15 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
-    private Long kakaoKey;
-
     @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
+
+    @Column(nullable = false)
+    private String imagePath;
+    /*
+     * 유저네임, 닉네임, 이미지 아이디
+     * 카카오 로그인
+     */
 
     private String fcmToken;
 
@@ -57,4 +62,10 @@ public class User {
     public void updateNickname(String nickname){
         this.nickname = nickname;
     }
+
+    public void updateImagePath(String imagePath){
+        this.imagePath = imagePath;
+    }
+
+    public void updatePassword(String password){ this.password = password; }
 }

@@ -23,14 +23,6 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public List<User> findByKakaoKey(Long kakaoKey) {
-        return jqf.select(user)
-                .from(user)
-                .where(user.kakaoKey.eq(kakaoKey))
-                .fetch();
-    }
-
-    @Override
     public User findByName(String username) {
         return jqf.selectFrom(user)
                 .where(user.username.eq(username))

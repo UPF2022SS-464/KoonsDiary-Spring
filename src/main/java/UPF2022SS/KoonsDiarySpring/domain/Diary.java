@@ -58,8 +58,21 @@ public class Diary {
 
     public void setDiaryImageList(List<DiaryImage> diaryImageList){
         this.diaryImageList = diaryImageList;
-//        for (DiaryImage diaryImage : diaryImageList) {
-//            diaryImage.setDiary(this);
-//        }
+    }
+
+    public void setEditionDate(LocalDateTime editionDate) {
+        this.editionDate = editionDate;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setEmotion(int emotion) {
+        this.emotion = emotion;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
 }

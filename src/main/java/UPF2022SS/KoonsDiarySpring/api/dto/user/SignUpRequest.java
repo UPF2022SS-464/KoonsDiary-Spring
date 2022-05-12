@@ -19,4 +19,6 @@ public class SignUpRequest {
 
     private String nickname;
 
+    private String imagePath;
+
 }
