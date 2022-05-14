@@ -2,8 +2,7 @@ package UPF2022SS.KoonsDiarySpring.service;
 
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.LoginRequest;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.LoginResponse;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.Login;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpResponse;
 import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.repository.refreshToken.RefreshTokenJpaRepository;
@@ -13,7 +12,6 @@ import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,9 +73,9 @@ public class AuthService {
     만료시 refresh token 재발급
     만료 이전일 경우 access token 발급
      */
-    public DefaultResponse requestLogin(final LoginRequest loginRequest, String refreshToken) {
+    public DefaultResponse<Login.Response> requestLogin(final Login.Request request, String refreshToken) {
 
-        final User user = userJpaRepository.findByName(loginRequest.getUserId());
+        final User user = userJpaRepository.findByName(request.getUserId());
 
 //        //회원이 존재하지 않을 경우에 대한 응답
 //        if (user == null) {
@@ -89,26 +87,18 @@ public class AuthService {
 
         try {
             //비밀번호 일치 여부에 대한 부분
-            if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 //토큰을 생성 후 , 메시지 응답과 함께 전달
                 final String accessToken = jwtService.createAccessToken(user.getId());
-                LoginResponse loginResponse = new LoginResponse(
+                Login.Response response = new Login.Response(
                         user.getId(),
                         user.getUsername(),
                         accessToken,
                         refreshToken
                 );
-                return DefaultResponse.builder()
-                        .status(StatusCode.OK)
-                        .message(ResponseMessage.LOGIN_SUCCESS)
-                        .data(loginResponse)
-                        .build();
+                return new DefaultResponse<Login.Response>(StatusCode.OK, ResponseMessage.LOGIN_SUCCESS, response);
                 }
-                return DefaultResponse.builder()
-                        .status(StatusCode.UNAUTHORIZED)
-                        .message(ResponseMessage.LOGIN_FAIL)
-                        .build();
-
+                return new DefaultResponse<>(StatusCode.UNAUTHORIZED, ResponseMessage.LOGIN_FAIL);
             } catch (Exception e) {
             return DefaultResponse.response(
                     StatusCode.UNAUTHORIZED,
@@ -117,50 +107,36 @@ public class AuthService {
         }
     }
 
-    public  DefaultResponse tokenLogin(final String token){
+    public DefaultResponse<Login.Response> tokenLogin(final String token){
      try{
          RefreshToken refreshToken = refreshTokenJpaRepository.findByValue(token);
 
         if(refreshToken == null){
-            return DefaultResponse.builder()
-                    .status(StatusCode.BAD_REQUEST)
-                    .message(ResponseMessage.BAD_REQUEST)
-                    .data(refreshToken)
-                    .build();
+            return new DefaultResponse<>(StatusCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
         }
 
          User user = refreshToken.getUser();
 
          //회원이 존재하지 않을 경우에 대한 응답
         if (user == null) {
-            return DefaultResponse.builder()
-                    .status(StatusCode.UNAUTHORIZED)
-                    .message(ResponseMessage.UNAUTHORIZED)
-                    .build();
+            return new DefaultResponse<>(StatusCode.UNAUTHORIZED, ResponseMessage.INVALID_USER);
         }
 
          checkExpirationDate(user);
 
          final String accessToken = jwtService.createAccessToken(user.getId());
 
-         LoginResponse loginResponse = new LoginResponse(
+         Login.Response response = new Login.Response(
                  user.getId(),
                  user.getUsername(),
                  accessToken,
                  user.getRefreshToken().getValue()
          );
-         return DefaultResponse.builder()
-                 .status(StatusCode.OK)
-                 .message(ResponseMessage.LOGIN_SUCCESS)
-                 .data(loginResponse)
-                 .build();
+         return new DefaultResponse<>(StatusCode.OK, ResponseMessage.LOGIN_SUCCESS, response);
+
      }catch (Exception e){
         log.error(e.getMessage());
-        return DefaultResponse.response(
-                StatusCode.INTERNAL_SERVER_ERROR,
-                ResponseMessage.INTERNAL_SERVER_ERROR,
-                e.getMessage()
-        );
+        return new DefaultResponse<>(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.INTERNAL_SERVER_ERROR);
      }
     }
 }
