@@ -1,7 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.*;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
 import UPF2022SS.KoonsDiarySpring.domain.DiaryImage;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryImageJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
@@ -14,12 +13,10 @@ import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.service.diary.sub.AnalyticService;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.diary.sub.UploadService;
-import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import com.azure.ai.textanalytics.TextAnalyticsClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -34,60 +31,34 @@ import java.util.*;
 @RequiredArgsConstructor
 public class DiaryServiceImpl implements DiaryService{
 
-    @Autowired
-    private DiaryJpaRepository diaryJpaRepository;
-    @Autowired
-    private DiaryImageJpaRepository diaryImageJpaRepository;
-
-    @Autowired
-    private DiaryImageService diaryImageService;
-
-    @Autowired
-    private AnalyticService analyticService;
-    @Autowired
-    private UserJpaRepository userJpaRepository;
-    @Autowired
-    private UploadService uploadService;
-    @Autowired
-    private JwtService jwtService;
+    private final DiaryJpaRepository diaryJpaRepository;
+    private final DiaryImageJpaRepository diaryImageJpaRepository;
+    private final DiaryImageService diaryImageService;
+    private final AnalyticService analyticService;
+    private final UserJpaRepository userJpaRepository;
+    private final UploadService uploadService;
+    private final JwtService jwtService;
 
     @Override
     @Transactional
-    public DefaultResponse postDiary(
-            PostDiaryRequest postDiaryRequest,
-            Long userId,
+    public DefaultResponse<PostDiary.Response> postDiary(
+            PostDiary.Request request,
+            User user, //-> 이부분 유저로 바꾸자
             List<String> files) {
-
-        //DTO 체크
-        if (postDiaryRequest == null){
-            return DefaultResponse.response(
-                    StatusCode.BAD_REQUEST,
-                    ResponseMessage.DIARY_POST_FAIL
-            );
-        }
-        Optional<User> user = userJpaRepository.findById(userId);
-
-        //유저 유효성 검사
-        if (user == null){
-            return DefaultResponse.response(
-                    StatusCode.UNAUTHORIZED,
-                    ResponseMessage.INVALID_USER
-            );
-        }
-
-        // 텍스트 분석을 통한 감정 추출에 대한 설정 및 구현
-        TextAnalyticsClient client = analyticService.authenticateClient();
-        int emotion = analyticService.AnalysisSentiment(client,postDiaryRequest.getContent());
-
-        List<DiaryImage> diaryImageList = new ArrayList<>();
-
         try{
+            // 텍스트 분석을 통한 감정 추출에 대한 설정 및 구현
+            TextAnalyticsClient client = analyticService.authenticateClient();
+            //텍스트 분석기를 통한 감정값 저장
+            int emotion = analyticService.AnalysisSentiment(client,request.getContent());
+
+            List<DiaryImage> diaryImageList = new ArrayList<>();
+
             //다이어리 이미지 세팅 전에 다이어리 객체 세팅
             Diary diary = Diary.builder()
-                            .user(user.get())
-                            .writeDate(postDiaryRequest.getWriteDate())
-                            .editionDate(postDiaryRequest.getEditionDate())
-                            .content(postDiaryRequest.getContent())
+                            .user(user)
+                            .writeDate(LocalDate.now())
+                            .editionDate(LocalDateTime.now())
+                            .content(request.getContent())
                             .emotion(emotion)
                             .thumbnailPath(files.get(0)) //-> image path의 첫번째 값을 가져온다.
                             .build();
@@ -96,11 +67,10 @@ public class DiaryServiceImpl implements DiaryService{
 
             //image path와 comment에 대한 반복문을 위해 지정
             Iterator<String> fileIterator = files.iterator();
-            Iterator<String> commentIterator = postDiaryRequest.getComment().iterator();
+            Iterator<String> commentIterator = request.getComment().iterator();
 
             // 반복문을 통한 이미지 저장 밋 배열 내 데이터 추가
             while (fileIterator.hasNext() && commentIterator.hasNext()) {
-
                 DiaryImage diaryImage = DiaryImage
                         .builder()
                         .image_path(fileIterator.next())
@@ -109,32 +79,26 @@ public class DiaryServiceImpl implements DiaryService{
                         .build();
 
                 diaryImageJpaRepository.save(diaryImage);
-
                 diaryImageList.add(diaryImage);
             }
 
             diary.setDiaryImageList(diaryImageList);
-
-            PostDiaryResponse response = new PostDiaryResponse(diary.getId(),
+            PostDiary.Response response= new PostDiary.Response(diary.getId(),
                     diary.getUser(),
                     diary.getWriteDate(),
                     diary.getEditionDate(),
                     diary.getContent(),
-                    diary.getEmotion());
-
-            return DefaultResponse.response(
-                    StatusCode.OK,
+                    diary.getEmotion()
+            );
+            return new DefaultResponse<PostDiary.Response>(StatusCode.OK,
                     ResponseMessage.DIARY_POST_SUCCESS,
-                    response
-                );
+                    response);
 
         } catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.DIARY_POST_FAIL,
-                    e.getMessage()
-            );
+            return new DefaultResponse<>(StatusCode.INTERNAL_SERVER_ERROR,
+                    ResponseMessage.DIARY_POST_FAIL
+                   );
         }
     }
 

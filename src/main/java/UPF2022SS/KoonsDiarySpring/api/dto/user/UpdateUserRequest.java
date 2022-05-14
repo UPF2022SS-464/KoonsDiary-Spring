@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class UpdateUserRequest {
     private String nickname;
+    private String password;
 }

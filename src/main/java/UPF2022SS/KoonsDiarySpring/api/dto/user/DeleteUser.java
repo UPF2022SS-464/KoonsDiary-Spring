@@ -5,10 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder()
-public class DeleteUserRequest {
-    private Long userId;
+
+public class DeleteUser {
+
+    @Data
+    @AllArgsConstructor
+    public static class Response{
+        private String comment;
+    }
 }
