@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService{
                             .message(ResponseMessage.DUPLICATED_USER)
                             .build();
                 }
+                //카카오로그인할때는 여기가 걸린다. 이부분 고칠것
                 else if(validateDuplicateUserEmail(user.getEmail())){
                     return DefaultResponse.builder()
                             .status(StatusCode.CONFLICT)
@@ -56,14 +57,45 @@ public class UserServiceImpl implements UserService{
                             .build();
                     }
 
-                //토큰 설정
-
+                //유저 정보 저장
                 userJpaRepository.save(user);
 
                 DefaultResponse response = DefaultResponse.builder()
                         .status(StatusCode.OK)
                         .message(ResponseMessage.USER_CREATE_SUCCESS)
                         .build();
+
+            return response;
+        }
+        catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse.builder()
+                    .status(StatusCode.DB_ERROR)
+                    .message(ResponseMessage.DB_ERROR)
+                    .data(e.getMessage())
+                    .build();
+        }
+    }
+
+    @Override
+    @Transactional
+    public DefaultResponse kakaoJoin(User user) {
+        try{
+            //아이디와 이메일에 대한 유효성 검사
+            if (validateDuplicateUserId(user.getUsername())){
+                return DefaultResponse.builder()
+                        .status(StatusCode.CONFLICT)
+                        .message(ResponseMessage.DUPLICATED_USER)
+                        .build();
+            }
+            //유저 정보 저장
+            userJpaRepository.save(user);
+
+            DefaultResponse response = DefaultResponse.builder()
+                    .status(StatusCode.OK)
+                    .message(ResponseMessage.USER_CREATE_SUCCESS)
+                    .build();
+
             return response;
         }
         catch (Exception e){

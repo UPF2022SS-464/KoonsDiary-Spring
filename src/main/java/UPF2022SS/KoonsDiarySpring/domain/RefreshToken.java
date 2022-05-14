@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 
 @Getter
-@Table(name = "refresh_token")
+//@Table(name = "refresh_token")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class RefreshToken {
