@@ -13,6 +13,7 @@ import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -99,17 +100,17 @@ public class UserApiController {
     //헤더 지울것
     //회원가입 시 자동로그인, 로그인 시 자동로그인을 위해 리프레시토큰으로 자동로그인, 리퀘스트 로그인
     @PostMapping(value = "/requestLogin")
-    public DefaultResponse login(@RequestBody final LoginRequest loginRequest){
-        try{
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    public DefaultResponse<Login.Response> login(@RequestBody final Login.Request request){
             User findUser;
             //아이디 형식이 이메일일 경우
-            if (loginRequest.getUserId().contains("@")){
-                findUser = userService.findUserEmail(loginRequest.getUserId());
-                }
+            if (request.getUserId().contains("@")){
+                findUser = userService.findUserEmail(request.getUserId());
+            }
             //일반 아이디 형식일 경우
             else{
-               findUser = userService.findUsername(loginRequest.getUserId());
-                }
+               findUser = userService.findUsername(request.getUserId());
+            }
 
             //찾아낸 사용자가 없을 경우
             if(findUser == null){
@@ -120,15 +121,7 @@ public class UserApiController {
                 }
 
             authService.checkExpirationDate(findUser);
-            return authService.requestLogin(loginRequest, findUser.getRefreshToken().getValue());
-            }
-            catch (Exception e){
-                log.error(e.getMessage());
-
-                return DefaultResponse.response(
-                        StatusCode.INTERNAL_SERVER_ERROR,
-                        ResponseMessage.INTERNAL_SERVER_ERROR);
-            }
+            return authService.requestLogin(request, findUser.getRefreshToken().getValue());
         }
 
         //토큰을 통한 로그인
