@@ -21,16 +21,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserApiController {
 
-    @Autowired
-    private AuthService authService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private RefreshTokenService refreshTokenService;
+    private final AuthService authService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping(value = "/user")
     public DefaultResponse signUp(@RequestBody final SignUpRequest signUpRequest){
@@ -49,7 +44,9 @@ public class UserApiController {
                 return invalidation;
 
             RefreshToken token = new RefreshToken(user, authService.createRefreshToken());
+            refreshTokenService.save(token);
             user.setRefreshToken(token);
+
 
             DefaultResponse response = authService.signUpLogin(user, token.getValue());
 
@@ -77,7 +74,7 @@ public class UserApiController {
                     .build();
 
             //response 반환
-            DefaultResponse invalidation = userService.join(user);
+            DefaultResponse invalidation = userService.kakaoJoin(user);
 
             if(invalidation.getStatus() == 409 || invalidation.getStatus()==600)
                 return invalidation;
@@ -138,13 +135,13 @@ public class UserApiController {
         @GetMapping(value = "/tokenLogin")
         public DefaultResponse tokenLogin(@RequestHeader("Authorization") final String header){
         try{
-            if (header == null){
+            if (header == null) {
                 return DefaultResponse.response(
                         StatusCode.BAD_REQUEST,
                         ResponseMessage.BAD_REQUEST
                 );
             }
-            DefaultResponse response = authService.TokenLogin(header);
+            DefaultResponse response = authService.tokenLogin(header);
             return response;
 
         }catch (Exception e){

@@ -24,7 +24,9 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository{
 
     @Override
     public RefreshToken findByValue(String tokenValue) {
-        return em.find(RefreshToken.class, tokenValue);
+        return jqf.selectFrom(refreshToken)
+                .where(refreshToken.value.eq(tokenValue))
+                .fetchOne();
         }
     }
 

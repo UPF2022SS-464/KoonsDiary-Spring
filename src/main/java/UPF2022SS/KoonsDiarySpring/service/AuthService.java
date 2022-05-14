@@ -26,14 +26,13 @@ import java.time.LocalDate;
 @Transactional(readOnly = true)
 public class AuthService {
 
-    @Autowired
+
     private final UserJpaRepository userJpaRepository;
-    @Autowired
+
     private final RefreshTokenJpaRepository refreshTokenJpaRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
     private final JwtService jwtService;
 
     //회원가입시 로그인까지 함께 전달
@@ -118,17 +117,25 @@ public class AuthService {
         }
     }
 
-    public  DefaultResponse TokenLogin(final String token){
+    public  DefaultResponse tokenLogin(final String token){
      try{
          RefreshToken refreshToken = refreshTokenJpaRepository.findByValue(token);
+
+        if(refreshToken == null){
+            return DefaultResponse.builder()
+                    .status(StatusCode.BAD_REQUEST)
+                    .message(ResponseMessage.BAD_REQUEST)
+                    .data(refreshToken)
+                    .build();
+        }
 
          User user = refreshToken.getUser();
 
          //회원이 존재하지 않을 경우에 대한 응답
         if (user == null) {
             return DefaultResponse.builder()
-                    .status(StatusCode.DB_ERROR)
-                    .message(ResponseMessage.NOT_FOUND_USER)
+                    .status(StatusCode.UNAUTHORIZED)
+                    .message(ResponseMessage.UNAUTHORIZED)
                     .build();
         }
 
@@ -150,8 +157,9 @@ public class AuthService {
      }catch (Exception e){
         log.error(e.getMessage());
         return DefaultResponse.response(
-                StatusCode.UNAUTHORIZED,
-                ResponseMessage.UNAUTHORIZED
+                StatusCode.INTERNAL_SERVER_ERROR,
+                ResponseMessage.INTERNAL_SERVER_ERROR,
+                e.getMessage()
         );
      }
     }
