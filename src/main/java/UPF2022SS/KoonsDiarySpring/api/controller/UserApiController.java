@@ -126,7 +126,7 @@ public class UserApiController {
 
         //토큰을 통한 로그인
         @GetMapping(value = "/tokenLogin")
-        public DefaultResponse tokenLogin(@RequestHeader("Authorization") final String header){
+        public DefaultResponse<Login.Response> tokenLogin(@RequestHeader("Authorization") final String header){
         try{
             if (header == null) {
                 return DefaultResponse.response(
@@ -134,8 +134,8 @@ public class UserApiController {
                         ResponseMessage.BAD_REQUEST
                 );
             }
-            DefaultResponse response = authService.tokenLogin(header);
-            return response;
+
+            return authService.tokenLogin(header);
 
         }catch (Exception e){
             log.error(e.getMessage());
@@ -182,9 +182,9 @@ public class UserApiController {
 
     //유저 정보(닉네임) 변경 api
     @PatchMapping(value="/user")
-    public DefaultResponse updateUser(
+    public DefaultResponse<UpdateUser.Response> updateUser(
             @RequestHeader("Authorization") final String header,
-            @RequestBody UpdateUserRequest updateUserRequest
+            @RequestBody UpdateUser.Request request
             ){
         try{
             if (header == null){
@@ -193,12 +193,18 @@ public class UserApiController {
                         ResponseMessage.UNAUTHORIZED
                 );
             }
+
             Long userId = jwtService.decodeAccessToken(header);
             User findUser = userService.findById(userId);
-            userService.updateUser(findUser, updateUserRequest.getNickname());
+
+            userService.updateUser(findUser, request);
+
+            String result = "정보가 업데이트 되었습니다.";
+
+            UpdateUser.Response response = new UpdateUser.Response(result);
 
             //사용자가 공유일기에 작성했던 모든 기록들의 닉네임을 변경해야 할 필요가 있다.
-            return DefaultResponse.response(StatusCode.OK, ResponseMessage.USER_UPDATE_SUCCESS);
+            return DefaultResponse.response(StatusCode.OK, ResponseMessage.USER_UPDATE_SUCCESS, response);
         }catch (Exception e){
             return DefaultResponse.response(StatusCode.DB_ERROR,ResponseMessage.USER_UPDATE_FAIL);
             }
@@ -206,7 +212,7 @@ public class UserApiController {
 
     // 회원정보 삭제 api
     @DeleteMapping(value = "/user")
-    public DefaultResponse deleteUser(
+    public DefaultResponse<DeleteUser.Response> deleteUser(
             @RequestHeader("Authorization") final String header
             ){
 
@@ -220,11 +226,14 @@ public class UserApiController {
             Long userId = jwtService.decodeAccessToken(header);
             User findUser = userService.findById(userId);
             userService.deleteUser(findUser.getId());
+            String result = "삭제가 완료되었습니다.";
 
+            DeleteUser.Response response = new DeleteUser.Response(result);
             return DefaultResponse
                     .response(
                             StatusCode.OK,
-                            ResponseMessage.USER_DELETE_SUCCESS
+                            ResponseMessage.USER_DELETE_SUCCESS,
+                            response
                     );
 
         } catch (Exception e){

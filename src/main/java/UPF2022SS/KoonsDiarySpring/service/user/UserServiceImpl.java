@@ -2,24 +2,18 @@ package UPF2022SS.KoonsDiarySpring.service.user;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpRequest;
-import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
+
+import UPF2022SS.KoonsDiarySpring.api.dto.user.UpdateUser;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.User;
-import UPF2022SS.KoonsDiarySpring.service.AuthService;
-import UPF2022SS.KoonsDiarySpring.service.RefreshTokenService;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -175,8 +168,13 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void updateUser(User user, String newNickname){
-        user.updateNickname(newNickname);
+    public void updateUser(User user, UpdateUser.Request request){
+        if(request.getPassword() != null){
+          user.updatePassword(request.getPassword());
+        }
+        if(request.getNickname() != null){
+            user.updateNickname(request.getNickname());
+        }
     }
 
     @Override
@@ -185,13 +183,5 @@ public class UserServiceImpl implements UserService{
         userJpaRepository.deleteById(id);
     }
 
-//    @Override
-//    public DefaultResponse login(LoginRequest loginRequest) {
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getUserId(), loginRequest.getPassword());
-//
-//        String id = authenticationToken.getName();
-//
-//        Authentication authentication = AuthenticationManagerBuilder.;
-//        return null;
-//    }
+
 }

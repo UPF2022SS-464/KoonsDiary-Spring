@@ -1,6 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
+import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiary;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiaryRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpRequest;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
@@ -61,6 +62,7 @@ class GetDiaryListTest {
                 comment.add("test"+Integer.toString(j));
             }
 
+            PostDiary.Request request = new PostDiary.Request("어제의 꿈은 오늘 잊혀지기 위해 존재한다.", comment);
             PostDiaryRequest postDiaryRequest = PostDiaryRequest
                     .builder()
                     .writeDate(LocalDate.now())
@@ -69,7 +71,8 @@ class GetDiaryListTest {
                     .comment(comment)
                     .build();
 
-            diaryService.postDiary(postDiaryRequest, findUser.getId(), files);
+            diaryService.postDiary(request, findUser, files);
+
         }
 
         DefaultResponse response = diaryService.getDiaryList(user);

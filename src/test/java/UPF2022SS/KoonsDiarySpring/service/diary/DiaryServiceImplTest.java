@@ -1,6 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
+import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiary;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiaryRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpRequest;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
@@ -52,17 +53,11 @@ class DiaryServiceImplTest {
             files.add("test"+Integer.toString(i));
             comment.add("test"+Integer.toString(i));
         }
+        PostDiary.Request request = new PostDiary.Request("어제의 꿈은 오늘 잊혀지기 위해 존재한다.", comment);
 
-        PostDiaryRequest postDiaryRequest = PostDiaryRequest
-                .builder()
-                .writeDate(LocalDate.now())
-                .editionDate(LocalDateTime.now())
-                .content("어제의 꿈은 오늘 잊혀지기 위해 존재한다.")
-                .comment(comment)
-                .build();
 
         //이부분을 헤더를 빼고유저 객체가 들어갈 수 있게하자.
-        DefaultResponse defaultResponse = diaryService.postDiary(postDiaryRequest, findUser.getId(), files);
+        DefaultResponse defaultResponse = diaryService.postDiary(request, findUser, files);
         System.out.println("defaultResponse = " + defaultResponse.toString());
     }
 }

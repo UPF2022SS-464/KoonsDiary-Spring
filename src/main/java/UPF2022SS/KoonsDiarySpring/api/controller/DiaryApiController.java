@@ -18,26 +18,23 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class DiaryApiController {
 
-    @Autowired
-    private DiaryService diaryService;
-    @Autowired
-    private UploadService uploadService;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private UserService userService;
+    private final DiaryService diaryService;
+    private final UploadService uploadService;
+    private final JwtService jwtService;
+    private final UserService userService;
 
     @PostMapping(value = "/diary")
     public DefaultResponse postDiary(
             @RequestHeader("Authorization") final String header,
             @RequestPart
-            final PostDiaryRequest postDiaryRequest,
+            final PostDiary.Request request,
             @RequestPart(required = false)
             final List<MultipartFile> files) {
         try{
@@ -47,19 +44,27 @@ public class DiaryApiController {
                         ResponseMessage.UNAUTHORIZED
                 );
             }
+            //Access 토큰을 통한 유저 조회
+            User user = userService.findById(jwtService.decodeAccessToken(header));
+
+            //user가 Null일 경우
+            if(user== null){
+                return DefaultResponse.response(
+                        StatusCode.UNAUTHORIZED,
+                        ResponseMessage.UNAUTHORIZED
+                );
+            }
 
             //파일 이름이 들어갈 배열
             List<String> fileUrls = new ArrayList<String>();
-            int cnt = 0;
+
+            //iterate를 수행하여 배열에 파일 이름 저장
             for (MultipartFile file : files) {
-                cnt++;
                 String fileUrl = uploadService.uploadFile(file, header);
-                fileUrls.add(fileUrl+"_"+Integer.toString(cnt));
+                fileUrls.add(fileUrl);
             }
 
-            Long id = jwtService.decodeAccessToken(header);
-
-            DefaultResponse response =  diaryService.postDiary(postDiaryRequest, id, fileUrls);
+            DefaultResponse response =  diaryService.postDiary(request, user, fileUrls);
             return response;
 
         } catch (Exception e){
