@@ -48,7 +48,7 @@ public class Diary {
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL)
     private List<DiaryImage> diaryImageList = new ArrayList<DiaryImage>();
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String thumbnailPath;
 
     public void setUser(User user){

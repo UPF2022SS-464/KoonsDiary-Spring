@@ -84,13 +84,14 @@ public class DiaryServiceImpl implements DiaryService{
 
             diary.setDiaryImageList(diaryImageList);
             PostDiary.Response response= new PostDiary.Response(diary.getId(),
-                    diary.getUser(),
+                    diary.getUser().getId(),
                     diary.getWriteDate(),
                     diary.getEditionDate(),
                     diary.getContent(),
                     diary.getEmotion()
             );
-            return new DefaultResponse<PostDiary.Response>(StatusCode.OK,
+            return new DefaultResponse<PostDiary.Response>(
+                    StatusCode.OK,
                     ResponseMessage.DIARY_POST_SUCCESS,
                     response);
 
