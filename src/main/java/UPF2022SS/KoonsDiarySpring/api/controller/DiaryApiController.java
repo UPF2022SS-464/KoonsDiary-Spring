@@ -1,7 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.api.controller;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.*;
-import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.diary.DiaryService;
@@ -59,7 +58,7 @@ public class DiaryApiController {
 
             //iterate를 수행하여 배열에 파일 이름 저장
             for (MultipartFile file : request.getFiles()) {
-                String fileUrl = uploadService.uploadFile(file, header);
+                String fileUrl = uploadService.uploadFile(file, user);
                 fileUrls.add(fileUrl);
             }
 
@@ -82,7 +81,6 @@ public class DiaryApiController {
     public DefaultResponse getDiaryList(
             @RequestHeader("Authorization") final String header
     ){
-
         if(header == null){
             return DefaultResponse
                     .response(
@@ -147,11 +145,12 @@ public class DiaryApiController {
             );
         }
             try {
+                User user = userService.findById(jwtService.decodeAccessToken(header));
                 //파일 이름이 들어갈 배열
                 List<String> fileUrls = new ArrayList<String>();
 
                 for (MultipartFile file : files) {
-                    String fileUrl = uploadService.uploadFile(file, header);
+                    String fileUrl = uploadService.uploadFile(file, user);
                     fileUrls.add(fileUrl);
                 }
 

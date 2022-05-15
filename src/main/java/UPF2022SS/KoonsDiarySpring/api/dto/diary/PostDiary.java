@@ -28,7 +28,7 @@ public class PostDiary {
     @AllArgsConstructor
     public static class Response {
         private Long id;
-        private User user;
+        private Long user;
         private LocalDate writeTime;
         private LocalDateTime editionDate;
         private String content;

@@ -27,7 +27,7 @@ public class DiaryImage {
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 500)
     private String image_path;
 
     private String comment;
