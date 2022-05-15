@@ -2,9 +2,11 @@ package UPF2022SS.KoonsDiarySpring.api.dto.diary;
 
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostDiary {
@@ -19,6 +21,7 @@ public class PostDiary {
 //        private LocalDateTime editionDate;
         private String content;
         private List<String> comment;
+        private List<MultipartFile> files = new ArrayList<>();
     }
 
     @Data

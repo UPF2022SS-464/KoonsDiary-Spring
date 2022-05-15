@@ -80,12 +80,10 @@ public class JwtService {
 
             // 토큰 payload 반환, 고유ID 혹은 -1
             return decodedJWT.getClaim("id").asLong();
-        }catch (JWTVerificationException jve){
+        } catch (Exception jve){
             log.error(jve.getMessage());
-        } catch (Exception e){
-            log.error(e.getMessage());
+            return -1L;
         }
-        return -1L;
     }
 
     // 리프레시 토큰 해독 메서드

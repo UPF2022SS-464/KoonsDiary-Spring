@@ -12,13 +12,12 @@ import UPF2022SS.KoonsDiarySpring.service.diary.sub.UploadService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -31,12 +30,12 @@ public class DiaryApiController {
     private final UserService userService;
 
     @PostMapping(value = "/diary")
-    public DefaultResponse postDiary(
+    public DefaultResponse<PostDiary.Response> postDiary(
+            @Validated
             @RequestHeader("Authorization") final String header,
-            @RequestPart
-            final PostDiary.Request request,
-            @RequestPart(required = false)
-            final List<MultipartFile> files) {
+            @ModelAttribute
+            final PostDiary.Request request
+           ) {
         try{
             if(header == null){
                 return DefaultResponse.response(
@@ -59,7 +58,7 @@ public class DiaryApiController {
             List<String> fileUrls = new ArrayList<String>();
 
             //iterate를 수행하여 배열에 파일 이름 저장
-            for (MultipartFile file : files) {
+            for (MultipartFile file : request.getFiles()) {
                 String fileUrl = uploadService.uploadFile(file, header);
                 fileUrls.add(fileUrl);
             }
