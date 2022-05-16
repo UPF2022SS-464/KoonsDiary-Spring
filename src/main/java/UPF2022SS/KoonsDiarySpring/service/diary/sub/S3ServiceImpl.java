@@ -5,6 +5,7 @@ import UPF2022SS.KoonsDiarySpring.domain.User;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.transfer.MultipleFileDownload;
 import com.amazonaws.util.IOUtils;
 import lombok.RequiredArgsConstructor;
 

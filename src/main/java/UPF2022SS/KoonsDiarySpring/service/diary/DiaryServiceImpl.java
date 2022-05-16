@@ -1,6 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.*;
+import UPF2022SS.KoonsDiarySpring.common.CommonUtils;
 import UPF2022SS.KoonsDiarySpring.domain.DiaryImage;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryImageJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
@@ -10,10 +11,15 @@ import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.service.diary.sub.AnalyticService;
+import UPF2022SS.KoonsDiarySpring.service.diary.sub.S3Service;
 import com.azure.ai.textanalytics.TextAnalyticsClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -29,6 +35,7 @@ import java.util.*;
 public class DiaryServiceImpl implements DiaryService{
 
     private final DiaryJpaRepository diaryJpaRepository;
+    private final S3Service s3Service;
     private final DiaryImageJpaRepository diaryImageJpaRepository;
     private final AnalyticService analyticService;
 
@@ -353,6 +360,26 @@ public class DiaryServiceImpl implements DiaryService{
                     ResponseMessage.DIARY_GET_FAIL,
                     e.getMessage());
         }
+    }
+
+    @Override
+    public ResponseEntity<ByteArrayResource> getDiaryImage(String imagePath) {
+        byte[] data = s3Service.downloadFile(imagePath);
+        ByteArrayResource resource = new ByteArrayResource(data);
+        HttpHeaders headers = buildHeaders(imagePath, data);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(resource);
+    }
+
+    private HttpHeaders buildHeaders(String resourcePath, byte[] data) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentLength(data.length);
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        headers.setContentDisposition(CommonUtils.createContentDisposition(resourcePath));
+        return headers;
     }
 
     private Boolean validateCheckDiary(Diary diary){
