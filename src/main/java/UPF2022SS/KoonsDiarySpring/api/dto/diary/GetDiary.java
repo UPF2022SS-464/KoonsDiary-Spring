@@ -31,4 +31,18 @@ public class GetDiary {
         private List<String> comments;
     }
 
+    @Data
+    @Builder
+    @AllArgsConstructor
+    public static class MonthlyResponse{
+        private Long id;
+        private LocalDate writeDate;
+        private LocalDateTime editionDate;
+        private String content;
+        private int emotion;
+        //        private Optional<List<DiaryImage>> diaryImageList;
+        private List<String> imagePaths;
+        private List<String> comments;
+    }
+
 }
