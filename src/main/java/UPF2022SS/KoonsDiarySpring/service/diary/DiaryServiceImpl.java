@@ -355,26 +355,6 @@ public class DiaryServiceImpl implements DiaryService{
         }
     }
 
-    @Override
-    public ResponseEntity<ByteArrayResource> getDiaryImageV1(String imagePath) {
-        byte[] data = s3Service.downloadFile(imagePath);
-        ByteArrayResource resource = new ByteArrayResource(data);
-        HttpHeaders headers = buildHeaders(imagePath, data);
-
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .body(resource);
-    }
-
-    private HttpHeaders buildHeaders(String resourcePath, byte[] data) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentLength(data.length);
-        headers.setContentType(MediaType.IMAGE_JPEG);
-        headers.setContentDisposition(CommonUtils.createContentDisposition(resourcePath));
-        return headers;
-    }
-
 
 
     private Boolean validateCheckDiary(Diary diary){

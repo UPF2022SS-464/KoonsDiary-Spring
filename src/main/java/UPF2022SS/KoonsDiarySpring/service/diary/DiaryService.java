@@ -28,7 +28,6 @@ public interface DiaryService {
 
     public DefaultResponse getDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
 
-    public ResponseEntity<ByteArrayResource> getDiaryImageV1(String imagePath);
     // 감정 분석 api 서비스
 
     // 감정 선택 서비스
