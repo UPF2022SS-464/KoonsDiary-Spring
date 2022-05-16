@@ -7,7 +7,7 @@ import UPF2022SS.KoonsDiarySpring.service.diary.DiaryService;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
-import UPF2022SS.KoonsDiarySpring.service.diary.sub.UploadService;
+import UPF2022SS.KoonsDiarySpring.service.diary.sub.S3Service;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.List;
 public class DiaryApiController {
 
     private final DiaryService diaryService;
-    private final UploadService uploadService;
+    private final S3Service s3Service;
     private final JwtService jwtService;
     private final UserService userService;
 
@@ -58,7 +58,7 @@ public class DiaryApiController {
 
             //iterate를 수행하여 배열에 파일 이름 저장
             for (MultipartFile file : request.getFiles()) {
-                String fileUrl = uploadService.uploadFile(file, user);
+                String fileUrl = s3Service.uploadFile(file, user);
                 fileUrls.add(fileUrl);
             }
 
@@ -105,7 +105,7 @@ public class DiaryApiController {
      */
     @GetMapping(value = "/diary/{id}")
     public DefaultResponse getDiaryV1(
-            @RequestHeader final String header, @PathVariable Long id
+            @RequestHeader("Authorization") final String header, @PathVariable("id") Long id
             ){
 
         if(header == null){
@@ -150,7 +150,7 @@ public class DiaryApiController {
                 List<String> fileUrls = new ArrayList<String>();
 
                 for (MultipartFile file : files) {
-                    String fileUrl = uploadService.uploadFile(file, user);
+                    String fileUrl = s3Service.uploadFile(file, user);
                     fileUrls.add(fileUrl);
                 }
 

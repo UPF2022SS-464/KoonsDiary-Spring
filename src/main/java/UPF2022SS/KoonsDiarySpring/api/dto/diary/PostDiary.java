@@ -17,11 +17,14 @@ public class PostDiary {
     @AllArgsConstructor
     public static class Request {
         //유저에 대한 정보는 Header의 토큰으로 받아옵니다.
-//        private LocalDate writeDate;
-//        private LocalDateTime editionDate;
         private String content;
         private List<String> comment;
         private List<MultipartFile> files = new ArrayList<>();
+
+        public Request(String s, List<String> comment) {
+            this.content = s;
+            this.comment = comment;
+        }
     }
 
     @Data

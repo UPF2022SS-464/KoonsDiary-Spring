@@ -83,7 +83,6 @@ class DiaryJpaRepositoryTest {
 
         diaryJpaRepository.save(diary);
 
-
         Optional<User> test = userJpaRepository.findById(user.getId());
         List<Diary> diaries = diaryJpaRepository.findAllById(test.get().getId());
 
