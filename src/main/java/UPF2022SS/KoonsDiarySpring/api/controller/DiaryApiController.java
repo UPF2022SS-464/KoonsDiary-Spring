@@ -11,6 +11,9 @@ import UPF2022SS.KoonsDiarySpring.service.diary.sub.S3Service;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -128,6 +131,24 @@ public class DiaryApiController {
         return response;
     }
 
+    @GetMapping(value = "/diary/{imagePath}")
+    public ResponseEntity<ByteArrayResource> getDiaryImage(
+            @RequestHeader("Authorization") final String header, @PathVariable("imagePath") String imagePath
+    ){
+        try{
+            if(header == null){
+                return ResponseEntity
+                        .badRequest()
+                        .build();
+            }
+            return diaryService.getDiaryImage(imagePath);
+        }catch (Exception e){
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
+    }
+
     /*
      * 다이어리 업데이트 반환하는 API
      */
@@ -166,6 +187,8 @@ public class DiaryApiController {
                         e.getMessage());
             }
     }
+
+
 
 
     @DeleteMapping(value = "/diary")

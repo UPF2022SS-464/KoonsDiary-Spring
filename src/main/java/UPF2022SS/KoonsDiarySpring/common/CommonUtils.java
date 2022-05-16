@@ -20,7 +20,7 @@ public class CommonUtils {
         String fileName = originalFileName.substring(0, fileExtensionIndex);
         String now = String.valueOf(System.currentTimeMillis());
 
-        return username + fileName + now + fileExtension;
+        return username + TIME_SEPARATOR + fileName + now + fileExtension;
     }
 
     public static ContentDisposition createContentDisposition(String imagePath){
