@@ -1,15 +1,14 @@
 package UPF2022SS.KoonsDiarySpring.service.diary.sub;
 
 import UPF2022SS.KoonsDiarySpring.domain.User;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
-
-public interface UploadService {
+@Service
+public interface S3Service {
 
     String uploadFile(MultipartFile multipartFile, User user);
-
+    public byte[] downloadFile(String imagePath);
     String getFileUrl(String fileName);
 
 }

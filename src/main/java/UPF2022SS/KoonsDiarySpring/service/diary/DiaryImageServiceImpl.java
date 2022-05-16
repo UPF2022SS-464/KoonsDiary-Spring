@@ -15,16 +15,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class DiaryImageServiceImpl implements DiaryImageService{
 
     @Autowired
     private DiaryImageJpaRepository diaryImageJpaRepository;
 
     @Override
+    @Transactional
     public DiaryImage saveImage(String filename, String comment, Diary diary) {
         try{
             DiaryImage diaryImage = DiaryImage.builder()
@@ -40,6 +42,7 @@ public class DiaryImageServiceImpl implements DiaryImageService{
     }
 
     @Override
+    @Transactional
     public DefaultResponse setImageId(DiaryImage diaryImage, Diary diary) {
         try{
             diaryImage.setDiary(diary);

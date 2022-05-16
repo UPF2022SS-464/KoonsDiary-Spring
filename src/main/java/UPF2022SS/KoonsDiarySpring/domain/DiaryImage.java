@@ -8,6 +8,7 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class DiaryImage {
 

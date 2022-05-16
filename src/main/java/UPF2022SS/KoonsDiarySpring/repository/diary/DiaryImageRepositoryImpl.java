@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -23,9 +24,8 @@ public class DiaryImageRepositoryImpl implements DiaryImageRepository{
 
     @Override
     public List<DiaryImage> findByDiaryId(Long DiaryId) {
-        return jqf.select(qDiaryImage)
-                .from(qDiary)
-                .where(qDiary.id.eq(DiaryId))
+        return jqf.selectFrom(qDiaryImage)
+                .where(qDiaryImage.diary.id.eq(DiaryId))
                 .fetch();
     }
 }

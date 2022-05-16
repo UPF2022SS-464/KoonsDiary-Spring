@@ -9,10 +9,7 @@ import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.User;
-import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.service.diary.sub.AnalyticService;
-import UPF2022SS.KoonsDiarySpring.service.JwtService;
-import UPF2022SS.KoonsDiarySpring.service.diary.sub.UploadService;
 import com.azure.ai.textanalytics.TextAnalyticsClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -33,17 +30,14 @@ public class DiaryServiceImpl implements DiaryService{
 
     private final DiaryJpaRepository diaryJpaRepository;
     private final DiaryImageJpaRepository diaryImageJpaRepository;
-    private final DiaryImageService diaryImageService;
     private final AnalyticService analyticService;
-    private final UserJpaRepository userJpaRepository;
-    private final UploadService uploadService;
-    private final JwtService jwtService;
+
 
     @Override
     @Transactional
     public DefaultResponse<PostDiary.Response> postDiary(
             PostDiary.Request request,
-            User user, //-> 이부분 유저로 바꾸자
+            User user,
             List<String> files) {
         try{
             // 텍스트 분석을 통한 감정 추출에 대한 설정 및 구현
@@ -63,7 +57,7 @@ public class DiaryServiceImpl implements DiaryService{
                             .thumbnailPath(files.get(0)) //-> image path의 첫번째 값을 가져온다.
                             .build();
 
-            diaryJpaRepository.save(diary);
+//            diaryJpaRepository.save(diary);
 
             //image path와 comment에 대한 반복문을 위해 지정
             Iterator<String> fileIterator = files.iterator();
@@ -90,6 +84,8 @@ public class DiaryServiceImpl implements DiaryService{
                     diary.getContent(),
                     diary.getEmotion()
             );
+            diaryJpaRepository.save(diary);
+
             return new DefaultResponse<PostDiary.Response>(
                     StatusCode.OK,
                     ResponseMessage.DIARY_POST_SUCCESS,
@@ -104,19 +100,37 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DefaultResponse getDiary(User user, Long id) {
+    public DefaultResponse<GetDiary.Response> getDiary(User user, Long id) {
         try{
             Optional<Diary> diary = diaryJpaRepository.findById(id);
 
             System.out.println("diary = " + diary.get().getUser().getId() + diary.get().getUser().getNickname());
+//            diaryImageService.getImage(id);
+            List<DiaryImage> diaryImageList = diaryImageJpaRepository.findByDiaryId(id);
 
-            GetDiaryResponse response = GetDiaryResponse.builder()
-                    .id(diary.get().getId())
-                    .writeDate(diary.get().getWriteDate())
-                    .editionDate(diary.get().getEditionDate())
-                    .content(diary.get().getContent())
-                    .emotion(diary.get().getEmotion())
-                    .build();
+            /*
+            * 코멘트 없이 다이어리 이미지를 반환할 경우에는 이미지 경로만 던져주는 것이 더 나을 것이다.
+            */
+            List<String> imagePaths = new ArrayList<String>();
+            List<String> comments = new ArrayList<String>();
+
+            for (DiaryImage diaryImage : diaryImageList) {
+                imagePaths.add(diaryImage.getImage_path());
+                comments.add(diaryImage.getComment());
+            }
+
+
+            //다이어리 이미지 객체 자체를 반환하는 것 보다는 이미지 경로만 반환해 주는 것이 더 나을 것 같아보였습니다.
+            //근데 코멘트를 생각하면 이거는 객체를 반환해 주는것이 더 나을것 같네요.
+            GetDiary.Response response = new GetDiary.Response(
+                    diary.get().getId(),
+                    diary.get().getWriteDate(),
+                    diary.get().getEditionDate(),
+                    diary.get().getContent(),
+                    diary.get().getEmotion(),
+                    imagePaths,
+                    comments
+            );
 
             return DefaultResponse.response(
                     StatusCode.OK,
@@ -190,7 +204,7 @@ public class DiaryServiceImpl implements DiaryService{
         try {
             //다이어리 및 다이어리 리스트 가져오기
             Diary diary = diaryJpaRepository.getById(request.getId());
-            List<DiaryImage> diaryImages= diaryImageJpaRepository.findByDiaryId(request.getId());
+            List<DiaryImage> diaryImages = diaryImageJpaRepository.findByDiaryId(request.getId());
 
             // 텍스트 분석을 통한 감정 추출에 대한 설정 및 구현
             TextAnalyticsClient client = analyticService.authenticateClient();
@@ -204,7 +218,7 @@ public class DiaryServiceImpl implements DiaryService{
             // iterator를 만들어서 해당 내용에 대해 반복문 수행 및 설정
             Iterator<String> fileIterator = files.iterator();
             Iterator<String> commentIterator =  request.getComment().iterator();
-            Iterator<DiaryImage> diaryImageIterator = diaryImages.listIterator();
+            Iterator<DiaryImage> diaryImageIterator = diaryImages.iterator();
 
             while (fileIterator.hasNext()
                     && commentIterator.hasNext()
