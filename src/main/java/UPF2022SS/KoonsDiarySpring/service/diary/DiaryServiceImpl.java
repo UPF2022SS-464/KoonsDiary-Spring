@@ -157,13 +157,6 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public DefaultResponse getDiaryList(User user) {
 
-//        Optional<User> findUser = userJpaRepository.findById(userId);
-//        if(User == null){
-//            return DefaultResponse.response(
-//                    StatusCode.BAD_REQUEST,
-//                    ResponseMessage.USER_SEARCH_FAIL
-//            );
-//        }
         List<Diary> diaryList = diaryJpaRepository.findAllById(user.getId());
 
         ObjectMapper mapper = new ObjectMapper();
@@ -363,7 +356,7 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public ResponseEntity<ByteArrayResource> getDiaryImage(String imagePath) {
+    public ResponseEntity<ByteArrayResource> getDiaryImageV1(String imagePath) {
         byte[] data = s3Service.downloadFile(imagePath);
         ByteArrayResource resource = new ByteArrayResource(data);
         HttpHeaders headers = buildHeaders(imagePath, data);
@@ -381,6 +374,8 @@ public class DiaryServiceImpl implements DiaryService{
         headers.setContentDisposition(CommonUtils.createContentDisposition(resourcePath));
         return headers;
     }
+
+
 
     private Boolean validateCheckDiary(Diary diary){
         return null;

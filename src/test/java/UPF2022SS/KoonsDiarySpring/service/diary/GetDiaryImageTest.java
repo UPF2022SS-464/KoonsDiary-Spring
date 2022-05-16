@@ -8,8 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class GetDiaryImageTest {
@@ -19,7 +17,7 @@ class GetDiaryImageTest {
 
     @Test
     void getDiaryImage() {
-        ResponseEntity rs = diaryService.getDiaryImage("1KakaoTalk_Photo_2022-05-15-01-06-491652632952961.jpeg");
+        ResponseEntity rs = diaryService.getDiaryImageV1("1KakaoTalk_Photo_2022-05-15-01-06-491652632952961.jpeg");
         Assertions.assertThat(rs).isNotNull();
         System.out.println("rs = " + rs);
     }
