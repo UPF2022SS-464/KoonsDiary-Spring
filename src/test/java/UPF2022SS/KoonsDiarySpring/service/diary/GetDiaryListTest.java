@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,6 +98,19 @@ class GetDiaryListTest {
 
         DefaultResponse response = diaryService.getDiary(findUser, diary.getId());
         System.out.println("response = " + response);
+    }
+
+    // 19개의 다이어리 삽입 수행
+    private Optional<Diary> setDiary(User user, int i){
+        Diary diary = Diary.builder()
+                .user(user)
+                .writeDate(LocalDate.of(2022, 5, i))
+                .editionDate(LocalDateTime.now())
+                .content("반가워요")
+                .emotion(1).thumbnailPath("thumbnailPath1").build();
+        diaryJpaRepository.save(diary);
+        Optional<Diary> findDiary = diaryJpaRepository.findByWriteDate(LocalDate.now());
+        return findDiary;
     }
     //클래스에 트랜잭션 걸어두면 beforeeach 언노테이션 걸어도 메소드 호출 끝나는대로 데이터베이스가 빈다.
     /*
