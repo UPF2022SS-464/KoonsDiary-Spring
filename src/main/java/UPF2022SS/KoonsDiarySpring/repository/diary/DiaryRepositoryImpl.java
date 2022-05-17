@@ -1,5 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.repository.diary;
 
+import UPF2022SS.KoonsDiarySpring.api.dto.diary.Emotion;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.MonthlyDiary;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
@@ -42,11 +43,14 @@ public class DiaryRepositoryImpl implements DiaryRepository{
 
     // 특정 날짜 구간의 다이어리 반환
     @Override
-    public List<Diary> findListByLocalDate(Long userId, LocalDate startDate, LocalDate endDate) {
-        return jqf.select(qdiary)
+    public List<Emotion> findEmotionListByLocalDate(Long userId, LocalDate startDate, LocalDate endDate) {
+        return jqf.select(Projections.constructor(Emotion.class,
+                        qdiary.writeDate,
+                        qdiary.emotion))
                 .from(qdiary)
-                .where(qdiary.user.id.eq(userId))
-                .where(qdiary.writeDate.between(startDate, endDate))
+                .where(qdiary.user.id.eq(userId),
+                        qdiary.writeDate.goe(startDate),
+                        qdiary.writeDate.loe(endDate))
                 .fetch();
     }
 
@@ -60,10 +64,9 @@ public class DiaryRepositoryImpl implements DiaryRepository{
                 .fetchOne();
     }
 
-
-
-    @Override
-    public List<MonthlyDiary> findListByMonth(Long userId, LocalDate startDate, LocalDate endDate) {
+   // 해당 날짜에 따른 아이디, 작성일자, 감정 반환
+   @Override
+   public List<MonthlyDiary> findListByMonth(Long userId, LocalDate startDate, LocalDate endDate) {
         //월별 조회를 위한 날짜 형태 지정
         StringTemplate formattedDate = Expressions.stringTemplate(
                 "DATE_FORMAT({0}, {1})"
@@ -83,8 +86,6 @@ public class DiaryRepositoryImpl implements DiaryRepository{
                         qdiary.writeDate.goe(startDate),
                         qdiary.writeDate.loe(endDate)
                 )
-//                .groupBy(formattedDate)
-//                .orderBy(formattedDate.asc())
                 .fetch();
     }
 }

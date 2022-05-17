@@ -3,7 +3,7 @@ package UPF2022SS.KoonsDiarySpring.service;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.Login;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpResponse;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp;
 import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.repository.refreshToken.RefreshTokenJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
@@ -38,7 +38,7 @@ public class AuthService {
         // Access, refresh token을 생성 후 , 메시지 응답과 함께 전달
         final String accessTokenDto = jwtService.createAccessToken(user.getId());
 
-        SignUpResponse signUpResponse = new SignUpResponse(
+        SignUp.Response response = new SignUp.Response(
                 accessTokenDto,
                 refreshTokenDto,
                 user.getUsername()
@@ -46,7 +46,7 @@ public class AuthService {
         return DefaultResponse.response(
                 StatusCode.OK,
                 ResponseMessage.USER_CREATE_SUCCESS,
-                signUpResponse
+                response
         );
     }
 

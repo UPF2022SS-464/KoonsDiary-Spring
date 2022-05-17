@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -29,13 +30,13 @@ public class UserApiController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping(value = "/user")
-    public DefaultResponse signUp(@RequestBody final SignUpRequest signUpRequest){
+    public DefaultResponse signUp( @Validated @RequestBody final SignUp.Request request){
         try{
-            User user = User.builder().username(signUpRequest.getUserId())
-                    .email(signUpRequest.getEmail())
-                    .password(passwordEncoder.encode(signUpRequest.getPassword()))
-                    .nickname(signUpRequest.getNickname())
-                    .imagePath(signUpRequest.getImagePath())
+            User user = User.builder().username(request.getUserId())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .nickname(request.getNickname())
+                    .imagePath(request.getImagePath())
                     .build();
 
             //response 반환
