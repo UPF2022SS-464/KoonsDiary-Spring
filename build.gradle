@@ -44,6 +44,7 @@ dependencies {
 
 
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.5.1'
 	implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
 	implementation group: 'com.azure', name: 'azure-ai-textanalytics', version: '5.1.0'
 

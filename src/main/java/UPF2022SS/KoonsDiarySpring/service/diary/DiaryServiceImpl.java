@@ -355,6 +355,28 @@ public class DiaryServiceImpl implements DiaryService{
         }
     }
 
+    @Override
+    public DefaultResponse<List<MonthlyDiary>> getMonthlyDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
+        try{
+            List<MonthlyDiary> diaryList = diaryJpaRepository.findListByMonth(user.getId(), startDate, endDate);
+//            if(diaryList.isEmpty()){
+//                return DefaultResponse.response(
+//                        StatusCode.OK,
+//                        ResponseMessage.DIARY_GET_SUCCESS,
+//                        diaryList);
+//            }
+            DefaultResponse<List<MonthlyDiary>> response = new DefaultResponse<>(StatusCode.OK,
+                    ResponseMessage.DIARY_GET_SUCCESS,
+                    diaryList);
+            return response;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse.response(
+                    StatusCode.BAD_REQUEST,
+                    ResponseMessage.BAD_REQUEST
+            );
+        }
+    }
 
 
     private Boolean validateCheckDiary(Diary diary){
