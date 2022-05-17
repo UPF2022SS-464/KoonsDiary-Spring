@@ -16,5 +16,4 @@ public class MonthlyDiary {
     private LocalDate writeDate;
 
     private int emotion;
-
 }

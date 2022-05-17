@@ -16,7 +16,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,7 +46,11 @@ class MonthTest {
 
         //when
         List<MonthlyDiary> diaryList = diaryJpaRepository.findListByMonth(user.getId(), startData, endData);
-
+        Map<LocalDate, List<String>> n = new HashMap<>();
+        for (MonthlyDiary diary : diaryList) {
+            n.put(diary.getWriteDate(), List.of(new String[]{diary.getId().toString(), Integer.toString(diary.getEmotion())}));
+        }
+        System.out.println("n = " + n);
         //then
         Assertions.assertThat(diaryList).isNotNull();
         System.out.println("diaryList = " + diaryList);

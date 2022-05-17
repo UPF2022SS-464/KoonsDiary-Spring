@@ -15,6 +15,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,6 +100,43 @@ public class DiaryApiController {
         }
         DefaultResponse response = diaryService.getDiaryList(user);
         return response;
+    }
+
+    /*
+     * 해당 월에 대한 다이어리 리스트 반환하는 API
+     */
+    @GetMapping(value = "/diarys/{startDate}/{endDate}")
+    public DefaultResponse getMonthlyDiaryList(
+            @RequestHeader("Authorization") final String header,
+            @PathVariable("startDate")final String start,
+            @PathVariable("endDate")final String end
+            ){
+        if(header == null){
+            return DefaultResponse
+                    .response(
+                            StatusCode.UNAUTHORIZED,
+                            ResponseMessage.UNAUTHORIZED
+                    );
+        }
+        User user = (User)userService.findById(jwtService.decodeAccessToken(header));
+        if(user == null){
+            return DefaultResponse
+                    .response(
+                            StatusCode.BAD_REQUEST,
+                            ResponseMessage.NOT_FOUND_USER
+                    );
+        }
+
+        try{
+            LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
+            LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ISO_DATE);
+
+            return diaryService.getMonthlyDiaryListByLocalDate(user,startDate, endDate);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse.response(StatusCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
+        }
+
     }
 
     /*
