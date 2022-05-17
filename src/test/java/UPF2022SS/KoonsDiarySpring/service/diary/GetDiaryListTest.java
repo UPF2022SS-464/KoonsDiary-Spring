@@ -2,7 +2,6 @@ package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiary;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUpRequest;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.User;

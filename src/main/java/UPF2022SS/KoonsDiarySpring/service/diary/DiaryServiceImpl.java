@@ -1,7 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.*;
-import UPF2022SS.KoonsDiarySpring.common.CommonUtils;
 import UPF2022SS.KoonsDiarySpring.domain.DiaryImage;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryImageJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
@@ -16,10 +15,6 @@ import com.azure.ai.textanalytics.TextAnalyticsClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -38,7 +33,6 @@ public class DiaryServiceImpl implements DiaryService{
     private final S3Service s3Service;
     private final DiaryImageJpaRepository diaryImageJpaRepository;
     private final AnalyticService analyticService;
-
 
     @Override
     @Transactional
@@ -318,40 +312,26 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DefaultResponse getDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
+    public DefaultResponse<List<Emotion>> getEmotionListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
         try{
-            List<Diary> diaryList = diaryJpaRepository.findListByLocalDate(user.getId(),startDate, endDate);
+            List<Emotion> diaryList = diaryJpaRepository.findEmotionListByLocalDate(user.getId(),startDate, endDate);
 
-            ObjectMapper mapper = new ObjectMapper();
-            List<HashMap<String, String>> mapList = new ArrayList<HashMap<String, String>>();
+            int sum = diaryList.size();
+            int[] arr = {0, 0, 0, 0, 0};
 
-            for (Diary diary : diaryList) {
-                HashMap<String, String> map= new HashMap<String, String>();
-                map.put("id", diary.getId().toString());
-                map.put("writeDate", diary.getWriteDate().toString());
-                map.put("content", diary.getContent());
-                map.put("thumbnail", diary.getThumbnailPath());
-                map.put("emotion", Integer.toString(diary.getEmotion()));
-
-                mapList.add(map);
+            for (Emotion emotion : diaryList) {
+                arr[emotion.getEmotion()-1]++;
             }
 
-            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapList);
-
-            DefaultResponse response = DefaultResponse.builder()
-                    .status(StatusCode.OK)
-                    .message(ResponseMessage.DIARY_GET_SUCCESS)
-                    .data(json)
-                    .build();
-
-            return response;
+            return DefaultResponse.response(
+                    StatusCode.OK,
+                    ResponseMessage.DIARY_GET_SUCCESS,
+                    diaryList
+                );
 
         } catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.DB_ERROR,
-                    ResponseMessage.DIARY_GET_FAIL,
-                    e.getMessage());
+            return DefaultResponse.response(StatusCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
         }
     }
 
@@ -359,12 +339,7 @@ public class DiaryServiceImpl implements DiaryService{
     public DefaultResponse<List<MonthlyDiary>> getMonthlyDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
         try{
             List<MonthlyDiary> diaryList = diaryJpaRepository.findListByMonth(user.getId(), startDate, endDate);
-//            if(diaryList.isEmpty()){
-//                return DefaultResponse.response(
-//                        StatusCode.OK,
-//                        ResponseMessage.DIARY_GET_SUCCESS,
-//                        diaryList);
-//            }
+
             DefaultResponse<List<MonthlyDiary>> response = new DefaultResponse<>(StatusCode.OK,
                     ResponseMessage.DIARY_GET_SUCCESS,
                     diaryList);
@@ -377,7 +352,6 @@ public class DiaryServiceImpl implements DiaryService{
             );
         }
     }
-
 
     private Boolean validateCheckDiary(Diary diary){
         return null;

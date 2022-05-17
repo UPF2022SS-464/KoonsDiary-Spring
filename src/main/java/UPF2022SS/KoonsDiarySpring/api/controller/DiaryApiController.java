@@ -118,6 +118,7 @@ public class DiaryApiController {
                             ResponseMessage.UNAUTHORIZED
                     );
         }
+        // 유저 ㄱ
         User user = (User)userService.findById(jwtService.decodeAccessToken(header));
         if(user == null){
             return DefaultResponse
@@ -126,7 +127,6 @@ public class DiaryApiController {
                             ResponseMessage.NOT_FOUND_USER
                     );
         }
-
         try{
             LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
             LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ISO_DATE);
@@ -136,7 +136,6 @@ public class DiaryApiController {
             log.error(e.getMessage());
             return DefaultResponse.response(StatusCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
         }
-
     }
 
     /*

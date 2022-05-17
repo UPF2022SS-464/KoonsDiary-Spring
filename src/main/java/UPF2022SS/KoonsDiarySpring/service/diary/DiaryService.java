@@ -4,8 +4,6 @@ package UPF2022SS.KoonsDiarySpring.service.diary;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.*;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.domain.User;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,7 +24,7 @@ public interface DiaryService {
 
     public DefaultResponse getDiaryByLocalDate(User user, LocalDate date);
 
-    public DefaultResponse getDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
+    public DefaultResponse getEmotionListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
 
     public DefaultResponse getMonthlyDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
 
