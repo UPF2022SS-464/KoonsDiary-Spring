@@ -6,7 +6,6 @@ import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @Transactional
 @ExtendWith(SpringExtension.class)
-public class CalenderTestV2 {
+class EmotionStatisticTest {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
@@ -30,12 +31,11 @@ public class CalenderTestV2 {
     @Autowired
     private DiaryService diaryService;
 
-
     @Test
-    @DisplayName("월에 대한 다이어리 DTO 출력")
-    void getMonthlyDiaryListByLocalDate() {
+    void getEmotionListByLocalDate() {
         //given
         User user = setUser();
+
         for(int i = 1; i< 20; i++){
             setDiary(user, i);
         }
@@ -43,7 +43,7 @@ public class CalenderTestV2 {
         LocalDate startDate = LocalDate.of(2022,5,1);
         LocalDate endDate = LocalDate.of(2022,5,30);
 
-        DefaultResponse response = diaryService.getMonthlyDiaryListByLocalDate(user, startDate, endDate);
+        DefaultResponse response = diaryService.getEmotionListByLocalDate(user, startDate, endDate);
 
         Assertions.assertThat(response.getData()).isNotNull();
 

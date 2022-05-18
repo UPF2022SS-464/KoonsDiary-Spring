@@ -13,6 +13,7 @@ import UPF2022SS.KoonsDiarySpring.service.diary.sub.AnalyticService;
 import UPF2022SS.KoonsDiarySpring.service.diary.sub.S3Service;
 import com.azure.ai.textanalytics.TextAnalyticsClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -312,7 +313,7 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DefaultResponse<List<Emotion>> getEmotionListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
+    public DefaultResponse getEmotionListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
         try{
             List<Emotion> diaryList = diaryJpaRepository.findEmotionListByLocalDate(user.getId(),startDate, endDate);
 
@@ -320,13 +321,14 @@ public class DiaryServiceImpl implements DiaryService{
             int[] arr = {0, 0, 0, 0, 0};
 
             for (Emotion emotion : diaryList) {
-                arr[emotion.getEmotion()-1]++;
+                arr[emotion.getEmotion()]++;
             }
-
+            Map<List<Emotion>, int[]> result = new HashMap<>();
+            result.put(diaryList, Arrays.stream(arr).toArray());
             return DefaultResponse.response(
                     StatusCode.OK,
                     ResponseMessage.DIARY_GET_SUCCESS,
-                    diaryList
+                    result
                 );
 
         } catch (Exception e){

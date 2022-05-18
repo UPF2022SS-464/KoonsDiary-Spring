@@ -118,7 +118,7 @@ public class DiaryApiController {
                             ResponseMessage.UNAUTHORIZED
                     );
         }
-        // 유저 ㄱ
+        // 유저
         User user = (User)userService.findById(jwtService.decodeAccessToken(header));
         if(user == null){
             return DefaultResponse
@@ -166,9 +166,42 @@ public class DiaryApiController {
         return response;
     }
 
+    @GetMapping(value = "/diary/emotion/{start}/{end}")
+    public DefaultResponse getEmotion(@RequestHeader final String header,
+                                      @PathVariable("start") final String start,
+                                      @PathVariable("end") final String end){
+        if(header == null){
+            return DefaultResponse
+                    .response(
+                            StatusCode.UNAUTHORIZED,
+                            ResponseMessage.UNAUTHORIZED
+                    );
+        }
+        User user = (User)userService.findById(jwtService.decodeAccessToken(header));
+        if(user == null){
+            return DefaultResponse
+                    .response(
+                            StatusCode.BAD_REQUEST,
+                            ResponseMessage.NOT_FOUND_USER
+                    );
+        }
+        try{
+
+            LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
+            LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ISO_DATE);
+
+            DefaultResponse response = diaryService.getEmotionListByLocalDate(user, startDate, endDate);
+
+            return response;
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return DefaultResponse.response(StatusCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
+        }
+    }
+
     /*
      * 다이어리 업데이트 반환하는 API
-     */
+    */
     @PatchMapping(value = "/diary")
     public DefaultResponse patchDiary(
             @RequestHeader final  String header,
