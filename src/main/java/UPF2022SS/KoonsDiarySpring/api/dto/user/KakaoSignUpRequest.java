@@ -6,14 +6,20 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class KakaoSignUpRequest {
+
+    @NotBlank
     private String userId;
 
+    @NotBlank
     private String nickname;
 
-    private String imagePath;
+    @NotBlank
+    private Long imageId;
 }

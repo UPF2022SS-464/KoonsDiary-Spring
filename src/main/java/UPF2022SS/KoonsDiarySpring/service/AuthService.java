@@ -12,6 +12,7 @@ import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ public class AuthService {
     private final JwtService jwtService;
 
     //회원가입시 로그인까지 함께 전달
-    public DefaultResponse signUpLogin(final User user, String refreshTokenDto) {
+    public ResponseEntity<SignUp.Response> signUpLogin(final User user, String refreshTokenDto) {
         // Access, refresh token을 생성 후 , 메시지 응답과 함께 전달
         final String accessTokenDto = jwtService.createAccessToken(user.getId());
 
@@ -43,11 +44,9 @@ public class AuthService {
                 refreshTokenDto,
                 user.getUsername()
         );
-        return DefaultResponse.response(
-                StatusCode.OK,
-                ResponseMessage.USER_CREATE_SUCCESS,
-                response
-        );
+        return ResponseEntity
+                .ok()
+                .body(response);
     }
 
     public String createRefreshToken() {

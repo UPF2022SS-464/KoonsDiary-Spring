@@ -4,18 +4,23 @@ import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.user.UpdateUser;
+import UPF2022SS.KoonsDiarySpring.domain.Image;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 
+import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,44 +34,31 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private final UserJpaRepository userJpaRepository;
+    private final ImageService imageService;
 
     @Override
     @Transactional
-    public DefaultResponse join(User user) {
-        try{
-                //아이디와 이메일에 대한 유효성 검사
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR,reason = "데이터베이스 에러")
+    public ResponseEntity<String> join(User user) throws RuntimeException{
+                // 아이디와 이메일에 대한 유효성 검사
                 if (validateDuplicateUserId(user.getUsername())){
-                    return DefaultResponse.builder()
-                            .status(StatusCode.CONFLICT)
-                            .message(ResponseMessage.DUPLICATED_USER)
-                            .build();
+                    return ResponseEntity
+                            .status(409)
+                            .body(ResponseMessage.DUPLICATED_USER);
+
                 }
-                //카카오로그인할때는 여기가 걸린다. 이부분 고칠것
                 else if(validateDuplicateUserEmail(user.getEmail())){
-                    return DefaultResponse.builder()
-                            .status(StatusCode.CONFLICT)
-                            .message(ResponseMessage.DUPLICATED_EMAIL)
-                            .build();
+                    return ResponseEntity
+                            .status(409)
+                            .body(ResponseMessage.DUPLICATED_EMAIL);
                     }
 
-                //유저 정보 저장
+                // 유저 정보 저장
                 userJpaRepository.save(user);
 
-                DefaultResponse response = DefaultResponse.builder()
-                        .status(StatusCode.OK)
-                        .message(ResponseMessage.USER_CREATE_SUCCESS)
+                return ResponseEntity.ok()
+                        .header(ResponseMessage.USER_CREATE_SUCCESS)
                         .build();
-
-            return response;
-        }
-        catch (Exception e){
-            log.error(e.getMessage());
-            return DefaultResponse.builder()
-                    .status(StatusCode.DB_ERROR)
-                    .message(ResponseMessage.DB_ERROR)
-                    .data(e.getMessage())
-                    .build();
-        }
     }
 
     @Override
@@ -175,8 +167,9 @@ public class UserServiceImpl implements UserService{
         if(request.getNickname() != null){
             user.updateNickname(request.getNickname());
         }
-        if(request.getImagePath() != null){
-            user.updateImagePath(request.getImagePath());
+        if(request.getImageId() != null){
+            Optional<Image> findImage = imageService.findImage(request.getImageId());
+            user.updateImage(findImage.get());
         }
     }
 
