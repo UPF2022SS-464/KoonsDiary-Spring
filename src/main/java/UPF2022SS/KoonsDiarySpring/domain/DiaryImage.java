@@ -11,6 +11,7 @@ import static javax.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class DiaryImage {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_image_id")
     private Long id;

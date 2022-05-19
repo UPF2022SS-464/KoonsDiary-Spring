@@ -12,9 +12,9 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @Setter
-@Table(name = "question_reaction")
+@Table(name = "question_answer")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuestionReaction {
+public class QuestionReation {
 //    GOOD, HEART, CLAP, NOTE, VICTORY
     @Id
     @Column(name = "question_answer_id", nullable = false)
