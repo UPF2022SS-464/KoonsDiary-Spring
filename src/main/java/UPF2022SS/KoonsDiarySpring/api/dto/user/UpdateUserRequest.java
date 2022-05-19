@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class UpdateUserRequest {
     private String nickname;
     private String password;
+    private Long imageId;
 }

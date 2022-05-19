@@ -5,6 +5,7 @@ import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.UpdateUser;
 import UPF2022SS.KoonsDiarySpring.domain.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @Service
 public interface UserService {
 
-    public DefaultResponse join(User user);
+    public ResponseEntity<String> join(User user);
     public DefaultResponse kakaoJoin(User user);
     public List<User> findUsers();
     public User findById(Long id);

@@ -3,6 +3,8 @@ package UPF2022SS.KoonsDiarySpring.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 @Table(name = "user")
@@ -12,16 +14,20 @@ import java.util.*;
 @AllArgsConstructor
 @ToString
 public class User {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id",nullable = false)
     private Long id;
 
+    @NotBlank
     @Column(unique = true, nullable = false)
     private String username;
 
+    @NotBlank
     private String password;
 
     @Column(unique = true)
+    @Email
     private String email;
 
     @Column(nullable = false)
@@ -30,8 +36,8 @@ public class User {
     @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
 
-    @Column(nullable = false)
-    private String imagePath;
+    @JoinColumn(name = "image_id", nullable = false)
+    private Image image;
     /*
      * 유저네임, 닉네임, 이미지 아이디
      * 카카오 로그인
@@ -63,8 +69,8 @@ public class User {
         this.nickname = nickname;
     }
 
-    public void updateImagePath(String imagePath){
-        this.imagePath = imagePath;
+    public void updateImage(Image image){
+        this.image = image;
     }
 
     public void updatePassword(String password){ this.password = password; }

@@ -17,7 +17,8 @@ public class SignUp {
         private String email;
         @NotBlank(message = "닉네임을 제대로 입력해 주세요")
         private String nickname;
-        private String imagePath;
+        @NotBlank(message = "이미지를 제대로 설정해 주세요.")
+        private Long imageId;
 
     }
 
