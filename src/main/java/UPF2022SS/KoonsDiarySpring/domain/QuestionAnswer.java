@@ -29,4 +29,9 @@ public class QuestionAnswer {
 
     @Enumerated(EnumType.STRING)
     private QuestionAnswerReaction questionAnswerReaction;
+
+
+    @OneToOne(mappedBy = "question_answer")
+    private QuestionReation questionReation;
+
 }
