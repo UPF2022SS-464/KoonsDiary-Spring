@@ -1,9 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,7 +8,9 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter @Setter
+@Builder
 @Table(name = "question_answer")
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestionAnswer {
 
@@ -27,11 +26,10 @@ public class QuestionAnswer {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(nullable = false)
+    private String Content;
+
     @Enumerated(EnumType.STRING)
     private QuestionAnswerReaction questionAnswerReaction;
-
-
-    @OneToOne(mappedBy = "question_answer")
-    private QuestionReation questionReation;
 
 }
