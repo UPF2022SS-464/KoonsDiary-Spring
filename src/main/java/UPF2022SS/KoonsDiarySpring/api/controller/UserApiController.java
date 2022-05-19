@@ -30,7 +30,7 @@ public class UserApiController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping(value = "/user")
-    public DefaultResponse<SignUp.Response> signUp( @Validated @RequestBody final SignUp.Request request){
+    public DefaultResponse signUp( @Validated @RequestBody final SignUp.Request request){
         try{
             User user = User.builder().username(request.getUserId())
                     .email(request.getEmail())
@@ -50,20 +50,19 @@ public class UserApiController {
             user.setRefreshToken(token);
 
 
-            return
-                    (DefaultResponse<SignUp.Response>) authService.signUpLogin(user, token.getValue());
+            DefaultResponse response = authService.signUpLogin(user, token.getValue());
 
+            return response;
 
         } catch (Exception e){
             log.error(e.getMessage());
-            String response = "에러가 발생했습니다.";
             return DefaultResponse.response(
                     StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.INTERNAL_SERVER_ERROR
+                    ResponseMessage.INTERNAL_SERVER_ERROR,
+                    e.getMessage()
             );
         }
     }
-
     /*
      * 유저네임, 닉네임, 이미지 아이디
      * 카카오 로그인

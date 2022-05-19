@@ -64,8 +64,8 @@ public class DiaryApiController {
                 fileUrls.add(fileUrl);
             }
 
-            return diaryService.postDiary(request, user, fileUrls);
-
+            DefaultResponse response =  diaryService.postDiary(request, user, fileUrls);
+            return response;
 
         } catch (Exception e){
             log.error(e.getMessage());
