@@ -49,7 +49,6 @@ public class DiaryServiceImpl implements DiaryService{
 
             List<DiaryImage> diaryImageList = new ArrayList<>();
 
-
             //다이어리 이미지 세팅 전에 다이어리 객체 세팅
             Diary diary = Diary.builder()
                             .user(user)
@@ -322,10 +321,8 @@ public class DiaryServiceImpl implements DiaryService{
             int[] arr = {0, 0, 0, 0, 0};
 
             for (Emotion emotion : diaryList) {
-
                 arr[emotion.getEmotion()]++;
             }
-//            List<Integer> array = Arrays.stream(arr).toArray()
             Map<List<Emotion>, int[]> result = new HashMap<>();
             result.put(diaryList, Arrays.stream(arr).toArray());
             return DefaultResponse.response(
