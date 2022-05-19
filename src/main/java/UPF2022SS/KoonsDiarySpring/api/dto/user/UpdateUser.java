@@ -12,7 +12,6 @@ public class UpdateUser {
     public static class Request {
         private String nickname;
         private String password;
-        private String imagePath;
     }
 
     @Data

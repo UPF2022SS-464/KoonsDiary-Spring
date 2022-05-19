@@ -175,9 +175,6 @@ public class UserServiceImpl implements UserService{
         if(request.getNickname() != null){
             user.updateNickname(request.getNickname());
         }
-        if(request.getImagePath() != null){
-            user.updateImagePath(request.getImagePath());
-        }
     }
 
     @Override
