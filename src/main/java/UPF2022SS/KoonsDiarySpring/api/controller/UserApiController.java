@@ -36,7 +36,7 @@ public class UserApiController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping(value = "/user")
-    public ResponseEntity<? extends Response> signUp(@Valid @RequestBody final SignUp.Request request) throws RuntimeException{
+    public ResponseEntity<? extends Response> signUp(@Valid @RequestBody final SignUp.Request request){
             //이미지 반환
             Optional<ImagePath> findImage = imageService.findImage(request.getImageId());
 

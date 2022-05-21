@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @ControllerAdvice
 @RestController
 public class ExceptionAdvisor {
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> processValidationError(MethodArgumentNotValidException exception) {
         BindingResult bindingResult = exception.getBindingResult();

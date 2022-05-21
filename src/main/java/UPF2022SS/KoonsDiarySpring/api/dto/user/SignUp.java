@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class SignUp {
 
@@ -17,9 +18,8 @@ public class SignUp {
         private String email;
         @NotBlank(message = "닉네임을 제대로 입력해 주세요")
         private String nickname;
-        @NotBlank(message = "이미지를 제대로 설정해 주세요.")
+        @NotNull(message = "이미지를 제대로 설정해 주세요.")
         private Long imageId;
-
     }
 
     @Data
