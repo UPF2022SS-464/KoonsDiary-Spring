@@ -10,10 +10,11 @@ import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.*;
 
-@Entity
+
 @Getter @Setter
 @Table(name = "share_group_diary_comment")
 @NoArgsConstructor
+@Entity
 public class ShareGroupDiaryComment {
 
     @Id @GeneratedValue

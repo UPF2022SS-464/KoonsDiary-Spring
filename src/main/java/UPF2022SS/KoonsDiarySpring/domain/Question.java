@@ -6,12 +6,12 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 
-@Entity
 @Getter
 @Table(name = "question")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class Question {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")

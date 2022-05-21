@@ -1,6 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.service.image;
 
-import UPF2022SS.KoonsDiarySpring.domain.Image;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.repository.image.ImageJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,17 +19,17 @@ public class ImageServiceImpl implements ImageService{
     private final ImageJpaRepository imageJpaRepository;
 
     @Override
-    public Optional<List<Image>>findImageList() {
-        return imageJpaRepository.findAll();
+    public Optional<List<ImagePath>>findImageList() {
+        return Optional.of(imageJpaRepository.findAll());
     }
 
     @Override
-    public void createImage(Image image) {
-        imageJpaRepository.save(image);
+    public void createImage(ImagePath imagePath) {
+        imageJpaRepository.save(imagePath);
     }
 
     @Override
-    public Optional<Image> findImage(Long id) {
+    public Optional<ImagePath> findImage(Long id) {
         return imageJpaRepository.findById(id);
     }
 }

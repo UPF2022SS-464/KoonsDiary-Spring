@@ -2,10 +2,10 @@ package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiary;
-import UPF2022SS.KoonsDiarySpring.domain.Diary;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
+import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest()
@@ -31,14 +27,22 @@ class DiaryServiceImplTest {
     @Autowired
     private DiaryService diaryService;
 
+    @Autowired
+    private ImageService imageService;
+
     @Test
     void Post_Diary_success(){
+
+        ImagePath imagePath = ImagePath.builder().path("profile1").build();
+
+        imageService.createImage(imagePath);
+
         User user = User.builder()
                 .username("test")
-                .password("cucumber52")
+                .userPwd("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
-                .imagePath("imagePath1")
+                .imagePath(imagePath)
                 .build();
 
         userService.join(user);

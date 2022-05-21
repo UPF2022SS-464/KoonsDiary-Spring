@@ -9,10 +9,10 @@ import javax.persistence.*;
 
 import static javax.persistence.FetchType.*;
 
-@Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "share_group_diary_image")
+@Entity
 public class ShareGroupDiaryImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "share_group_diary_image")

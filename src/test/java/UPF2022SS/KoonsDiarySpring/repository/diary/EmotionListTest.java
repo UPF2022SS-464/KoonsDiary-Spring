@@ -3,26 +3,22 @@ package UPF2022SS.KoonsDiarySpring.repository.diary;
 import UPF2022SS.KoonsDiarySpring.QuerydslConfig;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.Emotion;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
+import UPF2022SS.KoonsDiarySpring.repository.image.ImageJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DataJpaTest
 @Import(QuerydslConfig.class)
-@ExtendWith(SpringExtension.class)
 class EmotionListTest {
 
     @Autowired
@@ -31,9 +27,13 @@ class EmotionListTest {
     @Autowired
     private UserJpaRepository userJpaRepository;
 
+    @Autowired
+    private ImageJpaRepository imageJpaRepository;
+
     @Test
     void findEmotionListByLocalDate() {
-        User user = setUser();
+        ImagePath imagePath = setImage();
+        User user = setUser(imagePath);
 
         for(int i = 1; i< 20; i++){
             setDiary(user, i);
@@ -46,18 +46,6 @@ class EmotionListTest {
         System.out.println(emotionList);
 
     }
-    private User setUser(){
-        User user = User.builder()
-                .username("test")
-                .password("cucumber52")
-                .email("test@gmail.com")
-                .nickname("test")
-                .imagePath("imagePath1").build();
-
-        userJpaRepository.save(user);
-        user = userJpaRepository.findByName("test");
-        return user;
-    }
 
     private Optional<Diary> setDiary(User user, int i){
         Diary diary = Diary.builder()
@@ -69,5 +57,34 @@ class EmotionListTest {
         diaryJpaRepository.save(diary);
         Optional<Diary> findDiary = diaryJpaRepository.findByWriteDate(LocalDate.now());
         return findDiary;
+    }
+
+    public ImagePath setImage(){
+
+        String path = "profile1";
+        ImagePath imagePath = ImagePath.builder()
+                .path(path)
+                .build();
+
+        imageJpaRepository.save(imagePath);
+
+        ImagePath findImagePath = imageJpaRepository.findByPath(path).get();
+
+        return findImagePath;
+    }
+
+    public User setUser(ImagePath imagePath){
+        User user = User.builder()
+                .username("koon")
+                .userPwd("cucumber52")
+                .email("koon@gmail.com")
+                .nickname("koon")
+                .imagePath(imagePath)
+                .build();
+
+        userJpaRepository.save(user);
+
+        User findUser = userJpaRepository.findByName("koon");
+        return findUser;
     }
 }

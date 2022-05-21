@@ -6,10 +6,10 @@ import javax.persistence.*;
 
 import static javax.persistence.FetchType.*;
 
-@Entity
 @Getter @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Entity
 public class DiaryImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_image_id")

@@ -5,7 +5,7 @@ import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp.Response;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
-import UPF2022SS.KoonsDiarySpring.domain.Image;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.service.AuthService;
@@ -15,15 +15,12 @@ import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collection;
 import java.util.Optional;
 
 @Slf4j
@@ -39,17 +36,15 @@ public class UserApiController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping(value = "/user")
-    public ResponseEntity<? extends Response> signUp(@Valid @RequestBody final SignUp.Request request){
-        try{
-
+    public ResponseEntity<? extends Response> signUp(@Valid @RequestBody final SignUp.Request request) throws RuntimeException{
             //이미지 반환
-            Optional<Image> findImage = imageService.findImage(request.getImageId());
+            Optional<ImagePath> findImage = imageService.findImage(request.getImageId());
 
             User user = User.builder().username(request.getUserId())
                     .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
+                    .userPwd(passwordEncoder.encode(request.getPassword()))
                     .nickname(request.getNickname())
-                    .image(findImage.get())
+                    .imagePath(findImage.get())
                     .build();
 
             //response 반환
@@ -64,13 +59,6 @@ public class UserApiController {
             user.setRefreshToken(token);
 
             return authService.signUpLogin(user, token.getValue());
-
-        } catch (Exception e){
-            log.error(e.getMessage());
-            return ResponseEntity
-                    .internalServerError()
-                    .build();
-        }
     }
 
     /*
@@ -78,13 +66,13 @@ public class UserApiController {
      * 카카오 로그인
      */
     @PostMapping(value = "/kakaoUser")
-    public DefaultResponse kakaoSignUp(@RequestBody final KakaoSignUpRequest kakaoSignUpRequest){
+    public DefaultResponse kakaoSignUp(@Valid @RequestBody final KakaoSignUpRequest kakaoSignUpRequest){
         try{
-            Optional<Image> findImage = imageService.findImage(kakaoSignUpRequest.getImageId());
+            Optional<ImagePath> findImage = imageService.findImage(kakaoSignUpRequest.getImageId());
 
             User user = User.builder().username(kakaoSignUpRequest.getUserId())
                     .nickname(kakaoSignUpRequest.getNickname())
-                    .image(findImage.get())
+                    .imagePath(findImage.get())
                     .build();
 
             //response 반환

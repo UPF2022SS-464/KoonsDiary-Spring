@@ -4,7 +4,7 @@ import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.user.UpdateUser;
-import UPF2022SS.KoonsDiarySpring.domain.Image;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
@@ -40,25 +40,31 @@ public class UserServiceImpl implements UserService{
     @Transactional
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR,reason = "데이터베이스 에러")
     public ResponseEntity<String> join(User user) throws RuntimeException{
-                // 아이디와 이메일에 대한 유효성 검사
-                if (validateDuplicateUserId(user.getUsername())){
-                    return ResponseEntity
-                            .status(409)
-                            .body(ResponseMessage.DUPLICATED_USER);
+        try {
+            // 아이디와 이메일에 대한 유효성 검사
+            if (validateDuplicateUserId(user.getUsername())) {
+                return ResponseEntity
+                        .status(409)
+                        .body(ResponseMessage.DUPLICATED_USER);
 
-                }
-                else if(validateDuplicateUserEmail(user.getEmail())){
-                    return ResponseEntity
-                            .status(409)
-                            .body(ResponseMessage.DUPLICATED_EMAIL);
-                    }
+            } else if (validateDuplicateUserEmail(user.getEmail())) {
+                return ResponseEntity
+                        .status(409)
+                        .body(ResponseMessage.DUPLICATED_EMAIL);
+            }
 
-                // 유저 정보 저장
-                userJpaRepository.save(user);
+            // 유저 정보 저장
+            userJpaRepository.save(user);
 
-                return ResponseEntity.ok()
-                        .header(ResponseMessage.USER_CREATE_SUCCESS)
-                        .build();
+            return ResponseEntity.ok()
+                    .header(ResponseMessage.USER_CREATE_SUCCESS)
+                    .build();
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.BAD_REQUEST);
+        }
     }
 
     @Override
@@ -168,7 +174,7 @@ public class UserServiceImpl implements UserService{
             user.updateNickname(request.getNickname());
         }
         if(request.getImageId() != null){
-            Optional<Image> findImage = imageService.findImage(request.getImageId());
+            Optional<ImagePath> findImage = imageService.findImage(request.getImageId());
             user.updateImage(findImage.get());
         }
     }

@@ -13,12 +13,13 @@ import java.util.List;
 import static com.fasterxml.jackson.annotation.JsonFormat.*;
 import static javax.persistence.FetchType.*;
 
-@Entity
+
 @Table(name = "diary")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Entity
 public class Diary {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

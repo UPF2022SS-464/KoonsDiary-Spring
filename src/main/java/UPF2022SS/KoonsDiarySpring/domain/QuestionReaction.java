@@ -9,11 +9,11 @@ import javax.persistence.*;
 
 import static javax.persistence.FetchType.LAZY;
 
-@Entity
 @Getter
 @Setter
 @Table(name = "question_reaction")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class QuestionReaction {
 //    GOOD, HEART, CLAP, NOTE, VICTORY
     @Id

@@ -1,43 +1,37 @@
 package UPF2022SS.KoonsDiarySpring.repository.diary;
 
+import UPF2022SS.KoonsDiarySpring.QuerydslConfig;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
+import UPF2022SS.KoonsDiarySpring.repository.image.ImageJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@Transactional
+@DataJpaTest
+@Import(QuerydslConfig.class)
 class DiaryJpaRepositoryTest {
 
     @Autowired
     private DiaryJpaRepository diaryJpaRepository;
     @Autowired
     private UserJpaRepository userJpaRepository;
+    @Autowired
+    private ImageJpaRepository imageJpaRepository;
 
     @Test
     void save_diary_success(){
-        User user = User.builder()
-                .username("koon")
-                .password("cucumber52")
-                .email("koon@gmail.com")
-                .nickname("koon")
-                .imagePath("imagePath1")
-                .build();
+        ImagePath imagePath = serImage();
+        User user = setUser(imagePath);
 
         userJpaRepository.save(user);
 
@@ -60,15 +54,9 @@ class DiaryJpaRepositoryTest {
 
     @Test
     void findById_diary_success(){
-        User user = User.builder()
-                .username("koon")
-                .password("cucumber52")
-                .email("koon@gmail.com")
-                .nickname("koon")
-                .imagePath("imagePath1")
-                .build();
 
-        userJpaRepository.save(user);
+        ImagePath imagePath = serImage();
+        User user = setUser(imagePath);
 
         String content = "Test Content";
 
@@ -93,15 +81,8 @@ class DiaryJpaRepositoryTest {
 
     @Test
     void findByAllUser_diary_success(){
-        User user = User.builder()
-                .username("koon")
-                .password("cucumber52")
-                .email("koon@gmail.com")
-                .nickname("koon")
-                .imagePath("imagePath1")
-                .build();
-
-        userJpaRepository.save(user);
+        ImagePath imagePath = serImage();
+        User user = setUser(imagePath);
 
         String content = "Test Content";
 
@@ -122,5 +103,34 @@ class DiaryJpaRepositoryTest {
         for (Diary diary1 : diaries) {
             System.out.println("diary1 = " + diary1);
         }
+    }
+
+    public ImagePath serImage(){
+
+        String path = "profile1";
+        ImagePath imagePath = ImagePath.builder()
+                .path(path)
+                .build();
+
+        imageJpaRepository.save(imagePath);
+
+        ImagePath findImagePath = imageJpaRepository.findByPath(path).get();
+
+        return findImagePath;
+    }
+
+    public User setUser(ImagePath imagePath){
+        User user = User.builder()
+                .username("koon")
+                .userPwd("cucumber52")
+                .email("koon@gmail.com")
+                .nickname("koon")
+                .imagePath(imagePath)
+                .build();
+
+        userJpaRepository.save(user);
+
+        User findUser = userJpaRepository.findByName("koon");
+        return findUser;
     }
 }
