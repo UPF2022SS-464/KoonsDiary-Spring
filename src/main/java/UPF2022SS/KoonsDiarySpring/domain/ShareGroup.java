@@ -12,10 +12,10 @@ import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
-@Entity
 @Table(name = "share_group")
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class ShareGroup {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "share_group_id", nullable = false)

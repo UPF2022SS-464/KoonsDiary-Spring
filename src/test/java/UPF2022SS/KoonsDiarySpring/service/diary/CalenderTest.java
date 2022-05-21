@@ -1,12 +1,12 @@
 package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
-import UPF2022SS.KoonsDiarySpring.api.dto.diary.MonthlyDiary;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
-import org.assertj.core.api.Assertions;
+import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,12 +14,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
+@SpringBootTest
+@Transactional
 @ExtendWith(MockitoExtension.class)
 class CalenderTest {
 
@@ -27,6 +30,8 @@ class CalenderTest {
     private UserJpaRepository userJpaRepository;
     @Mock
     private DiaryJpaRepository diaryJpaRepository;
+    @Autowired
+    private ImageService imageService;
     @InjectMocks
     private DiaryServiceImpl diaryService;
 
@@ -52,12 +57,19 @@ class CalenderTest {
 
     //유저 정보 설정
     private User setUser(){
+        ImagePath imagePath = ImagePath.builder()
+                .path("profile1")
+                .build();
+
+        imageService.createImage(imagePath);
+
         User user = User.builder()
                 .username("test")
-                .password("cucumber52")
+                .userPwd("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
-                .imagePath("imagePath1").build();
+                .imagePath(imagePath)
+                .build();
 
         userJpaRepository.save(user);
         user = userJpaRepository.findByName("test");

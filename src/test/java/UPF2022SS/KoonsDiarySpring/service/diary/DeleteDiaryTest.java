@@ -2,13 +2,13 @@ package UPF2022SS.KoonsDiarySpring.service.diary;
 
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
-import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
+import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -36,17 +35,24 @@ public class DeleteDiaryTest {
     @Autowired
     private DiaryService diaryService;
 
+
     @Autowired
-    private EntityManager em;
+    private ImageService imageService;
 
     @Test
     void delete_success_diary() throws Exception{
+        ImagePath imagePath = ImagePath.builder()
+                .path("profile1")
+                .build();
+
+        imageService.createImage(imagePath);
+
         User user = User.builder()
                 .username("test")
-                .password("cucumber52")
+                .userPwd("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
-                .imagePath("imagePath1")
+                .imagePath(imagePath)
                 .build();
 
         userService.join(user);
@@ -73,12 +79,18 @@ public class DeleteDiaryTest {
     @Test
     void delete_fail_diary() throws Exception{
         //given
+        ImagePath imagePath = ImagePath.builder()
+                .path("profile1")
+                .build();
+
+        imageService.createImage(imagePath);
+
         User user = User.builder()
                 .username("test")
-                .password("cucumber52")
+                .userPwd("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
-                .imagePath("imagePath1")
+                .imagePath(imagePath)
                 .build();
 
         userService.join(user);

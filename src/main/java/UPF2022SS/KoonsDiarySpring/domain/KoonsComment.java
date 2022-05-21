@@ -5,9 +5,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
 @Getter @Setter
 @Table(name = "koons_comment")
+@Entity
 public class KoonsComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

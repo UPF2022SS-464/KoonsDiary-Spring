@@ -8,11 +8,10 @@ import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 @Table(name = "user")
-@Entity
 @Getter
 @Builder
 @AllArgsConstructor
-@ToString
+@Entity
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +23,7 @@ public class User {
     private String username;
 
     @NotBlank
-    private String password;
+    private String userPwd;
 
     @Column(unique = true)
     @Email
@@ -36,8 +35,9 @@ public class User {
     @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
 
+    @OneToOne
     @JoinColumn(name = "image_id", nullable = false)
-    private Image image;
+    private ImagePath imagePath;
     /*
      * 유저네임, 닉네임, 이미지 아이디
      * 카카오 로그인
@@ -69,9 +69,9 @@ public class User {
         this.nickname = nickname;
     }
 
-    public void updateImage(Image image){
-        this.image = image;
+    public void updateImage(ImagePath imagePath){
+        this.imagePath = imagePath;
     }
 
-    public void updatePassword(String password){ this.password = password; }
+    public void updatePassword(String password){ this.userPwd = password; }
 }

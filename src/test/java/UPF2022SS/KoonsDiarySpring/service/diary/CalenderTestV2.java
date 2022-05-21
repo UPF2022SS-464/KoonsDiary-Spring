@@ -2,9 +2,11 @@ package UPF2022SS.KoonsDiarySpring.service.diary;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
+import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,8 @@ public class CalenderTestV2 {
     private UserJpaRepository userJpaRepository;
     @Autowired
     private DiaryJpaRepository diaryJpaRepository;
+    @Autowired
+    private ImageService imageService;
     @Autowired
     private DiaryService diaryService;
 
@@ -52,13 +56,19 @@ public class CalenderTestV2 {
 
     //유저 정보 설정
     private User setUser(){
+        ImagePath imagePath = ImagePath.builder()
+                .path("profile1")
+                .build();
+
+        imageService.createImage(imagePath);
+
         User user = User.builder()
                 .username("test")
-                .password("cucumber52")
+                .userPwd("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
-                .imagePath("imagePath1").build();
-
+                .imagePath(imagePath)
+                .build();
         userJpaRepository.save(user);
         user = userJpaRepository.findByName("test");
         return user;

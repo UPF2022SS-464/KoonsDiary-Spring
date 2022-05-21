@@ -1,9 +1,10 @@
 package UPF2022SS.KoonsDiarySpring.service;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.domain.User;
-import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
+import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,8 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
@@ -27,15 +26,20 @@ class tokenLoginTest {
     private AuthService authService;
     @Autowired
     private EntityManager em;
+    @Autowired
+    private ImageService imageService;
 
     @Test
     void tokenLogin() {
+
+
+        ImagePath imagePath = setImage();
         User user = User.builder()
                 .username("test")
                 .email("test@gmail.com")
-                .password("cucumber52")
+                .userPwd("cucumber52")
                 .nickname("test")
-                .imagePath("imagePath1")
+                .imagePath(imagePath)
                 .build();
         RefreshToken token = new RefreshToken(user, authService.createRefreshToken());
         userService.join(user);
@@ -51,5 +55,11 @@ class tokenLoginTest {
 
         System.out.println("response = " + response);
 
+    }
+
+    public ImagePath setImage(){
+        ImagePath imagePath = ImagePath.builder().path("profile1").build();
+        imageService.createImage(imagePath);
+        return imagePath;
     }
 }

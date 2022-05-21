@@ -4,12 +4,12 @@ import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiary;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
+import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
+import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
@@ -39,14 +37,24 @@ class GetDiaryListTest {
     @Autowired
     private DiaryService diaryService;
 
+    @Autowired
+    private ImageService imageService;
+
     @Test
     void getDiaryList() throws Exception{
+        ImagePath imagePath = ImagePath.builder()
+                .path("profile1")
+                .build();
+
+        imageService.createImage(imagePath);
+
+
         User user = User.builder()
                 .username("test")
-                .password("cucumber52")
+                .userPwd("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
-                .imagePath("imagePath1")
+                .imagePath(imagePath)
                 .build();
 
         userService.join(user);
@@ -72,12 +80,18 @@ class GetDiaryListTest {
 
     @Test
     void getDiary() throws Exception{
+        ImagePath imagePath = ImagePath.builder()
+                .path("profile1")
+                .build();
+
+        imageService.createImage(imagePath);
+
         User user = User.builder()
                 .username("test")
-                .password("cucumber52")
+                .userPwd("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
-                .imagePath("imagePath1")
+                .imagePath(imagePath)
                 .build();
 
         userService.join(user);

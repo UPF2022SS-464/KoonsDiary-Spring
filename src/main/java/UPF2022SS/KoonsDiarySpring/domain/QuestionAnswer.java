@@ -6,12 +6,12 @@ import javax.persistence.*;
 
 import static javax.persistence.FetchType.*;
 
-@Entity
 @Getter @Setter
 @Builder
 @Table(name = "question_answer")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class QuestionAnswer {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

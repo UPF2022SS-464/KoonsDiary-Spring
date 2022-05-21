@@ -86,7 +86,7 @@ public class AuthService {
 
         try {
             //비밀번호 일치 여부에 대한 부분
-            if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            if (passwordEncoder.matches(request.getPassword(), user.getUserPwd())) {
                 //토큰을 생성 후 , 메시지 응답과 함께 전달
                 final String accessToken = jwtService.createAccessToken(user.getId());
                 Login.Response response = new Login.Response(
