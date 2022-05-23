@@ -99,6 +99,7 @@ public class UserServiceImpl implements UserService{
     }
 
     //회원 중복 검사
+    @Override
     public boolean validateDuplicateUserId(String userId){
         User findUser = userJpaRepository.findByName(userId);
         if (findUser == null){
@@ -108,6 +109,7 @@ public class UserServiceImpl implements UserService{
     }
 
     //이메일을 통한 검사
+    @Override
     public boolean validateDuplicateUserEmail(String userEmail){
         User findUser = userJpaRepository.findByEmail(userEmail);
         if (findUser == null){
