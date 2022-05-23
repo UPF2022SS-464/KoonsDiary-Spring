@@ -22,6 +22,11 @@ public interface UserService {
     public ContainedUserResponse findByContainedUser(ContainedUserRequest cur);
     public void updateUser(User user, UpdateUser.Request request);
     public void deleteUser(Long id);
+
+
+    public boolean validateDuplicateUserId(String userId);
+    public boolean validateDuplicateUserEmail(String userEmail);
+
 //    public DefaultResponse login(LoginRequest loginRequest);
 
 }

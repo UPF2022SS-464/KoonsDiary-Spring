@@ -35,6 +35,18 @@ public class UserApiController {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
 
+    @PostMapping(value = "/user/validateId")
+    public Boolean isUsernameDuplicated(@Valid @RequestBody final ValidationId.Request validationId){
+        boolean result = userService.validateDuplicateUserId(validationId.getId());
+        return result;
+    }
+
+    @PostMapping(value = "/user/validateEmail")
+    public Boolean isEmailDuplicated(@Valid @RequestBody final ValidationEmail.Request validationEmail){
+        boolean result = userService.validateDuplicateUserEmail(validationEmail.getEmail());
+        return result;
+    }
+
     @PostMapping(value = "/user")
     public ResponseEntity<? extends Response> signUp(@Valid @RequestBody final SignUp.Request request){
             //이미지 반환
