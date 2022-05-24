@@ -7,6 +7,7 @@ import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
+import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import org.assertj.core.api.Assertions;
@@ -32,6 +33,9 @@ class GetDiaryListTest {
     private UserService userService;
 
     @Autowired
+    private UserJpaRepository userJpaRepository;
+
+    @Autowired
     private DiaryJpaRepository diaryJpaRepository;
 
     @Autowired
@@ -42,12 +46,8 @@ class GetDiaryListTest {
 
     @Test
     void getDiaryList() throws Exception{
-        ImagePath imagePath = ImagePath.builder()
-                .path("profile1")
-                .build();
 
-        imageService.createImage(imagePath);
-
+        ImagePath imagePath = imageService.findImage(1L).get();
 
         User user = User.builder()
                 .username("test")
@@ -57,8 +57,7 @@ class GetDiaryListTest {
                 .imagePath(imagePath)
                 .build();
 
-        userService.join(user);
-        User findUser = userService.findUsername("test");
+        userJpaRepository.save(user);
 
         for(int i = 0;i<4; i++) {
             List<String> comment = new ArrayList<>();
@@ -70,7 +69,7 @@ class GetDiaryListTest {
             }
 
             PostDiary.Request request = new PostDiary.Request("어제의 꿈은 오늘 잊혀지기 위해 존재한다.", comment);
-            diaryService.postDiary(request, findUser, files);
+            diaryService.postDiary(request, user, files);
         }
 
         DefaultResponse response = diaryService.getDiaryList(user);
@@ -80,11 +79,7 @@ class GetDiaryListTest {
 
     @Test
     void getDiary() throws Exception{
-        ImagePath imagePath = ImagePath.builder()
-                .path("profile1")
-                .build();
-
-        imageService.createImage(imagePath);
+        ImagePath imagePath = imageService.findImage(1L).get();
 
         User user = User.builder()
                 .username("test")
@@ -94,9 +89,8 @@ class GetDiaryListTest {
                 .imagePath(imagePath)
                 .build();
 
-        userService.join(user);
+        userJpaRepository.save(user);
 
-        User findUser = userService.findUsername("test");
 
         Diary diary = Diary.builder()
                 .user(user)
@@ -109,7 +103,7 @@ class GetDiaryListTest {
 
         diaryJpaRepository.save(diary);
 
-        DefaultResponse response = diaryService.getDiary(findUser, diary.getId());
+        DefaultResponse response = diaryService.getDiary(user, diary.getId());
         System.out.println("response = " + response);
     }
 

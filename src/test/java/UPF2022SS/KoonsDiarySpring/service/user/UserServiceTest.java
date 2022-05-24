@@ -3,6 +3,7 @@ import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
+import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.service.AuthService;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
@@ -22,6 +23,10 @@ import java.util.List;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class UserServiceTest {
+
+    @Autowired
+    private UserJpaRepository userJpaRepository;
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -149,13 +154,12 @@ class UserServiceTest {
                 .build();
 
 
-        ResponseEntity response = userService.join(user);
+        userJpaRepository.save(user);
 
-        User findUser = userService.findUsername(user.getUsername());
         String nickName= "orly";
-        findUser.updateNickname(nickName);
-        Assertions.assertThat(nickName).isEqualTo(findUser.getNickname());
-        System.out.println("findUser.getNickname() = " + findUser.getNickname());
+        user.updateNickname(nickName);
+        Assertions.assertThat(nickName).isEqualTo(user.getNickname());
+        System.out.println("findUser.getNickname() = " + user.getNickname());
     }
 
     @Test
@@ -164,8 +168,6 @@ class UserServiceTest {
         ImagePath imagePath = ImagePath.builder().path(path).build();
 
         imageService.createImage(imagePath);
-
-
 
         User user = User.builder()
                 .username("test")
@@ -176,11 +178,10 @@ class UserServiceTest {
                 .build();
 
 
-        ResponseEntity response = userService.join(user);
-        User findUser = userService.findUsername(user.getUsername());
+        userJpaRepository.save(user);
 
 
-        userService.deleteUser(findUser.getId());
+        userService.deleteUser(user.getId());
     }
 
     @Test
