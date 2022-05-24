@@ -60,6 +60,8 @@ public class UserApiController {
                     .imagePath(findImage.get())
                     .build();
 
+
+
             //response 반환
             ResponseEntity invalidation = userService.join(user);
 
