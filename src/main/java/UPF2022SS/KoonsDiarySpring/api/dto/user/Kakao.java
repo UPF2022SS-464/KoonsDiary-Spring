@@ -10,6 +10,13 @@ import javax.validation.constraints.NotBlank;
 public class Kakao {
 
     @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AccessDto{
+        private Long id;
+    }
+
+    @Data
     public static class SignUpRequset{
         @NotBlank
         private String kakaoToken;
@@ -22,6 +29,8 @@ public class Kakao {
 
         @NotBlank
         private Long imageId;
+
+
     }
 
     @Data

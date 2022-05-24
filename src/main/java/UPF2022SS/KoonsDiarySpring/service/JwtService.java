@@ -39,6 +39,7 @@ public class JwtService {
         catch (JWTCreationException jwtCreationException ){
             log.info(jwtCreationException.getLocalizedMessage());
         }
+
         return null;
     }
 

@@ -2,6 +2,7 @@ package UPF2022SS.KoonsDiarySpring.api.controller;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.user.*;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.Kakao.AccessDto;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp.Response;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
@@ -77,36 +78,13 @@ public class UserApiController {
      * 유저네임, 닉네임, 이미지 아이디
      * 카카오 로그인
      */
-    @PostMapping(value = "/kakaoUser")
-    public DefaultResponse kakaoSignUp(@Valid @RequestBody final KakaoSignUpRequest kakaoSignUpRequest){
+    @PostMapping(value = "/kakao")
+    public ResponseEntity<AccessDto> kakaoSignUp(@Valid @RequestHeader final String accessToken){
         try{
-            Optional<ImagePath> findImage = imageService.findImage(kakaoSignUpRequest.getImageId());
-
-            User user = User.builder().username(kakaoSignUpRequest.getUserId())
-                    .nickname(kakaoSignUpRequest.getNickname())
-                    .imagePath(findImage.get())
-                    .build();
-
-            //response 반환
-            DefaultResponse invalidation = userService.kakaoJoin(user);
-
-            if(invalidation.getStatus() == 409 || invalidation.getStatus()==600)
-                return invalidation;
-
-            RefreshToken token = new RefreshToken(user, authService.createRefreshToken());
-            user.setRefreshToken(token);
-            return null;
-//            DefaultResponse response = authService.signUpLogin(user, token.getValue());
-//
-//            return response;
-
+            ResponseEntity<AccessDto> accessDto = userService.kakaoJoin(accessToken);
+            return accessDto;
         } catch (Exception e){
-            log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.NOT_CONTENT,
-                    e.getMessage()
-            );
+            return ResponseEntity.badRequest().build();
         }
     }
 

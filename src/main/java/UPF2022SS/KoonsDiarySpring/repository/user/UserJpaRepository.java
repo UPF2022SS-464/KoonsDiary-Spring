@@ -16,4 +16,6 @@ public interface UserJpaRepository extends JpaRepository<User, Long>, UserReposi
 
     @Override
     List<User> findAllById(Iterable<Long> longs);
+
+    Optional<User> findByKakaoId(Long kakaoId);
 }
