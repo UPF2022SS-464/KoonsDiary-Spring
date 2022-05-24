@@ -61,14 +61,7 @@ class EmotionListTest {
 
     public ImagePath setImage(){
 
-        String path = "profile1";
-        ImagePath imagePath = ImagePath.builder()
-                .path(path)
-                .build();
-
-        imageJpaRepository.save(imagePath);
-
-        ImagePath findImagePath = imageJpaRepository.findByPath(path).get();
+        ImagePath findImagePath = imageJpaRepository.findById(1L).get();
 
         return findImagePath;
     }
@@ -84,7 +77,6 @@ class EmotionListTest {
 
         userJpaRepository.save(user);
 
-        User findUser = userJpaRepository.findByName("koon");
-        return findUser;
+        return user;
     }
 }

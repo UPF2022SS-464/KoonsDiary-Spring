@@ -30,7 +30,7 @@ class DiaryJpaRepositoryTest {
 
     @Test
     void save_diary_success(){
-        ImagePath imagePath = serImage();
+        ImagePath imagePath = setImage();
         User user = setUser(imagePath);
 
         userJpaRepository.save(user);
@@ -55,7 +55,7 @@ class DiaryJpaRepositoryTest {
     @Test
     void findById_diary_success(){
 
-        ImagePath imagePath = serImage();
+        ImagePath imagePath = setImage();
         User user = setUser(imagePath);
 
         String content = "Test Content";
@@ -81,7 +81,7 @@ class DiaryJpaRepositoryTest {
 
     @Test
     void findByAllUser_diary_success(){
-        ImagePath imagePath = serImage();
+        ImagePath imagePath = setImage();
         User user = setUser(imagePath);
 
         String content = "Test Content";
@@ -105,16 +105,9 @@ class DiaryJpaRepositoryTest {
         }
     }
 
-    public ImagePath serImage(){
+    public ImagePath setImage(){
 
-        String path = "profile1";
-        ImagePath imagePath = ImagePath.builder()
-                .path(path)
-                .build();
-
-        imageJpaRepository.save(imagePath);
-
-        ImagePath findImagePath = imageJpaRepository.findByPath(path).get();
+        ImagePath findImagePath = imageJpaRepository.findById(1L).get();
 
         return findImagePath;
     }
@@ -130,7 +123,6 @@ class DiaryJpaRepositoryTest {
 
         userJpaRepository.save(user);
 
-        User findUser = userJpaRepository.findByName("koon");
-        return findUser;
+        return user;
     }
 }

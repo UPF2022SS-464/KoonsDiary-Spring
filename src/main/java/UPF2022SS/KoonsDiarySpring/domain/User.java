@@ -38,12 +38,10 @@ public class User {
     @OneToOne
     @JoinColumn(name = "image_id", nullable = false)
     private ImagePath imagePath;
-    /*
-     * 유저네임, 닉네임, 이미지 아이디
-     * 카카오 로그인
-     */
 
-    private String fcmToken;
+    private Long kakaoId;
+
+    private Long fcmToken;
 
     @Builder.Default
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
