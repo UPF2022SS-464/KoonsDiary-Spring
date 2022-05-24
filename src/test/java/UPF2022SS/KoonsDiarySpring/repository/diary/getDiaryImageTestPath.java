@@ -59,9 +59,9 @@ class getDiaryImageTestPath {
 
     public ImagePath setImage(){
 
-        ImagePath findImagePath = imageJpaRepository.findById(1L).get();
-
-        return findImagePath;
+        ImagePath imagePath = ImagePath.builder().path("profileN").build();
+        imageJpaRepository.save(imagePath);
+        return imagePath;
     }
 
     public User setUser(ImagePath imagePath){
