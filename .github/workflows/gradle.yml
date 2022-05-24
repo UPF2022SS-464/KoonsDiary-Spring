@@ -53,12 +53,11 @@ jobs:
           touch src/main/resources/application-azure.yml
           echo $SECRET_AZURE_KEY > azure_enc.txt
           cat azure_enc.txt | base64 -d > src/main/resources/application-azure.yml
-        
 
       - name: Set up secret Key - test
         shell: bash
         env:
-#          SECRETS_DB_Test: ${{secrets.MYSQL_TEST}}
+          SECRETS_DB_Test: ${{secrets.MYSQL_TEST}}
           YML_SETTING: ${{secrets.YML_SETTING_TEST}}
           SECRET_AWS_S3: ${{secrets.AWS_S3}}
           SECRET_AWS_S3_CREDENTIALS: ${{secrets.AWS_S3_CREDENTAILS}}

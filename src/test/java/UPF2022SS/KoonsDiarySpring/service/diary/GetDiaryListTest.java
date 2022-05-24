@@ -7,6 +7,7 @@ import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
+import UPF2022SS.KoonsDiarySpring.repository.image.ImageJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
@@ -24,8 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Transactional
+
 @SpringBootTest
+@Transactional
 @ExtendWith(SpringExtension.class)
 class GetDiaryListTest {
 
@@ -44,10 +46,14 @@ class GetDiaryListTest {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private ImageJpaRepository imageJpaRepository;
+
     @Test
     void getDiaryList() throws Exception{
 
-        ImagePath imagePath = imageService.findImage(1L).get();
+        ImagePath imagePath = ImagePath.builder().path("profileN").build();
+        imageJpaRepository.save(imagePath);
 
         User user = User.builder()
                 .username("test")
@@ -79,7 +85,9 @@ class GetDiaryListTest {
 
     @Test
     void getDiary() throws Exception{
-        ImagePath imagePath = imageService.findImage(1L).get();
+        ImagePath imagePath = ImagePath.builder().path("profileN").build();
+        imageJpaRepository.save(imagePath);
+
 
         User user = User.builder()
                 .username("test")
