@@ -47,17 +47,15 @@ public class UserServiceImpl implements UserService{
     private final ImageService imageService;
 
     @Override
-    @Transactional
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR,reason = "데이터베이스 에러")
     public ResponseEntity<String> join(User user) throws RuntimeException{
         try {
             // 아이디와 이메일에 대한 유효성 검사
-            if (validateDuplicateUserId(user.getUsername())) {
+            if (!validateDuplicateUserId(user.getUsername())) {
                 return ResponseEntity
                         .status(409)
                         .body(ResponseMessage.DUPLICATED_USER);
 
-            } else if (validateDuplicateUserEmail(user.getEmail())) {
+            } else if (!validateDuplicateUserEmail(user.getEmail())) {
                 return ResponseEntity
                         .status(409)
                         .body(ResponseMessage.DUPLICATED_EMAIL);

@@ -18,8 +18,7 @@ public class RefreshToken {
     @Column(name = "refresh_token_id", nullable = false)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",nullable = false)
+    @OneToOne(mappedBy = "refreshToken")
     private User user;
 
     @Column(nullable = false)

@@ -32,7 +32,8 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
-    @OneToOne(mappedBy = "user", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne()
+    @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
 
     @OneToOne
