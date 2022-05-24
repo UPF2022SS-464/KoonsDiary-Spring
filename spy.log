@@ -370,3 +370,19 @@
 1653322549287|0|statement|connection 50|url jdbc:h2:mem:3b584e03-158c-4279-afad-b8c5636507d6|     drop table if exists share_group_member CASCADE |     drop table if exists share_group_member CASCADE 
 1653322549289|1|statement|connection 50|url jdbc:h2:mem:3b584e03-158c-4279-afad-b8c5636507d6|     drop table if exists user CASCADE |     drop table if exists user CASCADE 
 1653322549292|3|statement|connection 50|url jdbc:h2:mem:3b584e03-158c-4279-afad-b8c5636507d6|     drop sequence if exists hibernate_sequence|     drop sequence if exists hibernate_sequence
+1653384982163|1|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists diary CASCADE |     drop table if exists diary CASCADE 
+1653384982168|3|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists diary_image CASCADE |     drop table if exists diary_image CASCADE 
+1653384982171|2|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists image_path CASCADE |     drop table if exists image_path CASCADE 
+1653384982173|2|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists koons_comment CASCADE |     drop table if exists koons_comment CASCADE 
+1653384982173|0|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists question CASCADE |     drop table if exists question CASCADE 
+1653384982174|0|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists question_answer CASCADE |     drop table if exists question_answer CASCADE 
+1653384982174|0|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists question_reaction CASCADE |     drop table if exists question_reaction CASCADE 
+1653384982174|0|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists refresh_token CASCADE |     drop table if exists refresh_token CASCADE 
+1653384982179|5|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists share_group CASCADE |     drop table if exists share_group CASCADE 
+1653384982180|0|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists share_group_diary CASCADE |     drop table if exists share_group_diary CASCADE 
+1653384982182|1|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists share_group_diary_comment CASCADE |     drop table if exists share_group_diary_comment CASCADE 
+1653384982182|0|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists share_group_diary_image CASCADE |     drop table if exists share_group_diary_image CASCADE 
+1653384982184|2|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists share_group_invite CASCADE |     drop table if exists share_group_invite CASCADE 
+1653384982185|0|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists share_group_member CASCADE |     drop table if exists share_group_member CASCADE 
+1653384982185|0|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop table if exists user CASCADE |     drop table if exists user CASCADE 
+1653384982188|2|statement|connection 50|url jdbc:h2:mem:cff20d3b-4ca2-41bd-85e2-5285ffed38a3|     drop sequence if exists hibernate_sequence|     drop sequence if exists hibernate_sequence
