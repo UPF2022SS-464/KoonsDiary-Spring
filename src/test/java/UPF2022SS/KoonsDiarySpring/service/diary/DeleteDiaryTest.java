@@ -7,6 +7,7 @@ import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.diary.DiaryJpaRepository;
+import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ public class DeleteDiaryTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     private DiaryJpaRepository diaryJpaRepository;
@@ -55,9 +59,7 @@ public class DeleteDiaryTest {
                 .imagePath(imagePath)
                 .build();
 
-        userService.join(user);
-
-        User findUser = userService.findUserEmail(user.getUsername());
+        userJpaRepository.save(user);
 
         Diary diary = Diary.builder()
                 .user(user)
@@ -93,12 +95,10 @@ public class DeleteDiaryTest {
                 .imagePath(imagePath)
                 .build();
 
-        userService.join(user);
-
-        User findUser = userService.findUsername("test");
+        userJpaRepository.save(user);
 
         Diary diary = Diary.builder()
-                .user(findUser)
+                .user(user)
                 .writeDate(LocalDate.now())
                 .editionDate(LocalDateTime.now())
                 .content("테스트 내용입니다.")
