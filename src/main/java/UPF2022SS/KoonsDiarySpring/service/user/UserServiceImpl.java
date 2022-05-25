@@ -76,13 +76,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public ResponseEntity<AccessDto> kakaoJoin(String accessToken){
+    public ResponseEntity<AccessDto> getKakaoId(String accessToken){
         try{
         Long kakaoId = getKakaoToken(accessToken);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        LinkedMultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
             //아이디와 이메일에 대한 유효성 검사
             if (validateDuplicateKakaoId(kakaoId)){
@@ -174,6 +170,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findUserEmail(String email){
         return userJpaRepository.findByEmail(email);
+    }
+
+    @Override
+    public User findUserKakaoId(Long kakaoId) {
+        return userJpaRepository.findByKakaoId(kakaoId).get();
     }
 
     @Override

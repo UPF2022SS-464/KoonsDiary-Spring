@@ -41,8 +41,9 @@ src/main/resources/application-aws.yml
 src/main/resources/application.yml
 src/main/resources/application-credentials.yml
 src/main/resources/application-azure.yml
+src/main/resources/data.sql
 
-src/main/resources/
+#src/main/resources/
 #src/test/resources/application-credentials.yml
 #src/test/resources/application-aws.yml
 #src/test/resources/application-azure.yml

@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+import static UPF2022SS.KoonsDiarySpring.api.dto.user.Kakao.*;
+import static UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp.*;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -36,20 +39,20 @@ public class UserApiController {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
 
+    // 아이디 유효성 검증 api
     @PostMapping(value = "/user/validateId")
     public Boolean isUsernameDuplicated(@Valid @RequestBody final ValidationId.Request validationId){
-        boolean result = userService.validateDuplicateUserId(validationId.getId());
-        return result;
+        return userService.validateDuplicateUserId(validationId.getId());
     }
 
+    // 이메일 유효성 검증 api
     @PostMapping(value = "/user/validateEmail")
     public Boolean isEmailDuplicated(@Valid @RequestBody final ValidationEmail.Request validationEmail){
-        boolean result = userService.validateDuplicateUserEmail(validationEmail.getEmail());
-        return result;
+        return userService.validateDuplicateUserEmail(validationEmail.getEmail());
     }
 
     @PostMapping(value = "/user")
-    public ResponseEntity<? extends Response> signUp(@Valid @RequestBody final SignUp.Request request){
+    public ResponseEntity<? extends Response> signUpWithAccount(@Valid @RequestBody final Request request){
             //이미지 반환
             Optional<ImagePath> findImage = imageService.findImage(request.getImageId());
 
@@ -59,8 +62,6 @@ public class UserApiController {
                     .nickname(request.getNickname())
                     .imagePath(findImage.get())
                     .build();
-
-
 
             //response 반환
             ResponseEntity invalidation = userService.join(user);
@@ -77,22 +78,47 @@ public class UserApiController {
     }
 
     /*
-     * 유저네임, 닉네임, 이미지 아이디
-     * 카카오 로그인
+     * 카카오 아이디 반환
      */
     @PostMapping(value = "/kakao")
-    public ResponseEntity<AccessDto> kakaoSignUp(@Valid @RequestHeader final String accessToken){
+    public ResponseEntity<AccessDto> getKakaoId(@Valid @RequestHeader final String accessToken){
         try{
-            ResponseEntity<AccessDto> accessDto = userService.kakaoJoin(accessToken);
+            ResponseEntity<AccessDto> accessDto = userService.getKakaoId(accessToken);
             return accessDto;
         } catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
     }
 
+    @PostMapping(value = "/user/kakaoSignUp")
+    public ResponseEntity<SignUpResponse> signUpWithKakao(@Valid @RequestBody SignUpRequset signUpRequset){
+        try{
+            ImagePath imagePath = imageService.findImage(signUpRequset.getImageId()).get();
+
+            User user = User.builder()
+                    .username(signUpRequset.getUserId())
+                    .userPwd(passwordEncoder.encode(signUpRequset.getPassword()))
+                    .nickname(signUpRequset.getNickname())
+                    .kakaoId(signUpRequset.getKakaoId())
+                    .imagePath(imagePath)
+                    .build();
+
+            userService.join(user);
+
+            SignUpResponse signUpResponse = new SignUpResponse(jwtService.createAccessToken(user.getId()));
+
+            return ResponseEntity.ok().body(signUpResponse);
+        }
+        catch (Exception e){
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
     //헤더 지울것
     //회원가입 시 자동로그인, 로그인 시 자동로그인을 위해 리프레시토큰으로 자동로그인, 리퀘스트 로그인
-    @PostMapping(value = "/requestLogin")
+    @PostMapping(value = "/login/account")
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public DefaultResponse<Login.Response> login(@RequestBody final Login.Request request){
             User findUser;
@@ -117,8 +143,8 @@ public class UserApiController {
             return authService.requestLogin(request, findUser.getRefreshToken().getValue());
         }
 
-        //토큰을 통한 로그인
-        @GetMapping(value = "/tokenLogin")
+        // 토큰을 통한 로그인
+        @GetMapping(value = "/login/token")
         public DefaultResponse<Login.Response> tokenLogin(@RequestHeader("Authorization") final String header){
         try{
             if (header == null) {
@@ -137,6 +163,24 @@ public class UserApiController {
                     ResponseMessage.DB_ERROR);
             }
         }
+
+        //카카오 아아디를 통한 로그인
+       @GetMapping(value = "/login/kakao")
+        public ResponseEntity<SignInResponse> signInWithKakao(@RequestBody final SignInRequset requset){
+            try{
+                User user = userService.findUserKakaoId(requset.getKakaoId());
+
+                SignInResponse signInResponse = new SignInResponse(jwtService.createAccessToken(user.getId()));
+
+                return ResponseEntity.ok().body(signInResponse);
+            }
+            catch (Exception e){
+                log.error(e.getMessage());
+                return ResponseEntity.badRequest().build();
+            }
+        }
+
+
 
     //유저 정보 get api
     @GetMapping(value = "/user")
@@ -173,7 +217,9 @@ public class UserApiController {
         }
     }
 
-    //유저 정보(닉네임) 변경 api
+
+
+    //유저 정보(닉네임, 비밀번호, 이미지) 변경 api
     @PatchMapping(value="/user")
     public DefaultResponse<UpdateUser.Response> updateUser(
             @RequestHeader("Authorization") final String header,
@@ -205,16 +251,13 @@ public class UserApiController {
 
     // 회원정보 삭제 api
     @DeleteMapping(value = "/user")
-    public DefaultResponse<DeleteUser.Response> deleteUser(
+    public ResponseEntity<Object> deleteUser(
             @RequestHeader("Authorization") final String header
             ){
 
         try {
             if(header == null){
-                return DefaultResponse.response(
-                        StatusCode.UNAUTHORIZED,
-                        ResponseMessage.UNAUTHORIZED
-                );
+                return ResponseEntity.badRequest().body(ResponseMessage.BAD_REQUEST);
             }
             Long userId = jwtService.decodeAccessToken(header);
             User findUser = userService.findById(userId);
@@ -222,20 +265,10 @@ public class UserApiController {
             String result = "삭제가 완료되었습니다.";
 
             DeleteUser.Response response = new DeleteUser.Response(result);
-            return DefaultResponse
-                    .response(
-                            StatusCode.OK,
-                            ResponseMessage.USER_DELETE_SUCCESS,
-                            response
-                    );
-
+            return ResponseEntity.ok().body(ResponseMessage.USER_DELETE_SUCCESS);
         } catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse
-                    .response(
-                            StatusCode.DB_ERROR,
-                            ResponseMessage.USER_DELETE_FAIL
-                    );
+            return ResponseEntity.badRequest().body(ResponseMessage.BAD_REQUEST);
             }
         }
 
