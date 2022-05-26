@@ -26,6 +26,8 @@ import java.util.Optional;
 
 import static UPF2022SS.KoonsDiarySpring.api.dto.user.Kakao.*;
 import static UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp.*;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CONFLICT;
 
 @Slf4j
 @RestController
@@ -52,7 +54,19 @@ public class UserApiController {
     }
 
     @PostMapping(value = "/user")
-    public ResponseEntity<? extends Response> signUpWithAccount(@Valid @RequestBody final Request request){
+    public ResponseEntity signUpWithAccount(@Valid @RequestBody final Request request){
+
+            if(!userService.validateDuplicateUserId(request.getUserId())){
+                return ResponseEntity
+                        .status(CONFLICT)
+                        .body(ResponseMessage.DUPLICATED_USER);
+            }
+            else if(!userService.validateDuplicateUserEmail(request.getEmail())){
+                return ResponseEntity
+                        .status(CONFLICT)
+                        .body(ResponseMessage.DUPLICATED_EMAIL);
+            }
+
             //이미지 반환
             Optional<ImagePath> findImage = imageService.findImage(request.getImageId());
 
@@ -63,17 +77,16 @@ public class UserApiController {
                     .imagePath(findImage.get())
                     .build();
 
-            //response 반환
-            ResponseEntity invalidation = userService.join(user);
-
-            if(invalidation.getStatusCodeValue()==409){
-                return invalidation;
-            }
-
             RefreshToken token = new RefreshToken(user, authService.createRefreshToken());
             refreshTokenService.save(token);
             user.setRefreshToken(token);
 
+            //response 반환
+            ResponseEntity invalidation = userService.join(user);
+
+            if(invalidation.getStatusCode().equals(CONFLICT)){
+                return invalidation;
+            }
             return authService.signUpLogin(user, token.getValue());
     }
 
@@ -119,7 +132,7 @@ public class UserApiController {
     //헤더 지울것
     //회원가입 시 자동로그인, 로그인 시 자동로그인을 위해 리프레시토큰으로 자동로그인, 리퀘스트 로그인
     @PostMapping(value = "/login/account")
-    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public DefaultResponse<Login.Response> login(@RequestBody final Login.Request request){
             User findUser;
             //아이디 형식이 이메일일 경우

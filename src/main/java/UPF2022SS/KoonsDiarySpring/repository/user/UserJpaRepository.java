@@ -18,4 +18,5 @@ public interface UserJpaRepository extends JpaRepository<User, Long>, UserReposi
     List<User> findAllById(Iterable<Long> longs);
 
     Optional<User> findByKakaoId(Long kakaoId);
+    Optional<User> findByEmail(String email);
 }

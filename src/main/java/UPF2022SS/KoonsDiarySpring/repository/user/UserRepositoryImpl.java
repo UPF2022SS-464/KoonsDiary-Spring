@@ -29,13 +29,13 @@ public class UserRepositoryImpl implements UserRepository {
                 .fetchOne();
     }
 
-    @Override
-    public User findByEmail(String email){
-        return jqf.select(user)
-                .from(user)
-                .where(user.email.eq(email))
-                .fetchOne();
-    }
+//    @Override
+//    public User findByEmail(String email){
+//        return jqf.select(user)
+//                .from(user)
+//                .where(user.email.eq(email))
+//                .fetchOne();
+//    }
 
     @Override
     public List<User> findByContainedName(String username) {

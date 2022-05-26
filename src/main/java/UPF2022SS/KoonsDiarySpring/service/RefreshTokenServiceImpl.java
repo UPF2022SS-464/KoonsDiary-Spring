@@ -32,7 +32,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
     public String updateToken(String token) {
         RefreshToken findToken = refreshTokenJpaRepository.findByValue(token);
         String renewalToken = jwtService.createRefreshToken();
-        findToken.renewalRefreshToken(renewalToken);
+        findToken.updateRefreshToken(renewalToken);
         return renewalToken;
     }
 
