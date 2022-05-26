@@ -18,7 +18,7 @@ public class RefreshToken {
     @Column(name = "refresh_token_id", nullable = false)
     private Long id;
 
-    @OneToOne(mappedBy = "refreshToken")
+    @OneToOne(mappedBy = "refreshToken", cascade = CascadeType.ALL)
     private User user;
 
     @Column(nullable = false)
@@ -39,7 +39,7 @@ public class RefreshToken {
         user.setRefreshToken(null);
     }
 
-    public void renewalRefreshToken(final String value){
+    public void updateRefreshToken(final String value){
         this.value = value;
     }
 //    public RefreshToken(){} //-> 접근을 위한 일반 생성자 선언

@@ -32,7 +32,7 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
 

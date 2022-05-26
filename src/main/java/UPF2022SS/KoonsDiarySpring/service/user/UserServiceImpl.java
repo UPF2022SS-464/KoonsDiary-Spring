@@ -4,10 +4,8 @@ import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.user.UpdateUser;
-import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
-import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 
@@ -21,14 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +31,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static UPF2022SS.KoonsDiarySpring.api.dto.user.Kakao.*;
+import static UPF2022SS.KoonsDiarySpring.common.ResponseMessage.*;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @Service
@@ -47,26 +44,16 @@ public class UserServiceImpl implements UserService{
     private final ImageService imageService;
 
     @Override
-    public ResponseEntity<String> join(User user) throws RuntimeException{
+    @Transactional
+    public ResponseEntity<String> join(User user){
         try {
-            // 아이디와 이메일에 대한 유효성 검사
-            if (!validateDuplicateUserId(user.getUsername())) {
-                return ResponseEntity
-                        .status(409)
-                        .body(ResponseMessage.DUPLICATED_USER);
-
-            } else if (!validateDuplicateUserEmail(user.getEmail())) {
-                return ResponseEntity
-                        .status(409)
-                        .body(ResponseMessage.DUPLICATED_EMAIL);
-            }
-
             // 유저 정보 저장
             userJpaRepository.save(user);
 
             return ResponseEntity.ok()
-                    .header(ResponseMessage.USER_CREATE_SUCCESS)
+                    .header(USER_CREATE_SUCCESS)
                     .build();
+
         }catch (Exception e){
             log.error(e.getMessage());
             return ResponseEntity
@@ -128,27 +115,21 @@ public class UserServiceImpl implements UserService{
     //회원 중복 검사
     @Override
     public boolean validateDuplicateUserId(String userId){
-        User findUser = userJpaRepository.findByName(userId);
-        if (findUser == null){
-            return false;
-        }
-        return true;
-    }
-
-    //카카오 아이디 중복 검사
-    public boolean validateDuplicateKakaoId(Long kakaoId){
-        Optional<User> findUser = userJpaRepository.findByKakaoId(kakaoId);
+        Optional<User> findUser = userJpaRepository.findByUsername(userId);
         return findUser.isEmpty();
     }
 
     //이메일을 통한 검사
     @Override
     public boolean validateDuplicateUserEmail(String userEmail){
-        User findUser = userJpaRepository.findByEmail(userEmail);
-        if (findUser == null){
-            return false;
-        }
-        return true;
+        Optional<User> findUser = userJpaRepository.findByEmail(userEmail);
+       return findUser.isEmpty();
+    }
+
+    //카카오 아이디 중복 검사
+    public boolean validateDuplicateKakaoId(Long kakaoId){
+        Optional<User> findUser = userJpaRepository.findByKakaoId(kakaoId);
+        return findUser.isEmpty();
     }
 
     @Override
@@ -169,7 +150,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User findUserEmail(String email){
-        return userJpaRepository.findByEmail(email);
+        return userJpaRepository.findByEmail(email).get();
     }
 
     @Override
