@@ -192,14 +192,14 @@ public class UserApiController {
 
     //유저 정보 get api
     @GetMapping(value = "/user")
-    public DefaultResponse getUser(@RequestHeader("Authorization") final String header){
+    public ResponseEntity<Object> getUser(@RequestHeader("Authorization") final String header){
         try{
             if (header == null){
-                return DefaultResponse.response(
-                        StatusCode.UNAUTHORIZED,
-                        ResponseMessage.UNAUTHORIZED
-                );
+                return ResponseEntity
+                        .status(UNAUTHORIZED)
+                        .body(ResponseMessage.UNAUTHORIZED);
             }
+
             Long userId = jwtService.decodeAccessToken(header);
             User findUser = userService.findById(userId);
 
@@ -214,14 +214,13 @@ public class UserApiController {
                     ResponseMessage.USER_SEARCH_SUCCESS,
                     userInfoResponse
             );
-            return response;
+            return ResponseEntity.ok().body(response);
 
         }catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.DB_ERROR,
-                    ResponseMessage.USER_SEARCH_FAIL
-            );
+            return ResponseEntity
+                    .internalServerError()
+                    .body(ResponseMessage.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -229,16 +228,15 @@ public class UserApiController {
 
     //유저 정보(닉네임, 비밀번호, 이미지) 변경 api
     @PatchMapping(value="/user")
-    public DefaultResponse<UpdateUser.Response> updateUser(
+    public ResponseEntity<Object> updateUser(
             @RequestHeader("Authorization") final String header,
             @RequestBody UpdateUser.Request request
             ){
         try{
             if (header == null){
-                return DefaultResponse.response(
-                        StatusCode.UNAUTHORIZED,
-                        ResponseMessage.UNAUTHORIZED
-                );
+                return ResponseEntity
+                        .status(UNAUTHORIZED)
+                        .body(ResponseMessage.UNAUTHORIZED);
             }
 
             Long userId = jwtService.decodeAccessToken(header);
@@ -251,9 +249,10 @@ public class UserApiController {
             UpdateUser.Response response = new UpdateUser.Response(result);
 
             //사용자가 공유일기에 작성했던 모든 기록들의 닉네임을 변경해야 할 필요가 있다.
-            return DefaultResponse.response(StatusCode.OK, ResponseMessage.USER_UPDATE_SUCCESS, response);
+            return ResponseEntity.ok().body(response);
         }catch (Exception e){
-            return DefaultResponse.response(StatusCode.DB_ERROR,ResponseMessage.USER_UPDATE_FAIL);
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(ResponseMessage.USER_UPDATE_FAIL);
             }
         }
 
@@ -282,19 +281,19 @@ public class UserApiController {
 
         //그룹 초대 시, 유저의 리스트를 찾기 위한 api
         @PostMapping(value = "/user/find")
-        public DefaultResponse findUser(@RequestBody ContainedUserRequest cur){
+        public ResponseEntity<Object> findUser(@RequestBody ContainedUserRequest cur){
             ContainedUserResponse users=  userService.findByContainedUser(cur);
             try{
-                return DefaultResponse.response(
-                        StatusCode.OK,
-                        ResponseMessage.USER_SEARCH_SUCCESS,
-                        users
-                );
+                return ResponseEntity
+                        .ok()
+                        .body(users);
+
             } catch (Exception e){
-                return DefaultResponse.response(
-                        StatusCode.DB_ERROR,
-                        ResponseMessage.INVALID_USER
-                );
+                log.error(e.getMessage());
+                return ResponseEntity
+                        .status(I_AM_A_TEAPOT).
+                        body(ResponseMessage.USER_SEARCH_FAIL);
+
             }
         }
     }
