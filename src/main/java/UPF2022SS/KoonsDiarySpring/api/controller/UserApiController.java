@@ -3,7 +3,6 @@ package UPF2022SS.KoonsDiarySpring.api.controller;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.*;
 import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.Kakao.AccessDto;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp.Response;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
@@ -16,7 +15,6 @@ import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -132,8 +130,7 @@ public class UserApiController {
     //헤더 지울것
     //회원가입 시 자동로그인, 로그인 시 자동로그인을 위해 리프레시토큰으로 자동로그인, 리퀘스트 로그인
     @PostMapping(value = "/login/account")
-//    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public DefaultResponse<Login.Response> login(@RequestBody final Login.Request request){
+    public ResponseEntity<Object> login(@RequestBody final Login.Request request){
             User findUser;
             //아이디 형식이 이메일일 경우
             if (request.getUserId().contains("@")){
@@ -146,10 +143,9 @@ public class UserApiController {
 
             //찾아낸 사용자가 없을 경우
             if(findUser == null){
-                return DefaultResponse.response(
-                        StatusCode.UNAUTHORIZED,
-                        ResponseMessage.NOT_FOUND_USER
-                    );
+                return ResponseEntity
+                        .status(UNAUTHORIZED)
+                        .body(ResponseMessage.INVALID_USER);
                 }
 
             authService.checkExpirationDate(findUser);
@@ -158,22 +154,21 @@ public class UserApiController {
 
         // 토큰을 통한 로그인
         @GetMapping(value = "/login/token")
-        public DefaultResponse<Login.Response> tokenLogin(@RequestHeader("Authorization") final String header){
+        public ResponseEntity<Object> tokenLogin(@RequestHeader("Authorization") final String header){
         try{
             if (header == null) {
-                return DefaultResponse.response(
-                        StatusCode.BAD_REQUEST,
-                        ResponseMessage.BAD_REQUEST
-                );
+                return ResponseEntity
+                        .badRequest()
+                        .body(ResponseMessage.BAD_REQUEST);
             }
 
             return authService.tokenLogin(header);
 
         }catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.DB_ERROR,
-                    ResponseMessage.DB_ERROR);
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.BAD_REQUEST);
             }
         }
 
