@@ -12,6 +12,7 @@ import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -76,7 +77,7 @@ public class AuthService {
     만료시 refresh token 재발급
     만료 이전일 경우 access token 발급
      */
-    public DefaultResponse<Login.Response> requestLogin(final Login.Request request, String refreshToken) {
+    public ResponseEntity<Object> requestLogin(final Login.Request request, String refreshToken) {
 
         final User user = userJpaRepository.findByName(request.getUserId());
 
@@ -91,30 +92,39 @@ public class AuthService {
                         accessToken,
                         refreshToken
                 );
-                return new DefaultResponse<Login.Response>(StatusCode.OK, ResponseMessage.LOGIN_SUCCESS, response);
+                return  ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(response);
                 }
-                return new DefaultResponse<>(StatusCode.UNAUTHORIZED, ResponseMessage.LOGIN_FAIL);
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED).
+                        body(ResponseMessage.LOGIN_FAIL);
+
             } catch (Exception e) {
-            return DefaultResponse.response(
-                    StatusCode.UNAUTHORIZED,
-                    ResponseMessage.LOGIN_FAIL
-                );
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseMessage.LOGIN_FAIL);
         }
     }
 
-    public DefaultResponse<Login.Response> tokenLogin(final String token){
+    public ResponseEntity<Object> tokenLogin(final String token){
      try{
          RefreshToken refreshToken = refreshTokenJpaRepository.findByValue(token);
 
         if(refreshToken == null){
-            return new DefaultResponse<>(StatusCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
+            return ResponseEntity
+                    .badRequest().
+                    body(ResponseMessage.BAD_REQUEST);
         }
 
          User user = refreshToken.getUser();
 
          //회원이 존재하지 않을 경우에 대한 응답
         if (user == null) {
-            return new DefaultResponse<>(StatusCode.UNAUTHORIZED, ResponseMessage.INVALID_USER);
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body(ResponseMessage.INVALID_USER);
         }
 
          checkExpirationDate(user);
@@ -127,11 +137,11 @@ public class AuthService {
                  accessToken,
                  user.getRefreshToken().getValue()
          );
-         return new DefaultResponse<>(StatusCode.OK, ResponseMessage.LOGIN_SUCCESS, response);
+         return ResponseEntity.ok().body(response);
 
      }catch (Exception e){
         log.error(e.getMessage());
-        return new DefaultResponse<>(StatusCode.INTERNAL_SERVER_ERROR, ResponseMessage.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.internalServerError().body(ResponseMessage.INTERNAL_SERVER_ERROR);
      }
     }
 }

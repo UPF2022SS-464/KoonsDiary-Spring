@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +52,7 @@ class tokenLoginTest {
         System.out.println("user.getId() = " + user.getId());
         System.out.println("user.getRefreshToken() = " + user.getRefreshToken().getValue());
 
-        DefaultResponse response = authService.tokenLogin(user.getRefreshToken().getValue());
+        ResponseEntity response = authService.tokenLogin(user.getRefreshToken().getValue());
 
         System.out.println("response = " + response);
 
