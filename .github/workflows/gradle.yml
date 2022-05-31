@@ -39,7 +39,7 @@ jobs:
 
         run: |
           touch src/main/resources/application.yml
-          echo $YML_SETTING_V2 > main_enc.txt
+          echo $YML_SETTING > main_enc.txt
           cat main_enc.txt | base64 -d > src/main/resources/application.yml
           
           touch src/main/resources/application-aws.yml

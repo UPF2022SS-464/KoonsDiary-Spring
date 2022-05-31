@@ -28,12 +28,11 @@ public class S3ServiceImpl implements S3Service {
     private final AmazonS3Client amazonS3Client;
     private final S3Component component;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
+//    @Value("${cloud.aws.s3.bucket}")
+//    private String bucketName;
 
     @Override
     public String uploadFile(MultipartFile multipartFile, User user) {
-
         validateFileExists(multipartFile);
         String fileName = CommonUtils.buildFileName(user.getId().toString(), multipartFile.getOriginalFilename());
 
@@ -43,8 +42,8 @@ public class S3ServiceImpl implements S3Service {
         try(InputStream inputStream = multipartFile.getInputStream()){
             amazonS3Client.putObject(
                     new PutObjectRequest(
-//                            component.getBucket(),
-                            bucketName,
+                            component.getBucket(),
+//                            bucketName,
                             fileName,
                             inputStream,
                             objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
@@ -57,7 +56,7 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public byte[] downloadFile(String imagePath) {
-        S3Object s3Object = amazonS3Client.getObject(bucketName, imagePath);
+        S3Object s3Object = amazonS3Client.getObject(component.getBucket(), imagePath);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
         try {
             return IOUtils.toByteArray(inputStream);
@@ -78,7 +77,7 @@ public class S3ServiceImpl implements S3Service {
         }
     }
     private void validateFileExistsAtUrl(String resourcePath) throws FileNotFoundException {
-        if (!amazonS3Client.doesObjectExist(bucketName, resourcePath)) {
+        if (!amazonS3Client.doesObjectExist(component.getBucket(), resourcePath)) {
             throw new FileNotFoundException();
         }
     }
