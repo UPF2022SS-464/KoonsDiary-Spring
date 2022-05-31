@@ -79,26 +79,24 @@ public class DiaryApiController {
     * 다이어리 리스트 반환하는 API
     */
     @GetMapping(value = "/diarys")
-    public DefaultResponse getDiaryList(
+    public ResponseEntity<Object> getDiaryList(
             @RequestHeader("Authorization") final String header
     ){
         if(header == null){
-            return DefaultResponse
-                    .response(
-                            StatusCode.UNAUTHORIZED,
-                            ResponseMessage.UNAUTHORIZED
-                    );
+            ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.BAD_REQUEST);
         }
+
         User user = (User)userService.findById(jwtService.decodeAccessToken(header));
+
         if(user == null){
-            return DefaultResponse
-                    .response(
-                            StatusCode.BAD_REQUEST,
-                            ResponseMessage.NOT_FOUND_USER
-                    );
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body(ResponseMessage.NOT_FOUND_USER);
+
         }
-        DefaultResponse response = diaryService.getDiaryList(user);
-        return response;
+        return diaryService.getDiaryList(user);
     }
 
     /*
@@ -141,28 +139,22 @@ public class DiaryApiController {
      * 다이어리를 반환하는 API
      */
     @GetMapping(value = "/diary/{id}")
-    public DefaultResponse getDiaryV1(
+    public ResponseEntity<Object> getDiaryV1(
             @RequestHeader("Authorization") final String header, @PathVariable("id") Long id
             ){
 
         if(header == null){
-            return DefaultResponse
-                    .response(
-                            StatusCode.UNAUTHORIZED,
-                            ResponseMessage.UNAUTHORIZED
-                    );
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseMessage.UNAUTHORIZED);
         }
         User user = (User)userService.findById(jwtService.decodeAccessToken(header));
         if(user == null){
-            return DefaultResponse
-                    .response(
-                            StatusCode.BAD_REQUEST,
-                            ResponseMessage.NOT_FOUND_USER
-                    );
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body(ResponseMessage.NOT_FOUND_USER);
         }
-        DefaultResponse response = diaryService.getDiary(user, id);
-
-        return response;
+        return diaryService.getDiary(user, id);
     }
 
     @GetMapping(value = "/diary/emotion/{start}/{end}")

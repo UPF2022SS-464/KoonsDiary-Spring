@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,7 +104,7 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DefaultResponse<GetDiary.Response> getDiary(User user, Long id) {
+    public ResponseEntity<Object> getDiary(User user, Long id) {
         try{
             Optional<Diary> diary = diaryJpaRepository.findById(id);
 
@@ -135,23 +136,20 @@ public class DiaryServiceImpl implements DiaryService{
                     comments
             );
 
-            return DefaultResponse.response(
-                    StatusCode.OK,
-                    ResponseMessage.DIARY_GET_SUCCESS,
-                    response
-            );
+            return ResponseEntity
+                    .ok()
+                    .body(ResponseMessage.DIARY_GET_SUCCESS);
         }
         catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.DIARY_GET_FAIL
-            );
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseMessage.DIARY_GET_FAIL);
         }
     }
 
     @Override
-    public DefaultResponse getDiaryList(User user) {
+    public ResponseEntity<Object> getDiaryList(User user) {
 
         List<Diary> diaryList = diaryJpaRepository.findAllById(user.getId());
 
@@ -177,19 +175,15 @@ public class DiaryServiceImpl implements DiaryService{
                     .diaryListJsonData(json)
                     .build();
 
-            return DefaultResponse.response(
-                    StatusCode.OK,
-                    ResponseMessage.DIARY_GET_SUCCESS,
-                    diaryListResponse
-            );
+            return ResponseEntity
+                    .ok()
+                    .body(diaryListResponse);
 
         }catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.DIARY_GET_FAIL,
-                    e.getMessage()
-            );
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseMessage.DIARY_GET_FAIL);
         }
     }
 
