@@ -244,15 +244,14 @@ public class DiaryServiceImpl implements DiaryService{
     // return void value
     @Override
     @Transactional
-    public DefaultResponse deleteDiary(Long id) {
+    public ResponseEntity<Object> deleteDiary(Long id) {
 
         Optional<Diary> diary = diaryJpaRepository.findById(id);
 
         if(diary.isEmpty()){
-            return DefaultResponse.response(
-                    StatusCode.BAD_REQUEST,
-                    ResponseMessage.INVALID_DIARY
-            );
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.INVALID_DIARY);
         }
 
         try {
@@ -262,19 +261,16 @@ public class DiaryServiceImpl implements DiaryService{
                     .id(id)
                     .build();
 
-            return DefaultResponse.response(
-                    StatusCode.OK,
-                    ResponseMessage.DIARY_DELETE_SUCCESS,
-                    response
-            );
+            return ResponseEntity
+                    .ok()
+                    .body(id);
+
         }catch (Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             log.error(e.getMessage());
-            e.printStackTrace();
-            return DefaultResponse.response(
-                    StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.Diary_DELETE_FAIL
-            );
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseMessage.Diary_DELETE_FAIL);
         }
     }
 

@@ -21,7 +21,7 @@ public interface DiaryService {
 
     public ResponseEntity<Object> patchDiary(PatchDiaryRequest request, List<String> files);
 
-    public DefaultResponse deleteDiary(Long id);
+    public ResponseEntity<Object> deleteDiary(Long id);
 
     public DefaultResponse getDiaryByLocalDate(User user, LocalDate date);
 
