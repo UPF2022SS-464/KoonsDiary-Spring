@@ -32,6 +32,7 @@ public class DiaryApiController {
     private final JwtService jwtService;
     private final UserService userService;
 
+    //다이어리 포스팅 api
     @PostMapping(value = "/diary")
     public ResponseEntity<Object> postDiary(
             @Validated
@@ -137,7 +138,7 @@ public class DiaryApiController {
 
     /*
      * 다이어리를 반환하는 API
-     */
+    */
     @GetMapping(value = "/diary/{id}")
     public ResponseEntity<Object> getDiaryV1(
             @RequestHeader("Authorization") final String header, @PathVariable("id") Long id
@@ -157,36 +158,33 @@ public class DiaryApiController {
         return diaryService.getDiary(user, id);
     }
 
+    // 날짜에 따른 사용자의 감정 집합 조회 api
     @GetMapping(value = "/diary/emotion/{start}/{end}")
-    public DefaultResponse getEmotion(@RequestHeader final String header,
+    public ResponseEntity<Object> getEmotion(@RequestHeader final String header,
                                       @PathVariable("start") final String start,
                                       @PathVariable("end") final String end){
         if(header == null){
-            return DefaultResponse
-                    .response(
-                            StatusCode.UNAUTHORIZED,
-                            ResponseMessage.UNAUTHORIZED
-                    );
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseMessage.UNAUTHORIZED);
         }
         User user = (User)userService.findById(jwtService.decodeAccessToken(header));
         if(user == null){
-            return DefaultResponse
-                    .response(
-                            StatusCode.BAD_REQUEST,
-                            ResponseMessage.NOT_FOUND_USER
-                    );
+            return  ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.BAD_REQUEST);
         }
         try{
 
             LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
             LocalDate endDate = LocalDate.parse(end, DateTimeFormatter.ISO_DATE);
 
-            DefaultResponse response = diaryService.getEmotionListByLocalDate(user, startDate, endDate);
-
-            return response;
+            return diaryService.getEmotionListByLocalDate(user, startDate, endDate);
         }catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(StatusCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.BAD_REQUEST);
         }
     }
 
@@ -194,17 +192,16 @@ public class DiaryApiController {
      * 다이어리 업데이트 반환하는 API
     */
     @PatchMapping(value = "/diary")
-    public DefaultResponse patchDiary(
+    public ResponseEntity<Object> patchDiary(
             @RequestHeader final  String header,
             @RequestPart final PatchDiaryRequest request,
             @RequestPart final List<MultipartFile> files
             ) {
 
         if (header == null) {
-            return DefaultResponse.response(
-                    StatusCode.UNAUTHORIZED,
-                    ResponseMessage.UNAUTHORIZED
-            );
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseMessage.UNAUTHORIZED);
         }
             try {
                 User user = userService.findById(jwtService.decodeAccessToken(header));
@@ -215,15 +212,10 @@ public class DiaryApiController {
                     String fileUrl = s3Service.uploadFile(file, user);
                     fileUrls.add(fileUrl);
                 }
-
-                DefaultResponse response = diaryService.patchDiary(request, fileUrls);
-                return response;
+                return diaryService.patchDiary(request, fileUrls);
             } catch (Exception e) {
                 log.error(e.getMessage());
-                return DefaultResponse.response(
-                        StatusCode.DB_ERROR,
-                        ResponseMessage.DIARY_PATCH_FAIL,
-                        e.getMessage());
+                return ResponseEntity.badRequest().body(ResponseMessage.DIARY_PATCH_FAIL);
             }
     }
 
