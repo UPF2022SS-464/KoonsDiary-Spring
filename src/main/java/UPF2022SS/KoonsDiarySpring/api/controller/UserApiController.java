@@ -293,7 +293,6 @@ public class UserApiController {
                 return ResponseEntity
                         .status(I_AM_A_TEAPOT).
                         body(ResponseMessage.USER_SEARCH_FAIL);
-
             }
         }
     }

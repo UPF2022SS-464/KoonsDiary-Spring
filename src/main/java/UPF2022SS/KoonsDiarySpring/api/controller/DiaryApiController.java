@@ -11,6 +11,8 @@ import UPF2022SS.KoonsDiarySpring.service.diary.sub.S3Service;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +33,7 @@ public class DiaryApiController {
     private final UserService userService;
 
     @PostMapping(value = "/diary")
-    public DefaultResponse<PostDiary.Response> postDiary(
+    public ResponseEntity<Object> postDiary(
             @Validated
             @RequestHeader("Authorization") final String header,
             @ModelAttribute
@@ -39,20 +41,18 @@ public class DiaryApiController {
            ) {
         try{
             if(header == null){
-                return DefaultResponse.response(
-                        StatusCode.UNAUTHORIZED,
-                        ResponseMessage.UNAUTHORIZED
-                );
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .body(ResponseMessage.UNAUTHORIZED);
             }
             //Access 토큰을 통한 유저 조회
             User user = userService.findById(jwtService.decodeAccessToken(header));
 
             //user가 Null일 경우
             if(user== null){
-                return DefaultResponse.response(
-                        StatusCode.UNAUTHORIZED,
-                        ResponseMessage.UNAUTHORIZED
-                );
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .body(ResponseMessage.UNAUTHORIZED);
             }
 
             //파일 이름이 들어갈 배열
@@ -69,10 +69,9 @@ public class DiaryApiController {
 
         } catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.DIARY_POST_FAIL
-            );
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseMessage.BAD_REQUEST);
         }
     }
 
