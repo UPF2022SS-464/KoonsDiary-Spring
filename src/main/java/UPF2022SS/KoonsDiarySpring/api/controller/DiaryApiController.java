@@ -219,37 +219,33 @@ public class DiaryApiController {
             }
     }
 
-
-
+    // 다이어리 삭제 api
     @DeleteMapping(value = "/diary")
-    public DefaultResponse deleteDiary(
+    public ResponseEntity<Object> deleteDiary(
             @RequestHeader final String header,
             @RequestPart final DeleteDiaryRequest request
             ){
         try{
             if(header == null){
-                return DefaultResponse.response(StatusCode.UNAUTHORIZED,
-                        ResponseMessage.UNAUTHORIZED
-                        );
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .body(ResponseMessage.UNAUTHORIZED);
             }
             User findUser = (User) userService.findById(jwtService.decodeAccessToken(header));
 
             if(findUser == null){
-                return DefaultResponse.response(StatusCode.OK,
-                        ResponseMessage.NOT_FOUND_USER);
+                return ResponseEntity
+                        .status(HttpStatus.NO_CONTENT)
+                        .body(ResponseMessage.NOT_FOUND_USER);
             }
 
-            DefaultResponse response =   diaryService.deleteDiary(request.getId());
-
-            return response;
+            return diaryService.deleteDiary(request.getId());
         }
         catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.INTERNAL_SERVER_ERROR,
-                    e.getMessage()
-            );
+            return ResponseEntity
+                    .internalServerError()
+                    .body(ResponseMessage.INTERNAL_SERVER_ERROR);
         }
     }
 }
