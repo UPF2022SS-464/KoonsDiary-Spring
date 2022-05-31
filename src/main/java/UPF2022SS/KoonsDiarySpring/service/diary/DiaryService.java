@@ -19,13 +19,13 @@ public interface DiaryService {
 
     public ResponseEntity<Object> getDiaryList(User user);
 
-    public DefaultResponse patchDiary(PatchDiaryRequest request, List<String> files);
+    public ResponseEntity<Object> patchDiary(PatchDiaryRequest request, List<String> files);
 
     public DefaultResponse deleteDiary(Long id);
 
     public DefaultResponse getDiaryByLocalDate(User user, LocalDate date);
 
-    public DefaultResponse getEmotionListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
+    public ResponseEntity<Object> getEmotionListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
 
     public DefaultResponse getMonthlyDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
 

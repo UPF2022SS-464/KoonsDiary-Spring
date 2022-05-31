@@ -93,7 +93,7 @@ public class DiaryServiceImpl implements DiaryService{
 
             return ResponseEntity
                     .ok()
-                    .body(ResponseMessage.DIARY_POST_SUCCESS);
+                    .body(response);
 
         } catch (Exception e){
             log.error(e.getMessage());
@@ -138,7 +138,7 @@ public class DiaryServiceImpl implements DiaryService{
 
             return ResponseEntity
                     .ok()
-                    .body(ResponseMessage.DIARY_GET_SUCCESS);
+                    .body(response);
         }
         catch (Exception e){
             log.error(e.getMessage());
@@ -190,7 +190,7 @@ public class DiaryServiceImpl implements DiaryService{
     // return diary
     @Override
     @Transactional
-    public DefaultResponse patchDiary(PatchDiaryRequest request, List<String> files) {
+    public ResponseEntity<Object> patchDiary(PatchDiaryRequest request, List<String> files) {
         try {
             //다이어리 및 다이어리 리스트 가져오기
             Diary diary = diaryJpaRepository.getById(request.getId());
@@ -232,19 +232,12 @@ public class DiaryServiceImpl implements DiaryService{
                     .emotion(diary.getEmotion())
                     .build();
 
-            DefaultResponse response = DefaultResponse.response(
-                    StatusCode.OK,
-                    ResponseMessage.DIARY_PATCH_SUCCESS,
-                    patchDiaryResponse
-            );
-            return response;
+
+            return ResponseEntity.ok().body(patchDiaryResponse);
         }
         catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.BAD_REQUEST,
-                    ResponseMessage.INVALID_DIARY
-            );
+            return ResponseEntity.badRequest().body(ResponseMessage.INVALID_DIARY);
         }
     }
 
@@ -308,7 +301,7 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DefaultResponse getEmotionListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
+    public ResponseEntity<Object> getEmotionListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
         try{
             List<Emotion> diaryList = diaryJpaRepository.findEmotionListByLocalDate(user.getId(),startDate, endDate);
 
@@ -322,15 +315,13 @@ public class DiaryServiceImpl implements DiaryService{
 //            List<Integer> array = Arrays.stream(arr).toArray()
             Map<List<Emotion>, int[]> result = new HashMap<>();
             result.put(diaryList, Arrays.stream(arr).toArray());
-            return DefaultResponse.response(
-                    StatusCode.OK,
-                    ResponseMessage.DIARY_GET_SUCCESS,
-                    result
-                );
+            return ResponseEntity.ok().body(result);
 
         } catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(StatusCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.BAD_REQUEST);
         }
     }
 
