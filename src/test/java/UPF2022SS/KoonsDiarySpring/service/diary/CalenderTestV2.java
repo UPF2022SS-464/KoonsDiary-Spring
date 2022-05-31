@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,9 +48,9 @@ public class CalenderTestV2 {
         LocalDate startDate = LocalDate.of(2022,5,1);
         LocalDate endDate = LocalDate.of(2022,5,30);
 
-        DefaultResponse response = diaryService.getMonthlyDiaryListByLocalDate(user, startDate, endDate);
+        ResponseEntity<Object> response = diaryService.getMonthlyDiaryListByLocalDate(user, startDate, endDate);
 
-        Assertions.assertThat(response.getData()).isNotNull();
+        Assertions.assertThat(response.getStatusCodeValue()).isNotNull();
 
         System.out.println("response = " + response);
     }

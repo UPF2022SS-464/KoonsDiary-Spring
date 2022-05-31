@@ -1,6 +1,5 @@
 package UPF2022SS.KoonsDiarySpring.service.diary;
 
-import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
@@ -15,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -48,7 +48,7 @@ class CalenderTest {
         LocalDate startDate = LocalDate.of(2022,5,1);
         LocalDate endDate = LocalDate.of(2022,5,30);
 
-        DefaultResponse response = diaryService.getMonthlyDiaryListByLocalDate(user, startDate, endDate);
+        ResponseEntity<Object> response = diaryService.getMonthlyDiaryListByLocalDate(user, startDate, endDate);
 
 //        Assertions.assertThat(response.getData()).isNotNull();
 

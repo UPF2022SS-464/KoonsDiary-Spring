@@ -104,26 +104,22 @@ public class DiaryApiController {
      * 해당 월에 대한 다이어리 리스트 반환하는 API
      */
     @GetMapping(value = "/diarys/{startDate}/{endDate}")
-    public DefaultResponse getMonthlyDiaryList(
+    public ResponseEntity<Object> getMonthlyDiaryList(
             @RequestHeader("Authorization") final String header,
             @PathVariable("startDate")final String start,
             @PathVariable("endDate")final String end
             ){
         if(header == null){
-            return DefaultResponse
-                    .response(
-                            StatusCode.UNAUTHORIZED,
-                            ResponseMessage.UNAUTHORIZED
-                    );
+            return ResponseEntity
+                    .status(StatusCode.UNAUTHORIZED)
+                    .body(ResponseMessage.UNAUTHORIZED);
         }
         // 유저
         User user = (User)userService.findById(jwtService.decodeAccessToken(header));
         if(user == null){
-            return DefaultResponse
-                    .response(
-                            StatusCode.BAD_REQUEST,
-                            ResponseMessage.NOT_FOUND_USER
-                    );
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body(ResponseMessage.NOT_FOUND_USER);
         }
         try{
             LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
@@ -132,7 +128,9 @@ public class DiaryApiController {
             return diaryService.getMonthlyDiaryListByLocalDate(user,startDate, endDate);
         }catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(StatusCode.BAD_REQUEST, ResponseMessage.BAD_REQUEST);
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.BAD_REQUEST);
         }
     }
 
