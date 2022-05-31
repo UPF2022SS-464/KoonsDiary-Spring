@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,8 +79,8 @@ class GetDiaryListTest {
             diaryService.postDiary(request, user, files);
         }
 
-        DefaultResponse response = diaryService.getDiaryList(user);
-        Assertions.assertThat(response.getStatus()).isEqualTo(StatusCode.OK);
+        ResponseEntity<Object> response = diaryService.getDiaryList(user);
+        Assertions.assertThat(response.getStatusCodeValue()).isEqualTo(StatusCode.OK);
         System.out.println("response = " + response);
     }
 
@@ -111,7 +112,7 @@ class GetDiaryListTest {
 
         diaryJpaRepository.save(diary);
 
-        DefaultResponse response = diaryService.getDiary(user, diary.getId());
+        ResponseEntity<Object> response = diaryService.getDiary(user, diary.getId());
         System.out.println("response = " + response);
     }
 

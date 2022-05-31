@@ -15,9 +15,9 @@ public interface DiaryService {
     // 다이어리에 대한 CRUD
     public ResponseEntity<Object> postDiary(PostDiary.Request request, User user, List<String> files);
 
-    public DefaultResponse getDiary(User user, Long id);
+    public ResponseEntity<Object> getDiary(User user, Long id);
 
-    public DefaultResponse getDiaryList(User user);
+    public ResponseEntity<Object> getDiaryList(User user);
 
     public DefaultResponse patchDiary(PatchDiaryRequest request, List<String> files);
 
