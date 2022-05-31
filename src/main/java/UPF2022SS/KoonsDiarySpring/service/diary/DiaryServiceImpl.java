@@ -322,20 +322,18 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DefaultResponse<List<MonthlyDiary>> getMonthlyDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
+    public ResponseEntity<Object> getMonthlyDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate) {
         try{
             List<MonthlyDiary> diaryList = diaryJpaRepository.findListByMonth(user.getId(), startDate, endDate);
 
-            DefaultResponse<List<MonthlyDiary>> response = new DefaultResponse<>(StatusCode.OK,
-                    ResponseMessage.DIARY_GET_SUCCESS,
-                    diaryList);
-            return response;
+            return ResponseEntity
+                    .ok()
+                    .body(diaryList);
         }catch (Exception e){
             log.error(e.getMessage());
-            return DefaultResponse.response(
-                    StatusCode.BAD_REQUEST,
-                    ResponseMessage.BAD_REQUEST
-            );
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.BAD_REQUEST);
         }
     }
 

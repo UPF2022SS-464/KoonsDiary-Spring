@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,9 +73,9 @@ public class DeleteDiaryTest {
 
         diaryJpaRepository.save(diary);
 
-        DefaultResponse response = diaryService.deleteDiary(diary.getId());
+        ResponseEntity<Object> response = diaryService.deleteDiary(diary.getId());
 
-        assertThat(response.getStatus()).isEqualTo(StatusCode.OK);
+        assertThat(response.getStatusCodeValue()).isEqualTo(StatusCode.OK);
         System.out.println("response = " + response);
     }
 
@@ -109,10 +110,10 @@ public class DeleteDiaryTest {
         diaryJpaRepository.save(diary);
 
         // when
-        DefaultResponse response = diaryService.deleteDiary(290L);
+        ResponseEntity<Object> response = diaryService.deleteDiary(290L);
 
         // then
-        assertThat(response.getStatus()).isEqualTo(StatusCode.BAD_REQUEST);
+        assertThat(response.getStatusCodeValue()).isNotEqualTo(StatusCode.OK);
         System.out.println("response = " + response);
     }
 }

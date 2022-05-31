@@ -27,7 +27,7 @@ public interface DiaryService {
 
     public ResponseEntity<Object> getEmotionListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
 
-    public DefaultResponse getMonthlyDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
+    public ResponseEntity<Object> getMonthlyDiaryListByLocalDate(User user, LocalDate startDate, LocalDate endDate);
 
     // 감정 분석 api 서비스
 
