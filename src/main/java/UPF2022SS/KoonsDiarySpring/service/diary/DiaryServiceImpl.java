@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -37,7 +38,7 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Override
     @Transactional
-    public DefaultResponse<PostDiary.Response> postDiary(
+    public ResponseEntity<Object> postDiary(
             PostDiary.Request request,
             User user,
             List<String> files) {
@@ -89,16 +90,15 @@ public class DiaryServiceImpl implements DiaryService{
             );
             diaryJpaRepository.save(diary);
 
-            return new DefaultResponse<PostDiary.Response>(
-                    StatusCode.OK,
-                    ResponseMessage.DIARY_POST_SUCCESS,
-                    response);
+            return ResponseEntity
+                    .ok()
+                    .body(ResponseMessage.DIARY_POST_SUCCESS);
 
         } catch (Exception e){
             log.error(e.getMessage());
-            return new DefaultResponse<>(StatusCode.INTERNAL_SERVER_ERROR,
-                    ResponseMessage.DIARY_POST_FAIL
-                   );
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.BAD_REQUEST);
         }
     }
 

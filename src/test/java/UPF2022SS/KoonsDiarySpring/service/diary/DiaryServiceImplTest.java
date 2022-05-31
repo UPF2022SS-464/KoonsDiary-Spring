@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +60,7 @@ class DiaryServiceImplTest {
 
 
         //이부분을 헤더를 빼고유저 객체가 들어갈 수 있게하자.
-        DefaultResponse defaultResponse = diaryService.postDiary(request, findUser, files);
-        System.out.println("defaultResponse = " + defaultResponse.toString());
+        ResponseEntity<Object> response = diaryService.postDiary(request, findUser, files);
+        System.out.println("defaultResponse = " + response.toString());
     }
 }
