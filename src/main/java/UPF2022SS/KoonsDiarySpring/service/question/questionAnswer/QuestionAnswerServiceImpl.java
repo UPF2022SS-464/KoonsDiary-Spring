@@ -1,7 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.service.question.questionAnswer;
 
-import UPF2022SS.KoonsDiarySpring.api.dto.question.QuestionRequest;
-import UPF2022SS.KoonsDiarySpring.domain.Question;
+import UPF2022SS.KoonsDiarySpring.api.dto.question.Question;
+import UPF2022SS.KoonsDiarySpring.api.dto.question.Question.AnswerRequest;
 import UPF2022SS.KoonsDiarySpring.domain.QuestionAnswer;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.question.QuestionJpaRepository;
@@ -25,13 +25,12 @@ public class QuestionAnswerServiceImpl implements QuestionAnswerService{
     private final QuestionAnswerJpaRepository questionAnswerJpaRepository;
 
     @Override
-    public Optional<QuestionAnswer> saveQuestionAnswer(QuestionRequest.answerRequest answerRequest){
-        Optional<User> user = userJpaRepository.findById(answerRequest.getUserId());
-        Optional<Question> question = questionJpaRepository.findById(answerRequest.getQuestionId());
+    public Optional<QuestionAnswer> saveQuestionAnswer(User user, AnswerRequest answerRequest){
+        Optional<UPF2022SS.KoonsDiarySpring.domain.Question> question = questionJpaRepository.findById(answerRequest.getQuestionId());
 
         QuestionAnswer questionAnswer = QuestionAnswer
                 .builder()
-                .user(user.get())
+                .user(user)
                 .question(question.get())
                 .Content(answerRequest.getContent())
                 .build();
@@ -43,7 +42,7 @@ public class QuestionAnswerServiceImpl implements QuestionAnswerService{
     }
 
     @Override
-    public Optional<QuestionAnswer> getQuestionAnswer(User user, Question question) {
+    public Optional<QuestionAnswer> getQuestionAnswer(User user, UPF2022SS.KoonsDiarySpring.domain.Question question) {
         return questionAnswerJpaRepository.findByUserAndQuestion(user, question);
     }
 }

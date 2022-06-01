@@ -2,15 +2,11 @@ package UPF2022SS.KoonsDiarySpring.api.dto.question;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-
-public class QuestionRequest {
+public class Question{
 
     @Data
-    public static class answerRequest{
+    public static class AnswerRequest {
         private Long questionId;
-
-        private Long userId;
 
         private String content;
     }
