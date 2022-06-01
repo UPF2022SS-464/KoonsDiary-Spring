@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static UPF2022SS.KoonsDiarySpring.api.dto.user.Kakao.*;
@@ -32,6 +33,7 @@ import static org.springframework.http.HttpStatus.CONFLICT;
 @RequiredArgsConstructor
 public class UserApiController {
 
+    //의존성 주입
     private final AuthService authService;
     private final ImageService imageService;
     private final UserService userService;
@@ -54,16 +56,17 @@ public class UserApiController {
     @PostMapping(value = "/user")
     public ResponseEntity signUpWithAccount(@Valid @RequestBody final Request request){
 
-            if(!userService.validateDuplicateUserId(request.getUserId())){
-                return ResponseEntity
-                        .status(CONFLICT)
-                        .body(ResponseMessage.DUPLICATED_USER);
-            }
-            else if(!userService.validateDuplicateUserEmail(request.getEmail())){
-                return ResponseEntity
-                        .status(CONFLICT)
-                        .body(ResponseMessage.DUPLICATED_EMAIL);
-            }
+//            if(!userService.validateDuplicateUserId(request.getUserId())){
+//                return ResponseEntity
+//                        .status(CONFLICT)
+//                        .body(ResponseMessage.DUPLICATED_USER);
+//            }
+//
+//            else if(!userService.validateDuplicateUserEmail(request.getEmail())){
+//                return ResponseEntity
+//                        .status(CONFLICT)
+//                        .body(ResponseMessage.DUPLICATED_EMAIL);
+//            }
 
             //이미지 반환
             Optional<ImagePath> findImage = imageService.findImage(request.getImageId());
@@ -79,19 +82,13 @@ public class UserApiController {
             refreshTokenService.save(token);
             user.setRefreshToken(token);
 
-            //response 반환
-            ResponseEntity invalidation = userService.join(user);
-
-            if(invalidation.getStatusCode().equals(CONFLICT)){
-                return invalidation;
-            }
-            return authService.signUpLogin(user, token.getValue());
+            return authService.signUpLogin(userService.join(user), token.getValue());
     }
 
     /*
      * 카카오 아이디 반환
      */
-    @PostMapping(value = "/kakao")
+    @PostMapping(value = "/user/kakao")
     public ResponseEntity<AccessDto> getKakaoId(@Valid @RequestHeader final String accessToken){
         try{
             ResponseEntity<AccessDto> accessDto = userService.getKakaoId(accessToken);
@@ -125,7 +122,6 @@ public class UserApiController {
             return ResponseEntity.badRequest().build();
         }
     }
-
 
     //헤더 지울것
     //회원가입 시 자동로그인, 로그인 시 자동로그인을 위해 리프레시토큰으로 자동로그인, 리퀘스트 로그인
@@ -223,8 +219,6 @@ public class UserApiController {
                     .body(ResponseMessage.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
     //유저 정보(닉네임, 비밀번호, 이미지) 변경 api
     @PatchMapping(value="/user")

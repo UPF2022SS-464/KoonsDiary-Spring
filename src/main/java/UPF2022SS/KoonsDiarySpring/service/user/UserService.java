@@ -14,7 +14,7 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
-    public ResponseEntity<String> join(User user);
+    public User join(User user);
     public ResponseEntity<Kakao.AccessDto> getKakaoId(String code);
 
     public List<User> findUsers();

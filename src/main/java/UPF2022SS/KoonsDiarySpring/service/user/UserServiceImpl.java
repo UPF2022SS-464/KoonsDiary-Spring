@@ -3,6 +3,7 @@ package UPF2022SS.KoonsDiarySpring.service.user;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
 
+import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.UpdateUser;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
@@ -45,21 +46,10 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public ResponseEntity<String> join(User user){
-        try {
+    public User join(User user){
             // 유저 정보 저장
             userJpaRepository.save(user);
-
-            return ResponseEntity.ok()
-                    .header(USER_CREATE_SUCCESS)
-                    .build();
-
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return ResponseEntity
-                    .badRequest()
-                    .body(ResponseMessage.BAD_REQUEST);
-        }
+            return user;
     }
 
     @Override
