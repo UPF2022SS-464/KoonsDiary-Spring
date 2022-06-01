@@ -1,7 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.api.controller;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.question.Question.AnswerRequest;
-import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.domain.Question;
 import UPF2022SS.KoonsDiarySpring.domain.QuestionAnswer;
 import UPF2022SS.KoonsDiarySpring.domain.User;
@@ -10,7 +9,6 @@ import UPF2022SS.KoonsDiarySpring.service.question.QuestionService;
 import UPF2022SS.KoonsDiarySpring.service.question.questionAnswer.QuestionAnswerService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,4 +50,23 @@ public class QuestionApiController {
                 .body(questionAnswer.get());
         return body;
     }
+
+    @PostMapping(value = "/question/{id}")
+    public ResponseEntity<QuestionAnswer> getQuestionAnswer(
+            @RequestHeader final String header,
+            @PathVariable("id") final Long id
+    ){
+        User user = userService.findById(jwtService.decodeAccessToken(header));
+        Question question = questionService.findByQuestionId(id).get();
+        Optional<QuestionAnswer> questionAnswer = questionAnswerService.getQuestionAnswer(user, question);
+
+        return ResponseEntity
+                .ok()
+                .body(questionAnswer.get());
+    }
+
+//    @PostMapping(value = "question/empathy")
+//    public ResponseEntity<String> empathizeQuestionAnswer(
+//
+//    )
 }

@@ -29,7 +29,13 @@ public class QuestionAnswer {
     @Column(nullable = false)
     private String Content;
 
-    @Enumerated(EnumType.STRING)
-    private QuestionAnswerReaction questionAnswerReaction;
+    private Integer nice = 0;
 
+    private Integer good = 0;
+
+    private Integer normal = 0;
+
+    private Integer sad = 0;
+
+    private Integer bad = 0;
 }
