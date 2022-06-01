@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.*;
+
 @Transactional
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -56,8 +58,9 @@ class UserServiceTest {
                 .imagePath(imagePath)
                 .build();
 
-        ResponseEntity response = userService.join(user);
-        System.out.println("response = " + response);
+        User saveUser = userService.join(user);
+        assertThat(user).isEqualTo(saveUser);
+        System.out.println("response = " + saveUser.getUsername());
     }
 
     @Test
@@ -75,7 +78,7 @@ class UserServiceTest {
                 .imagePath(imagePath)
                 .build();
 
-        ResponseEntity response = userService.join(user);
+        userService.join(user);
         List<User> users = userService.findUsers();
         for (User userObj : users) {
             System.out.println("user = " + userObj);
@@ -105,8 +108,7 @@ class UserServiceTest {
                 .build();
 
 
-        ResponseEntity response = userService.join(user);
-        System.out.println("response = " + response);
+       user = userService.join(user);
 
         User username = userService.findUsername(user.getNickname());
         System.out.println("username = " + username);
@@ -130,7 +132,7 @@ class UserServiceTest {
                 .build();
 
 
-        ResponseEntity response = userService.join(user);
+        user = userService.join(user);
         User findUser = userService.findUserEmail(user.getEmail());
 
         System.out.println("username = " + findUser);
@@ -158,7 +160,7 @@ class UserServiceTest {
 
         String nickName= "orly";
         user.updateNickname(nickName);
-        Assertions.assertThat(nickName).isEqualTo(user.getNickname());
+        assertThat(nickName).isEqualTo(user.getNickname());
         System.out.println("findUser.getNickname() = " + user.getNickname());
     }
 
@@ -205,7 +207,7 @@ class UserServiceTest {
                 .build();
 
 
-        ResponseEntity response1 = userService.join(user1);
+        user1 = userService.join(user1);
 
         User user2 = User.builder()
                 .username("test2")
@@ -215,7 +217,7 @@ class UserServiceTest {
                 .imagePath(imagePath2)
                 .build();
 
-        ResponseEntity response2 = userService.join(user2);
+        user2 = userService.join(user2);
 
         ContainedUserRequest cur = new ContainedUserRequest("te");
 
