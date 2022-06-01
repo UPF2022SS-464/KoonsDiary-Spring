@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -16,6 +17,13 @@ import java.util.Optional;
 public class QuestionServiceImpl implements QuestionService{
 
     private final QuestionJpaRepository questionJpaRepository;
+
+
+    @Override
+    public List<Question> findAll() {
+        List<Question> questionList =questionJpaRepository.findAll();
+        return questionList;
+    }
 
     @Override
     public Optional<Question> findByQuestionId(Long id) {

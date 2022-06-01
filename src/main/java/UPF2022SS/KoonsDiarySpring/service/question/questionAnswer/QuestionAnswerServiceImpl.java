@@ -39,7 +39,7 @@ public class QuestionAnswerServiceImpl implements QuestionAnswerService{
         questionAnswerJpaRepository.save(questionAnswer);
 
         //질문과 사용자가 일치하는 질문 답변 값을 가져올 수 있도록 하자.
-        return questionAnswerJpaRepository.findByUserAndQuestion(user.get(), question.get());
+        return Optional.of(questionAnswer);
     }
 
     @Override
