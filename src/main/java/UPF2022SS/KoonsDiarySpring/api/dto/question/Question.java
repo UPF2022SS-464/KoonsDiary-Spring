@@ -11,4 +11,11 @@ public class Question{
         private String content;
     }
 
+    @Data
+    public static class EmpathyRequest{
+        private Long questionAnswerId;
+
+        private String emotion;
+    }
+
 }
