@@ -1,9 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,7 +11,9 @@ import static javax.persistence.FetchType.LAZY;
 
 @Table(name = "share_group")
 @Getter @Setter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 public class ShareGroup {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +23,8 @@ public class ShareGroup {
     @Column(nullable = false)
     private String admin;
 
+    private String shareGroupName;
+
     @Column(nullable = false)
     private String groupImagePath;
 
@@ -31,10 +32,12 @@ public class ShareGroup {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "shareGroup")
+    @Builder.Default
+    @OneToMany(mappedBy = "shareGroup", cascade = CascadeType.ALL)
     private List<ShareGroupUser> shareGroupUsers = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "shareGroup",
-            targetEntity = ShareGroupInvite.class)
+            targetEntity = ShareGroupInvite.class, cascade = CascadeType.ALL)
     private List<ShareGroupInvite> shareGroupInvites = new ArrayList<>();
 }

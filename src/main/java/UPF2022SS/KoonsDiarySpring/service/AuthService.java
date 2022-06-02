@@ -1,14 +1,11 @@
 package UPF2022SS.KoonsDiarySpring.service;
 
 
-import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.Login;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp;
 import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.repository.refreshToken.RefreshTokenJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
-import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +80,7 @@ public class AuthService {
 
         try {
             //비밀번호 일치 여부에 대한 부분
-            if (passwordEncoder.matches(request.getPassword(), user.getUserPwd())) {
+            if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 //토큰을 생성 후 , 메시지 응답과 함께 전달
                 final String accessToken = jwtService.createAccessToken(user.getId());
                 Login.Response response = new Login.Response(

@@ -65,7 +65,7 @@ class CalenderTest {
 
         User user = User.builder()
                 .username("test")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
                 .imagePath(imagePath)

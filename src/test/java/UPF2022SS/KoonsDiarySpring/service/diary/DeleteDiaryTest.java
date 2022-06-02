@@ -1,7 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.service.diary;
 
 
-import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.Diary;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
@@ -54,7 +53,7 @@ public class DeleteDiaryTest {
 
         User user = User.builder()
                 .username("test")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
                 .imagePath(imagePath)
@@ -90,7 +89,7 @@ public class DeleteDiaryTest {
 
         User user = User.builder()
                 .username("test")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
                 .imagePath(imagePath)

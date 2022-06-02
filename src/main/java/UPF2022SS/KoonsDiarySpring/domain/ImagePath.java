@@ -19,7 +19,7 @@ public class ImagePath {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id",nullable = false)
+    @Column(name = "imagePath", nullable = false)
     private Long id;
 
     @NotBlank()

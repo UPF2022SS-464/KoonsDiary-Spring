@@ -23,7 +23,7 @@ public class User {
     private String username;
 
     @NotBlank
-    private String userPwd;
+    private String password;
 
     @Column(unique = true)
     @Email
@@ -37,7 +37,7 @@ public class User {
     private RefreshToken refreshToken;
 
     @OneToOne
-    @JoinColumn(name = "image_id", nullable = false)
+    @JoinColumn(name = "image_id")
     private ImagePath imagePath;
 
     private Long kakaoId;
@@ -72,5 +72,5 @@ public class User {
         this.imagePath = imagePath;
     }
 
-    public void updatePassword(String password){ this.userPwd = password; }
+    public void updatePassword(String password){ this.password = password; }
 }

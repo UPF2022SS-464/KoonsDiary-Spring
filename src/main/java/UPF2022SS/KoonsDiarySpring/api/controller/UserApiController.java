@@ -20,13 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static UPF2022SS.KoonsDiarySpring.api.dto.user.Kakao.*;
 import static UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp.*;
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.HttpStatus.CONFLICT;
 
 @Slf4j
 @RestController
@@ -71,9 +69,10 @@ public class UserApiController {
             //이미지 반환
             Optional<ImagePath> findImage = imageService.findImage(request.getImageId());
 
-            User user = User.builder().username(request.getUserId())
+            User user = User.builder()
+                    .username(request.getUserId())
                     .email(request.getEmail())
-                    .userPwd(passwordEncoder.encode(request.getPassword()))
+                    .password(passwordEncoder.encode(request.getPassword()))
                     .nickname(request.getNickname())
                     .imagePath(findImage.get())
                     .build();
@@ -81,8 +80,9 @@ public class UserApiController {
             RefreshToken token = new RefreshToken(user, authService.createRefreshToken());
             refreshTokenService.save(token);
             user.setRefreshToken(token);
+            user = userService.join(user);
 
-            return authService.signUpLogin(userService.join(user), token.getValue());
+            return authService.signUpLogin(user, token.getValue());
     }
 
     /*
@@ -105,7 +105,7 @@ public class UserApiController {
 
             User user = User.builder()
                     .username(signUpRequset.getUserId())
-                    .userPwd(passwordEncoder.encode(signUpRequset.getPassword()))
+                    .password(passwordEncoder.encode(signUpRequset.getPassword()))
                     .nickname(signUpRequset.getNickname())
                     .kakaoId(signUpRequset.getKakaoId())
                     .imagePath(imagePath)

@@ -29,13 +29,18 @@ public class QuestionAnswer {
     @Column(nullable = false)
     private String Content;
 
+    @Builder.Default
     private Integer nice = 0;
 
+    @Builder.Default
     private Integer good = 0;
 
+    @Builder.Default
     private Integer normal = 0;
 
+    @Builder.Default
     private Integer sad = 0;
 
+    @Builder.Default
     private Integer bad = 0;
 }
