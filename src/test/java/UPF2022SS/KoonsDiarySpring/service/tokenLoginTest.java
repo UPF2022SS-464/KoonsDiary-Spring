@@ -1,6 +1,5 @@
 package UPF2022SS.KoonsDiarySpring.service;
 
-import UPF2022SS.KoonsDiarySpring.api.dto.DefaultResponse;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.domain.User;
@@ -38,7 +37,7 @@ class tokenLoginTest {
         User user = User.builder()
                 .username("test")
                 .email("test@gmail.com")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .nickname("test")
                 .imagePath(imagePath)
                 .build();

@@ -7,12 +7,10 @@ import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.service.AuthService;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +50,7 @@ class UserServiceTest {
 
         User user = User.builder()
                 .username("test")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
                 .imagePath(imagePath)
@@ -72,7 +70,7 @@ class UserServiceTest {
 
         User user = User.builder()
                 .username("test")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
                 .imagePath(imagePath)
@@ -101,7 +99,7 @@ class UserServiceTest {
 
         User user = User.builder()
                 .username("test")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
                 .imagePath(imagePath)
@@ -125,7 +123,7 @@ class UserServiceTest {
 
         User user = User.builder()
                 .username("test")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
                 .imagePath(imagePath)
@@ -149,7 +147,7 @@ class UserServiceTest {
 
         User user = User.builder()
                 .username("test")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
                 .imagePath(imagePath)
@@ -173,7 +171,7 @@ class UserServiceTest {
 
         User user = User.builder()
                 .username("test")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test@gmail.com")
                 .nickname("test")
                 .imagePath(imagePath)
@@ -200,7 +198,7 @@ class UserServiceTest {
 
         User user1 = User.builder()
                 .username("test1")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test1@gmail.com")
                 .nickname("test1")
                 .imagePath(imagePath1)
@@ -211,7 +209,7 @@ class UserServiceTest {
 
         User user2 = User.builder()
                 .username("test2")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test2@gmail.com")
                 .nickname("test2")
                 .imagePath(imagePath2)

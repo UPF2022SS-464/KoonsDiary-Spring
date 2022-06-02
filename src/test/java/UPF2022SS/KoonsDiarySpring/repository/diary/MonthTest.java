@@ -85,7 +85,7 @@ class MonthTest {
     public User setUser(ImagePath imagePath){
         User user = User.builder()
                 .username("koon")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("koon@gmail.com")
                 .nickname("koon")
                 .imagePath(imagePath)

@@ -27,7 +27,7 @@ class UserJpaRepositoryTest {
         ImagePath imagePath = setImage();
         User user = User.builder()
                 .username("koon")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("koon@gmail.com")
                 .nickname("koon")
                 .imagePath(imagePath)
@@ -45,7 +45,7 @@ class UserJpaRepositoryTest {
         ImagePath imagePath = setImage();
         User user = User.builder()
                 .username("koon")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("koon@gmail.com")
                 .nickname("koon")
                 .imagePath(imagePath)
@@ -62,7 +62,7 @@ class UserJpaRepositoryTest {
         ImagePath imagePath = setImage();
         User user = User.builder()
                 .username("koon")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("koon@gmail.com")
                 .nickname("koon")
                 .imagePath(imagePath)
@@ -80,7 +80,7 @@ class UserJpaRepositoryTest {
         ImagePath imagePath = setImage();
         User user = User.builder()
                 .username("koon")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("koon@gmail.com")
                 .nickname("koon")
                 .imagePath(imagePath)
@@ -88,7 +88,7 @@ class UserJpaRepositoryTest {
 
         User user2 = User.builder()
                 .username("test123")
-                .userPwd("cucumber52")
+                .password("cucumber52")
                 .email("test123@gmail.com")
                 .nickname("test123")
                 .imagePath(imagePath)

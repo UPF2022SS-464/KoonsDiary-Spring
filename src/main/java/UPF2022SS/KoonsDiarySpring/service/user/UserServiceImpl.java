@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +43,7 @@ import static org.springframework.http.HttpStatus.*;
 public class UserServiceImpl implements UserService{
 
     private final UserJpaRepository userJpaRepository;
+    private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
 
     @Override
@@ -179,7 +181,8 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public void updateUser(User user, UpdateUser.Request request){
         if(request.getPassword() != null){
-          user.updatePassword(request.getPassword());
+         String pw = passwordEncoder.encode(request.getPassword());
+         user.updatePassword(pw);
         }
         if(request.getNickname() != null){
             user.updateNickname(request.getNickname());

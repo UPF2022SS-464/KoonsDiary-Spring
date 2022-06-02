@@ -32,7 +32,7 @@ jobs:
         shell: bash
         env:
 #          SECRETS_DB_Test: ${{secrets.MYSQL_MAIN}}
-          YML_SETTING: ${{secrets.YML_SETTING}}
+          YML_SETTING: ${{secrets.YML_SETTING_V2}}
           SECRET_AWS_S3: ${{secrets.AWS_S3}}
           SECRET_AWS_S3_CREDENTIALS: ${{secrets.AWS_S3_CREDENTAILS}}
           SECRET_AZURE_KEY: ${{secrets.AZURE_KEY}}
