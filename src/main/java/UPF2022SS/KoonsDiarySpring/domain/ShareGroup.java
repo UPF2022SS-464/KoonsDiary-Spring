@@ -20,17 +20,14 @@ public class ShareGroup {
     @Column(name = "share_group_id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private String admin;
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "admin_id", nullable = false)
+    private User user;
 
     private String shareGroupName;
 
     @Column(nullable = false)
-    private String groupImagePath;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private String shareGroupImagePath;
 
     @Builder.Default
     @OneToMany(mappedBy = "shareGroup", cascade = CascadeType.ALL)
@@ -40,4 +37,14 @@ public class ShareGroup {
     @OneToMany(mappedBy = "shareGroup",
             targetEntity = ShareGroupInvite.class, cascade = CascadeType.ALL)
     private List<ShareGroupInvite> shareGroupInvites = new ArrayList<>();
+
+    public void updateAdmin(User user){
+        this.user = user;
+    }
+    public void updateShareGroupName(String shareGroupName){
+        this.shareGroupName = shareGroupName;
+    }
+    public  void updateShareImagePath(String shareGroupImagePath){
+        this.shareGroupImagePath = shareGroupImagePath;
+    }
 }
