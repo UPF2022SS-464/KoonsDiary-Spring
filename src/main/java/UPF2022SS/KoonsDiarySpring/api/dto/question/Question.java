@@ -16,6 +16,7 @@ public class Question{
         private Long questionAnswerId;
 
         private String emotion;
-    }
 
+        private Boolean flag;
+    }
 }

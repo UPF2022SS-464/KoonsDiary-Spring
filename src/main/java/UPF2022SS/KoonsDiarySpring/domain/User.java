@@ -10,6 +10,7 @@ import java.util.*;
 @Table(name = "user")
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 public class User {
@@ -48,6 +49,9 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Diary> diaryList = new ArrayList<Diary>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ShareGroup> shareGroups = new ArrayList<ShareGroup>();
+
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<ShareGroupUser> shareGroupUsers = new ArrayList<ShareGroupUser>();
@@ -55,8 +59,6 @@ public class User {
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<ShareGroupDiaryComment> shareGroupDiaryComments = new ArrayList<ShareGroupDiaryComment>();
-
-    public User(){}
 
     // 재발급받은 리프레시 토큰 재저장
     public void setRefreshToken(RefreshToken refreshToken) {

@@ -27,5 +27,4 @@ public class ShareGroupUser {
     private User user;
 
     private String status;
-
 }

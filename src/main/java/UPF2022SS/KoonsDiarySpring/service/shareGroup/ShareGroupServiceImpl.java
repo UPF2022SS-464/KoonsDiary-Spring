@@ -6,11 +6,14 @@ import UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+
+import static UPF2022SS.KoonsDiarySpring.api.dto.shareGroup.ShareGroup.*;
 
 @Slf4j
 @Service
@@ -23,14 +26,13 @@ public class ShareGroupServiceImpl implements ShareGroupService{
     private final ShareGroupJpaRepository shareGroupJpaRepository;
 
     @Override
-    public ShareGroup createShareGroup(Long userId, String shareGroupName, String ImagePath) {
-
-        User user = userJpaRepository.findById(userId).get();
+    @Transactional
+    public ShareGroup createShareGroup(User user, String shareGroupName, String ImagePath) {
 
         ShareGroup shareGroup = ShareGroup.builder()
                 .user(user)
                 .shareGroupName(shareGroupName)
-                .groupImagePath(ImagePath).build();
+                .shareGroupImagePath(ImagePath).build();
          shareGroupJpaRepository.save(shareGroup);
 
         return shareGroup;
@@ -38,16 +40,47 @@ public class ShareGroupServiceImpl implements ShareGroupService{
 
     @Override
     public List<ShareGroup> getShareGroup(Long userId) {
-        return null;
+        Optional<User> user = userJpaRepository.findById(userId);
+        Optional<List<ShareGroup>> shareGroupList = shareGroupJpaRepository.findListAll(user.get());
+
+        return shareGroupList.get();
     }
 
     @Override
-    public ShareGroup updateShareGroup(Long userId, String shareGroupName, String ImagePath) {
-        return null;
+    @Transactional
+    public ShareGroup updateShareGroup(PatchRequest request, String imagePath) {
+        Optional<ShareGroup> oShareGroup = shareGroupJpaRepository.findById(request.getShareGroupId());
+
+
+        if(oShareGroup.isPresent()){
+            ShareGroup shareGroup = oShareGroup.get();
+
+           User user = new User();
+
+            if(StringUtils.isNotBlank(request.getUserId().toString()))
+                user = userJpaRepository.findById(request.getUserId()).get();
+                shareGroup.updateAdmin(user);
+
+            if(StringUtils.isNotBlank(request.getShareGroupName()))
+                shareGroup.updateShareGroupName(request.getShareGroupName());
+
+            if(StringUtils.isNotBlank(imagePath))
+                shareGroup.updateShareImagePath(imagePath);
+
+                shareGroupJpaRepository.save(shareGroup);
+                return shareGroup;
+        }
+
+        return oShareGroup.get();
     }
 
     @Override
-    public void deleteShareGroup(Long shareGroupId) {
-
+    public Boolean deleteShareGroup(Long shareGroupId, User user) {
+        Optional<ShareGroup> shareGroup = shareGroupJpaRepository.findById(shareGroupId);
+        if (shareGroup.get().getUser().equals(user)){
+            shareGroupJpaRepository.delete(shareGroup.get());
+            return true;
+        }
+        return false;
     }
 }
