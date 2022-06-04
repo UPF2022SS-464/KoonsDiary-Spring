@@ -1,6 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.api.controller;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.shareGroup.ShareGroup.CreateRequest;
+import UPF2022SS.KoonsDiarySpring.domain.ShareGroup;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.diary.sub.S3Service;
@@ -38,13 +39,25 @@ public class ShareGroupApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(HttpStatus.CREATED.toString());
     }
 
+    // 공유일기 정보 조회 api
+    @GetMapping(value = "/shareGroup")
+    public ResponseEntity<ShareGroup> getShareGroup(
+            @RequestHeader("Authorization") final String header,
+            @RequestBody final GetRequest request
+    ){
+        User user = userService.findById(jwtService.decodeAccessToken(header));
+        ShareGroup shareGroup = shareGroupService.getShareGroupV1(request.getShareGroupId());
+        return ResponseEntity.ok().body(shareGroup);
+    }
+
     // 공유일기장 수정 api
     @PatchMapping(value = "/shareGroup")
     public ResponseEntity<String> patchShareGroup(
             @RequestHeader("Authorization") final String header,
             @ModelAttribute
             final PatchRequest request
-            ){
+            )
+    {
 
         User user = userService.findById(jwtService.decodeAccessToken(header));
 

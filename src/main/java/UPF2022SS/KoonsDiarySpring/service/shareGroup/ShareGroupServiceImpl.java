@@ -39,6 +39,12 @@ public class ShareGroupServiceImpl implements ShareGroupService{
     }
 
     @Override
+    public ShareGroup getShareGroupV1(Long shareGroupId) {
+        Optional<ShareGroup> shareGroup = shareGroupJpaRepository.findById(shareGroupId);
+        return shareGroup.get();
+    }
+
+    @Override
     public List<ShareGroup> getShareGroup(Long userId) {
         Optional<User> user = userJpaRepository.findById(userId);
         Optional<List<ShareGroup>> shareGroupList = shareGroupJpaRepository.findListAll(user.get());
