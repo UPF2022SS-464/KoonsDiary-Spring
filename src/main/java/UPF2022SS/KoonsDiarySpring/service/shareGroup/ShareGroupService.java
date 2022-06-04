@@ -11,6 +11,7 @@ import static UPF2022SS.KoonsDiarySpring.api.dto.shareGroup.ShareGroup.*;
 @Service
 public interface ShareGroupService {
     public ShareGroup createShareGroup(User user, String shareGroupName, String ImagePath);
+    public ShareGroup getShareGroupV1(Long shareGroupId);
     public List<ShareGroup> getShareGroup(Long userId);
     public ShareGroup updateShareGroup(PatchRequest request, String imagePath);
     public Boolean deleteShareGroup(Long shareGroupId, User uer);

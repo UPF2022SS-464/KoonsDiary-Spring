@@ -15,6 +15,12 @@ public class ShareGroup {
     }
 
     @Data
+    public static class GetRequest{
+        @NotEmpty
+        Long ShareGroupId;
+    }
+
+    @Data
     public static class PatchRequest {
         @NotEmpty
         Long shareGroupId;
