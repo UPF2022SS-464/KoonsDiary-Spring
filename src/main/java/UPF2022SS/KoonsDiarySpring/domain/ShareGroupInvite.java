@@ -1,5 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.domain;
 
+import UPF2022SS.KoonsDiarySpring.domain.Enum.InvitationStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,5 +33,6 @@ public class ShareGroupInvite {
     @JoinColumn(name = "fcm_token")
     private User fcmToken;
 
-
+    @Enumerated(EnumType.STRING)
+    private InvitationStatus status;
 }
