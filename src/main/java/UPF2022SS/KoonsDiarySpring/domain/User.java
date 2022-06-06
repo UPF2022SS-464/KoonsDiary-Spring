@@ -49,9 +49,6 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Diary> diaryList = new ArrayList<Diary>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<ShareGroup> shareGroups = new ArrayList<ShareGroup>();
-
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<ShareGroupUser> shareGroupUsers = new ArrayList<ShareGroupUser>();

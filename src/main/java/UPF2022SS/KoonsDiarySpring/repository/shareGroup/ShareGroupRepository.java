@@ -10,5 +10,4 @@ import java.util.Optional;
 
 @Repository
 public interface ShareGroupRepository {
-    public Optional<List<ShareGroup>> findListAll(User user);
 }

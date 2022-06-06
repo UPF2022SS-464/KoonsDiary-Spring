@@ -24,13 +24,18 @@ public class ShareGroup {
     public static class PatchRequest {
         @NotEmpty
         Long shareGroupId;
-        Long userId;
         String shareGroupName;
         MultipartFile shareGroupImage;
     }
 
     @Data
     public static class DeleteRequest{
+        @NotEmpty
+        Long shareGroupId;
+    }
+
+    @Data
+    public static class createInvitieRequest{
         @NotEmpty
         Long shareGroupId;
     }

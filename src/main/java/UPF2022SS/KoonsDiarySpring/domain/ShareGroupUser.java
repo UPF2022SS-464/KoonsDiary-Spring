@@ -1,9 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import UPF2022SS.KoonsDiarySpring.domain.Enum.Authority;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,6 +9,8 @@ import static javax.persistence.FetchType.*;
 
 @Getter @Setter
 @Table(name = "share_group_member")
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class ShareGroupUser {
@@ -26,5 +26,6 @@ public class ShareGroupUser {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
 }

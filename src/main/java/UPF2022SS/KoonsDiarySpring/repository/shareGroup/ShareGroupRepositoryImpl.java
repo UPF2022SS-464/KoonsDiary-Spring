@@ -23,12 +23,4 @@ public class ShareGroupRepositoryImpl  implements  ShareGroupRepository{
     QUser qUser = QUser.user;
 
 
-    // 사용자가 들어가 있는 모든 리스트 반환 -> 이건 바꿀 필요가 있다.
-    @Override
-    public Optional<List<ShareGroup>> findListAll(User user) {
-        return Optional.of(jqf
-                .selectFrom(qShareGroup)
-                .where(qShareGroup.user.eq(user))
-                .fetch());
-    }
 }
