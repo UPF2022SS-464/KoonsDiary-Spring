@@ -1,8 +1,11 @@
 package UPF2022SS.KoonsDiarySpring.service.shareGroup;
 
+import UPF2022SS.KoonsDiarySpring.domain.Enum.Authority;
 import UPF2022SS.KoonsDiarySpring.domain.ShareGroup;
+import UPF2022SS.KoonsDiarySpring.domain.ShareGroupUser;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupJpaRepository;
+import UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupUser.ShareGroupUserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,16 +27,19 @@ public class ShareGroupServiceImpl implements ShareGroupService{
 
     private final UserJpaRepository userJpaRepository;
     private final ShareGroupJpaRepository shareGroupJpaRepository;
+    private final ShareGroupUserJpaRepository shareGroupUserJpaRepository;
 
     @Override
     @Transactional
     public ShareGroup createShareGroup(User user, String shareGroupName, String ImagePath) {
 
         ShareGroup shareGroup = ShareGroup.builder()
-                .user(user)
                 .shareGroupName(shareGroupName)
                 .shareGroupImagePath(ImagePath).build();
          shareGroupJpaRepository.save(shareGroup);
+
+        ShareGroupUser shareGroupUser = ShareGroupUser.builder().user(user).shareGroup(shareGroup).authority(Authority.ADMIN).build();
+        shareGroupUserJpaRepository.save(shareGroupUser);
 
         return shareGroup;
     }
@@ -47,9 +53,9 @@ public class ShareGroupServiceImpl implements ShareGroupService{
     @Override
     public List<ShareGroup> getShareGroup(Long userId) {
         Optional<User> user = userJpaRepository.findById(userId);
-        Optional<List<ShareGroup>> shareGroupList = shareGroupJpaRepository.findListAll(user.get());
 
-        return shareGroupList.get();
+        Optional<List<ShareGroup>> shareGroups = shareGroupUserJpaRepository.findByUser(user.get());
+        return shareGroups.get();
     }
 
     @Override
@@ -60,12 +66,6 @@ public class ShareGroupServiceImpl implements ShareGroupService{
 
         if(oShareGroup.isPresent()){
             ShareGroup shareGroup = oShareGroup.get();
-
-           User user = new User();
-
-            if(StringUtils.isNotBlank(request.getUserId().toString()))
-                user = userJpaRepository.findById(request.getUserId()).get();
-                shareGroup.updateAdmin(user);
 
             if(StringUtils.isNotBlank(request.getShareGroupName()))
                 shareGroup.updateShareGroupName(request.getShareGroupName());
@@ -83,10 +83,7 @@ public class ShareGroupServiceImpl implements ShareGroupService{
     @Override
     public Boolean deleteShareGroup(Long shareGroupId, User user) {
         Optional<ShareGroup> shareGroup = shareGroupJpaRepository.findById(shareGroupId);
-        if (shareGroup.get().getUser().equals(user)){
-            shareGroupJpaRepository.delete(shareGroup.get());
-            return true;
-        }
-        return false;
+        shareGroupJpaRepository.delete(shareGroup.get());
+        return true;
     }
 }

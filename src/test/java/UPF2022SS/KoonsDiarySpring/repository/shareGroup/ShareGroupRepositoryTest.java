@@ -1,10 +1,13 @@
 package UPF2022SS.KoonsDiarySpring.repository.shareGroup;
 
 import UPF2022SS.KoonsDiarySpring.QuerydslConfig;
+import UPF2022SS.KoonsDiarySpring.domain.Enum.Authority;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.ShareGroup;
+import UPF2022SS.KoonsDiarySpring.domain.ShareGroupUser;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.image.ImageJpaRepository;
+import UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupUser.ShareGroupUserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +36,9 @@ class ShareGroupRepositoryTest {
     private UserJpaRepository userJpaRepository;
 
     @Autowired
+    private ShareGroupUserJpaRepository shareGroupUserJpaRepository;
+
+    @Autowired
     private ImageJpaRepository imageJpaRepository;
 
     @BeforeEach
@@ -55,14 +61,16 @@ class ShareGroupRepositoryTest {
     void findListAll_success() {
         User user = userJpaRepository.findByName("test");
         ShareGroup shareGroup = ShareGroup.builder()
-                .user(user)
                 .shareGroupName("testShareGroup")
                 .shareGroupImagePath("testShareGroupImagePath")
                 .build();
 
         shareGroupJpaRepository.save(shareGroup);
 
-        List<ShareGroup> shareGroupList = shareGroupJpaRepository.findListAll(user).get();
+        ShareGroupUser shareGroupUser = ShareGroupUser.builder().user(user).shareGroup(shareGroup).authority(Authority.ADMIN).build();
+        shareGroupUserJpaRepository.save(shareGroupUser);
+
+        List<ShareGroup> shareGroupList = shareGroupUserJpaRepository.findByUser(user).get();
         Assertions.assertThat(shareGroupList).isNotEmpty();
         for (ShareGroup group : shareGroupList) {
             System.out.println("group.getShareGroupName() = " + group.getShareGroupName());
@@ -74,14 +82,13 @@ class ShareGroupRepositoryTest {
     void findListAll_false() {
         User user = userJpaRepository.findByName("test");
         ShareGroup shareGroup = ShareGroup.builder()
-                .user(user)
                 .shareGroupName("testShareGroup")
                 .shareGroupImagePath("testShareGroupImagePath")
                 .build();
 
 //        shareGroupJpaRepository.save(shareGroup);
 
-        List<ShareGroup> shareGroupList = shareGroupJpaRepository.findListAll(user).get();
+        List<ShareGroup> shareGroupList = shareGroupUserJpaRepository.findByUser(user).get();
         Assertions.assertThat(shareGroupList).isEmpty();
         System.out.println("비어있는 배열입니다.");
     }

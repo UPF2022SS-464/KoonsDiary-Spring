@@ -5,6 +5,7 @@ import UPF2022SS.KoonsDiarySpring.domain.ShareGroup;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.image.ImageJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupJpaRepository;
+import UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupUser.ShareGroupUserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,9 @@ class ShareGroupCreateTest {
 
     @Mock
     private ShareGroupJpaRepository shareGroupJpaRepository;
+
+    @Mock
+    private ShareGroupUserJpaRepository shareGroupUserJpaRepository;
 
     @Mock
     private ImageJpaRepository imageJpaRepository;

@@ -20,7 +20,6 @@ public class ShareGroupInvite {
     @Column(name = "share_group_invite_id")
     private Long id;
 
-
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "share_group_id")
     private ShareGroup shareGroup;
@@ -28,10 +27,6 @@ public class ShareGroupInvite {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "fcm_token")
-    private User fcmToken;
 
     @Enumerated(EnumType.STRING)
     private InvitationStatus status;

@@ -20,10 +20,6 @@ public class ShareGroup {
     @Column(name = "share_group_id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "admin_id", nullable = false)
-    private User user;
-
     private String shareGroupName;
 
     @Column(nullable = false)
@@ -38,9 +34,6 @@ public class ShareGroup {
             targetEntity = ShareGroupInvite.class, cascade = CascadeType.ALL)
     private List<ShareGroupInvite> shareGroupInvites = new ArrayList<>();
 
-    public void updateAdmin(User user){
-        this.user = user;
-    }
     public void updateShareGroupName(String shareGroupName){
         this.shareGroupName = shareGroupName;
     }
