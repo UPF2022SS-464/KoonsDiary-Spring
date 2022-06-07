@@ -5,7 +5,7 @@ import UPF2022SS.KoonsDiarySpring.domain.ShareGroup;
 import UPF2022SS.KoonsDiarySpring.domain.ShareGroupUser;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupJpaRepository;
-import UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupUser.ShareGroupUserJpaRepository;
+import UPF2022SS.KoonsDiarySpring.repository.shareGroup.user.ShareGroupUserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +76,6 @@ public class ShareGroupServiceImpl implements ShareGroupService{
                 shareGroupJpaRepository.save(shareGroup);
                 return shareGroup;
         }
-
         return oShareGroup.get();
     }
 

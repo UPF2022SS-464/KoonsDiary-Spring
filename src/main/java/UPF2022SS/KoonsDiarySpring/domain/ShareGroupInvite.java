@@ -1,10 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.domain;
 
 import UPF2022SS.KoonsDiarySpring.domain.Enum.InvitationStatus;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +9,8 @@ import static javax.persistence.FetchType.*;
 
 @Getter @Setter
 @Table(name = "share_group_invite")
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class ShareGroupInvite {

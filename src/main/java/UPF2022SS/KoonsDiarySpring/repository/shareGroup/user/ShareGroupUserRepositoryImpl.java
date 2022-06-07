@@ -1,8 +1,7 @@
-package UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupUser;
+package UPF2022SS.KoonsDiarySpring.repository.shareGroup.user;
 
 import UPF2022SS.KoonsDiarySpring.domain.QShareGroupUser;
 import UPF2022SS.KoonsDiarySpring.domain.ShareGroup;
-import UPF2022SS.KoonsDiarySpring.domain.ShareGroupUser;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

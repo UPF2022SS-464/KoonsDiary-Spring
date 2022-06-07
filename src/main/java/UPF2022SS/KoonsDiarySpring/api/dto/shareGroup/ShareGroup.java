@@ -38,5 +38,7 @@ public class ShareGroup {
     public static class createInvitieRequest{
         @NotEmpty
         Long shareGroupId;
+
+
     }
 }

@@ -5,25 +5,16 @@ import UPF2022SS.KoonsDiarySpring.domain.ShareGroup;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.image.ImageJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupJpaRepository;
-import UPF2022SS.KoonsDiarySpring.repository.shareGroup.ShareGroupUser.ShareGroupUserJpaRepository;
+import UPF2022SS.KoonsDiarySpring.repository.shareGroup.user.ShareGroupUserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ShareGroupCreateTest {
