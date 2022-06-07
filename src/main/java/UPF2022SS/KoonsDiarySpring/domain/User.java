@@ -43,7 +43,7 @@ public class User {
 
     private Long kakaoId;
 
-    private Long fcmToken;
+    private String fcmToken;
 
     @Builder.Default
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
