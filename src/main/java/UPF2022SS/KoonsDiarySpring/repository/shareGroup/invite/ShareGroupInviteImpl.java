@@ -48,4 +48,27 @@ public class ShareGroupInviteImpl implements ShareGroupInviteRepository{
                 .where(qShareGroupInvite.status.eq(InvitationStatus.HOLD))
                 .fetch());
     }
+
+    //초대받은 사람 입장에서 자신이 수락 대기중인 모든 초대 확인
+    @Override
+    public Optional<List<ShareGroupInvite>> findWaitByUserId(User user) {
+
+        return Optional.ofNullable(jqf.select(qShareGroupInvite)
+                .from(qShareGroupInvite)
+                .where(qShareGroupInvite.status.eq(InvitationStatus.HOLD))
+                .where(qShareGroupInvite.user.eq(user))
+                .fetch());
+    }
+
+    // 초대한 사람이 자신이 보낸 모든 초대에 대해 확인
+    @Override
+    public Optional<List<ShareGroupInvite>> findWaitUserByShareGroupId(Long shareGroupId) {
+        return Optional.ofNullable(
+                jqf.select(qShareGroupInvite)
+                        .from(qShareGroupInvite)
+                        .where(qShareGroupInvite.shareGroup.id.eq(shareGroupId))
+                        .where(qShareGroupInvite.status.eq(InvitationStatus.HOLD))
+                        .fetch()
+        );
+    }
 }

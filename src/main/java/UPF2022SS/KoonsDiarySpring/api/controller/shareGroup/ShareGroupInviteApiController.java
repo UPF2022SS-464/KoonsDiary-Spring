@@ -68,7 +68,7 @@ public class ShareGroupInviteApiController {
             @RequestHeader("Authorization") final String header,
             @RequestBody final deleteRequest request
     ){
-        List<ShareGroupInvite> shareGroupInvites = shareGroupInviteService.DeleteShareGroupInvite(request);
+        List<ShareGroupInvite> shareGroupInvites = shareGroupInviteService.rejectShareGroupInvite(request);
         List<deleteResponse> responses = new ArrayList<deleteResponse>();
         for (ShareGroupInvite shareGroupInvite : shareGroupInvites) {
             deleteResponse response = deleteResponse.builder()

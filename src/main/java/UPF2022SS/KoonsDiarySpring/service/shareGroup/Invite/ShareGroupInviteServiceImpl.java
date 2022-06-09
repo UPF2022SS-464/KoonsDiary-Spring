@@ -2,6 +2,7 @@ package UPF2022SS.KoonsDiarySpring.service.shareGroup.Invite;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.shareGroup.invite.ShareGroupInvite.*;
 
+import UPF2022SS.KoonsDiarySpring.domain.Enum.InvitationStatus;
 import UPF2022SS.KoonsDiarySpring.domain.ShareGroup;
 import UPF2022SS.KoonsDiarySpring.domain.ShareGroupInvite;
 import UPF2022SS.KoonsDiarySpring.domain.User;
@@ -53,21 +54,40 @@ public class ShareGroupInviteServiceImpl implements ShareGroupInviteService{
     @Override
     public List<ShareGroupInvite> getShareGroupInvite(getRequest request) {
         Optional<List<ShareGroupInvite>> users = shareGroupInviteJpaRepository
-                .findUserByShareGroupId(request.getShareGroupId());
+                .findWaitUserByShareGroupId(request.getShareGroupId());
 
         return users.get();
     }
 
+    // 초대받은 사람의 관점
+    // 초대에 대해 거절상태로 두기 위한 비즈니스 로직
     @Override
     @Transactional
-    public List<ShareGroupInvite> DeleteShareGroupInvite(deleteRequest request) {
+    public List<ShareGroupInvite> rejectShareGroupInvite(deleteRequest request) {
+        Optional<ShareGroupInvite> shareGroupInvite = shareGroupInviteJpaRepository.findById(request.getShareGroupInviteId());
+
+
+        shareGroupInvite.get().setStatus(InvitationStatus.REJECT);
+        Long shareGroupId = shareGroupInvite.get().getShareGroup().getId();
+
+
+        Optional<List<ShareGroupInvite>> users = shareGroupInviteJpaRepository.findWaitByUserId(shareGroupInvite.get().getUser());
+
+        List<ShareGroupInvite> shareGroupInvites = users.get();
+        return shareGroupInvites;
+    }
+
+    // 초대한 사람의 관점
+    // 잘 못 초대했을 경우 해당 초대를 삭제하는 비즈니스 로직
+    @Override
+    public List<ShareGroupInvite> deleteShareGroupInvite(deleteRequest request) {
         Optional<ShareGroupInvite> shareGroupInvite = shareGroupInviteJpaRepository.findById(request.getShareGroupInviteId());
 
         Long shareGroupId = shareGroupInvite.get().getShareGroup().getId();
+
         shareGroupInviteJpaRepository.delete(shareGroupInvite.get());
 
-        Optional<List<ShareGroupInvite>> users = shareGroupInviteJpaRepository.findUserByShareGroupId(shareGroupId);
-
-        return users.get();
+        List<ShareGroupInvite> shareGroupInvites = shareGroupInviteJpaRepository.findWaitUserByShareGroupId(shareGroupId).get();
+        return shareGroupInvites;
     }
 }
