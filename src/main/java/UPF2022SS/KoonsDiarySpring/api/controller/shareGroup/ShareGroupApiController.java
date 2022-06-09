@@ -1,4 +1,4 @@
-package UPF2022SS.KoonsDiarySpring.api.controller;
+package UPF2022SS.KoonsDiarySpring.api.controller.shareGroup;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.shareGroup.ShareGroup.CreateRequest;
 import UPF2022SS.KoonsDiarySpring.domain.ShareGroup;
@@ -60,9 +60,16 @@ public class ShareGroupApiController {
     {
 
         User user = userService.findById(jwtService.decodeAccessToken(header));
+        ShareGroup shareGroup = shareGroupService.getShareGroupV1(request.getShareGroupId());
 
-        String shareGroupImagePath = s3Service.uploadFile(request.getShareGroupImage(),user);
-        UPF2022SS.KoonsDiarySpring.domain.ShareGroup shareGroup = shareGroupService.updateShareGroup(request, shareGroupImagePath);
+        String shareGroupImagePath = shareGroup.getShareGroupImagePath();
+
+        // 이미지 경로가 비어있지 않을 경우
+        if (request.getShareGroupImage() != null) {
+            shareGroupImagePath = s3Service.uploadFile(request.getShareGroupImage(), user);
+        }
+
+        ShareGroup updateShareGroup = shareGroupService.updateShareGroup(request, shareGroupImagePath);
         return ResponseEntity.ok().body(HttpStatus.OK.toString());
     }
 

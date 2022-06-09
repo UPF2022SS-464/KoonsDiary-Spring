@@ -18,7 +18,7 @@ public class ShareGroupUser {
     @Column(name = "share_group_member_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "share_group_id")
     private ShareGroup shareGroup;
 

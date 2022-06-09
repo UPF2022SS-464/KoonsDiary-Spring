@@ -59,7 +59,7 @@ public class FirebaseCloudMessageService {
 //        FirebaseMessaging.getInstance().sendMulticast(message);
 //    }
 
-    private String makeMessages(List<String> targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
+    private String makeMessages(List<String> targetToken, String title, String body) throws JsonProcessingException {
 
         FcmMessageV2 fcmMessage = FcmMessageV2.builder()
                 .message(FcmMessageV2.Message.builder()

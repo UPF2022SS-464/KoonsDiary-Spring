@@ -89,7 +89,7 @@ public class DiaryApiController {
                     .body(ResponseMessage.BAD_REQUEST);
         }
 
-        User user = (User)userService.findById(jwtService.decodeAccessToken(header));
+        User user = userService.findById(jwtService.decodeAccessToken(header));
 
         if(user == null){
             return ResponseEntity
