@@ -63,7 +63,6 @@ public class ShareGroupServiceImpl implements ShareGroupService{
     public ShareGroup updateShareGroup(PatchRequest request, String imagePath) {
         Optional<ShareGroup> oShareGroup = shareGroupJpaRepository.findById(request.getShareGroupId());
 
-
         if(oShareGroup.isPresent()){
             ShareGroup shareGroup = oShareGroup.get();
 

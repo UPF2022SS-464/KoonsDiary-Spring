@@ -1,4 +1,4 @@
-package UPF2022SS.KoonsDiarySpring.api.controller;
+package UPF2022SS.KoonsDiarySpring.api.controller.shareGroup;
 
 import UPF2022SS.KoonsDiarySpring.api.dto.shareGroup.invite.ShareGroupInvite.*;
 import UPF2022SS.KoonsDiarySpring.domain.ShareGroupInvite;

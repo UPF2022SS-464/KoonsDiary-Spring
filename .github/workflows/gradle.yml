@@ -36,6 +36,7 @@ jobs:
           SECRET_AWS_S3: ${{secrets.AWS_S3}}
           SECRET_AWS_S3_CREDENTIALS: ${{secrets.AWS_S3_CREDENTAILS}}
           SECRET_AZURE_KEY: ${{secrets.AZURE_KEY}}
+          FIREBASE_SERVICE_KEY: ${{secrets.FIREBASE_SERVICE_KEY}}
 
         run: |
           touch src/main/resources/application.yml
@@ -53,6 +54,11 @@ jobs:
           touch src/main/resources/application-azure.yml
           echo $SECRET_AZURE_KEY > azure_enc.txt
           cat azure_enc.txt | base64 -d > src/main/resources/application-azure.yml
+          
+          mkdir src/main/resources/firebase
+          touch src/main/resources/firebase/firebase_service_key.json
+          echo $FIREBASE_SERVICE_KEY > firebase_service_key.txt
+          cat firebase_service_key.txt | base64 -d > src/main/resources/firebase/firebase_service_key.json
 
       - name: Set up secret Key - test
         shell: bash
@@ -62,6 +68,7 @@ jobs:
           SECRET_AWS_S3: ${{secrets.AWS_S3}}
           SECRET_AWS_S3_CREDENTIALS: ${{secrets.AWS_S3_CREDENTAILS}}
           SECRET_AZURE_KEY: ${{secrets.AZURE_KEY}}
+          FIREBASE_SERVICE_KEY: ${{secrets.FIREBASE_SERVICE_KEY}}
         run: |
           mkdir src/test/resources -p
           touch src/test/resources/application.yml
@@ -79,6 +86,10 @@ jobs:
           touch src/test/resources/application-azure.yml
           echo $SECRET_AZURE_KEY > test_azure_enc.txt
           cat test_azure_enc.txt | base64 -d > src/test/resources/application-azure.yml
+          
+          touch src/main/resources/firebase/firebase_service_key.json
+          echo $FIREBASE_SERVICE_KEY > firebase_service_key.txt
+          cat firebase_service_key.txt | base64 -d > src/main/resources/firebase/firebase_service_key.json
 
       - name: Setup MySQL
         uses: samin/mysql-action@v1
