@@ -11,5 +11,6 @@ import java.util.List;
 public interface ShareGroupInviteService {
     public String createShareGroupInvites(createRequest request);
     public List<ShareGroupInvite> getShareGroupInvite(getRequest request);
-    public List<ShareGroupInvite> DeleteShareGroupInvite(deleteRequest request);
+    public List<ShareGroupInvite> rejectShareGroupInvite(deleteRequest request);
+    public List<ShareGroupInvite> deleteShareGroupInvite(deleteRequest request);
 }
