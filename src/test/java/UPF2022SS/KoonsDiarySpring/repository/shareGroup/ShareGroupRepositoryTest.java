@@ -56,7 +56,7 @@ class ShareGroupRepositoryTest {
     @Test
     @DisplayName(value = "그룹 생성 및 조회 기능[성공]")
     void findListAll_success() {
-        User user = userJpaRepository.findByName("test");
+        User user = userJpaRepository.findByUsername("test").get();
         ShareGroup shareGroup = ShareGroup.builder()
                 .shareGroupName("testShareGroup")
                 .shareGroupImagePath("testShareGroupImagePath")
@@ -77,7 +77,7 @@ class ShareGroupRepositoryTest {
     @Test
     @DisplayName(value = "그룹 생성 및 조회 기능[실패]")
     void findListAll_false() {
-        User user = userJpaRepository.findByName("test");
+        User user = userJpaRepository.findByUsername("test").get();
         ShareGroup shareGroup = ShareGroup.builder()
                 .shareGroupName("testShareGroup")
                 .shareGroupImagePath("testShareGroupImagePath")

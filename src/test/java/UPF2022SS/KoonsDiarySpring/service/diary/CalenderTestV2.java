@@ -70,7 +70,7 @@ public class CalenderTestV2 {
                 .imagePath(imagePath)
                 .build();
         userJpaRepository.save(user);
-        user = userJpaRepository.findByName("test");
+        user = userJpaRepository.findByUsername("test").get();
         return user;
     }
 

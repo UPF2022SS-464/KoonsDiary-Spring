@@ -3,6 +3,7 @@ package UPF2022SS.KoonsDiarySpring.Exception.advice;
 import UPF2022SS.KoonsDiarySpring.Exception.ApiResponse;
 import UPF2022SS.KoonsDiarySpring.Exception.BadRequestException;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
+import com.google.api.Http;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -89,6 +91,15 @@ public class RestExceptionAdvice {
 
         ApiResponse response = ApiResponse.error(HttpStatus.NO_CONTENT, e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    // 중복 데이터 관련 에러처리
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<Object> EntityExistException(EntityExistsException e){
+        printCommonExceptionHandlerMessage(e);
+
+        ApiResponse response = ApiResponse.error(HttpStatus.CONFLICT, e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     //데이터 충돌에 대한 예외처리
