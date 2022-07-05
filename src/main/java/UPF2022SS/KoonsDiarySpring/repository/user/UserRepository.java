@@ -7,8 +7,5 @@ import java.util.List;
 
 @Repository
 public interface UserRepository{
-    public User findByName(String username);
-//    public User findByEmail(String email);
     public List<User> findByContainedName(String username);
-    public List<User> findAll();
 }

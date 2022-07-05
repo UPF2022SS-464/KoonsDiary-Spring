@@ -11,7 +11,9 @@ public interface ShareGroupUserService {
 
     public ShareGroupUser createShareGroupUser(Long shareGroupInviteId);
     public List<ShareGroupUser> getShareGroupUsers(Long shareGroupid);
+    public ShareGroupUser getShareGroupUserByShareGroupUserId(Long ShareGroupUserId);
     public ShareGroupUser getShareGroupUser(Long userId, Long ShareGroupId);
+    public void secedeShareGroupUser(Long shareGroupUserId);
     public void expelShareGroupUser(Long id);
 
 

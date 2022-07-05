@@ -78,7 +78,7 @@ public class ShareGroupInviteServiceImpl implements ShareGroupInviteService{
     }
 
     // 초대한 사람의 관점
-    // 잘 못 초대했을 경우 해당 초대를 삭제하는 비즈니스 로직
+    // 잘못 초대했을 경우 해당 초대를 삭제하는 비즈니스 로직
     @Override
     public List<ShareGroupInvite> deleteShareGroupInvite(deleteRequest request) {
         Optional<ShareGroupInvite> shareGroupInvite = shareGroupInviteJpaRepository.findById(request.getShareGroupInviteId());
@@ -91,3 +91,4 @@ public class ShareGroupInviteServiceImpl implements ShareGroupInviteService{
         return shareGroupInvites;
     }
 }
+

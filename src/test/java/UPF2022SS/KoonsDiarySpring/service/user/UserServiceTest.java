@@ -181,7 +181,7 @@ class UserServiceTest {
         userJpaRepository.save(user);
 
 
-        userService.deleteUser(user.getId());
+        userService.delete(user.getId());
     }
 
     @Test
