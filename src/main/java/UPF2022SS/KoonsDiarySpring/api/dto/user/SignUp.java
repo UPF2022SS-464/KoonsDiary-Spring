@@ -31,6 +31,8 @@ public class SignUp {
         private String refreshToken;
 
         private String userId;
+
+
     }
 
 

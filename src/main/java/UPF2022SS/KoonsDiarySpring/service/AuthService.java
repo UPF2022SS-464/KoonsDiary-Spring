@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 
 import static UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp.*;
@@ -76,7 +77,7 @@ public class AuthService {
      */
     public ResponseEntity<Object> requestLogin(final Login.Request request, String refreshToken) {
 
-        final User user = userJpaRepository.findByName(request.getUserId());
+        final User user = userJpaRepository.findByUsername(request.getUserId()).orElseThrow(EntityNotFoundException::new);
 
         try {
             //비밀번호 일치 여부에 대한 부분
