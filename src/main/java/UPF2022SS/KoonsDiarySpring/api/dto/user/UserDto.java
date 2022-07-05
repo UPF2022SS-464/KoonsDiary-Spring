@@ -1,11 +1,9 @@
 package UPF2022SS.KoonsDiarySpring.api.dto.user;
 
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
-import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
-import UPF2022SS.KoonsDiarySpring.domain.User;
 import lombok.*;
 
-public class Crud {
+public class UserDto {
 
     public static class Create{
         @AllArgsConstructor
@@ -20,8 +18,8 @@ public class Crud {
             private String nickname;
             private Long imageId;
 
-            public User toEntity(String password, ImagePath imagePath){
-                User user = User.builder().username(userId)
+            public UPF2022SS.KoonsDiarySpring.domain.User toEntity(String password, ImagePath imagePath){
+                UPF2022SS.KoonsDiarySpring.domain.User user = UPF2022SS.KoonsDiarySpring.domain.User.builder().username(userId)
                         .password(password)
                         .email(email)
                         .nickname(nickname)
@@ -42,7 +40,7 @@ public class Crud {
             private String refreshToken;
             private String accessToken;
 
-            public static ResponseDto of(User user, String accessToken){
+            public static ResponseDto of(UPF2022SS.KoonsDiarySpring.domain.User user, String accessToken){
                 return ResponseDto.builder()
                         .id(user.getId())
                         .userId(user.getUsername())
@@ -75,7 +73,7 @@ public class Crud {
             private String accessToken;
             private String refreshToken;
 
-            public static ResponseDto of(User user, String accessToken){
+            public static ResponseDto of(UPF2022SS.KoonsDiarySpring.domain.User user, String accessToken){
                 return ResponseDto.builder()
                         .userId(user.getUsername())
                         .accessToken(accessToken)
@@ -85,8 +83,46 @@ public class Crud {
     }
     public static class Update{
 
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @ToString
+        @Builder
+        @Getter
+        public static class RequestDto{
+            private String nickname;
+            private String password;
+            private Long imageId;
+        }
+
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @ToString
+        @Builder
+        @Getter
+        public static class ResponseDto{
+            private String nickname;
+            private Long imageId;
+
+            public static ResponseDto of(UPF2022SS.KoonsDiarySpring.domain.User user){
+                return ResponseDto.builder()
+                        .nickname(user.getNickname())
+                        .imageId(user.getImagePath().getId())
+                        .build();
+            }
+        }
     }
     public  static class Delete{
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @ToString
+        @Builder
+        @Getter
+        public static class ResponseDto{
+            private String message;
+            public static ResponseDto of(){
+                return ResponseDto.builder().message("탈퇴 성공").build();
+            }
+        }
 
     }
 }
