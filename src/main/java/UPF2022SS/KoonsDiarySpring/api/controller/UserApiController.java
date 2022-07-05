@@ -103,25 +103,25 @@ public class UserApiController {
         return userService.readV1(requestDto);
         }
 
-    // 토큰을 통한 로그인
-    @GetMapping(value = "/login/token")
-    public ResponseEntity<Object> tokenLogin(@RequestHeader("Authorization") final String header){
-    try{
-        if (header == null) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(ResponseMessage.BAD_REQUEST);
-        }
-
-        return authService.tokenLogin(header);
-
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return ResponseEntity
-                    .badRequest()
-                    .body(ResponseMessage.BAD_REQUEST);
-            }
-        }
+//    // 토큰을 통한 로그인
+//    @GetMapping(value = "/login/token")
+//    public ResponseEntity<Object> tokenLogin(@RequestHeader("Authorization") final String header){
+//    try{
+//        if (header == null) {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(ResponseMessage.BAD_REQUEST);
+//        }
+//
+//        return authService.tokenLogin(header);
+//
+//        }catch (Exception e){
+//            log.error(e.getMessage());
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(ResponseMessage.BAD_REQUEST);
+//            }
+//        }
 
         //카카오 아아디를 통한 로그인
        @GetMapping(value = "/login/kakao")

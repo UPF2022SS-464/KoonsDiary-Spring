@@ -177,11 +177,7 @@ class UserDtoServiceTest {
                 .imagePath(imagePath)
                 .build();
 
-
         userJpaRepository.save(user);
-
-
-        userService.delete(user.getId());
     }
 
     @Test

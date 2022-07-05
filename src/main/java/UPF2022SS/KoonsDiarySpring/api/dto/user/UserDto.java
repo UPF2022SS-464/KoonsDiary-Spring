@@ -3,6 +3,9 @@ package UPF2022SS.KoonsDiarySpring.api.dto.user;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class UserDto {
 
     public static class Create{
@@ -12,10 +15,15 @@ public class UserDto {
         @Builder
         @Getter
         public static class RequestDto{
+            @NotBlank(message = "아이디를 올바르게 입력해 주세요")
             private String userId;
+            @NotBlank(message = "비밀번호를 제대로 입력해 주세요")
             private String password;
+            @NotBlank(message = "이메일을 제대로 입력해 주세요")
             private String email;
+            @NotBlank(message = "닉네임을 제대로 입력해 주세요")
             private String nickname;
+            @NotNull(message = "이미지를 제대로 설정해 주세요.")
             private Long imageId;
 
             public UPF2022SS.KoonsDiarySpring.domain.User toEntity(String password, ImagePath imagePath){
