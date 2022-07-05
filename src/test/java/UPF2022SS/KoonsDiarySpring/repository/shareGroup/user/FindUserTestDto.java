@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @Import(QuerydslConfig.class)
 @ExtendWith(SpringExtension.class)
-class FindUserTest {
+class FindUserTestDto {
 
     @Autowired
     private UserJpaRepository userJpaRepository;

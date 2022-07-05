@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.*;
 @Transactional
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class UserServiceTest {
+class UserDtoServiceTest {
 
     @Autowired
     private UserJpaRepository userJpaRepository;

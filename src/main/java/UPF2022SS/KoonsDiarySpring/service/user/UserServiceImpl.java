@@ -6,8 +6,8 @@ import UPF2022SS.KoonsDiarySpring.api.dto.user.*;
 
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
-import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.domain.User;
+import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 
 import UPF2022SS.KoonsDiarySpring.service.AuthService;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public User join(User user){
+    public UPF2022SS.KoonsDiarySpring.domain.User join(UPF2022SS.KoonsDiarySpring.domain.User user){
             userJpaRepository.save(user);
             return user;
     }
@@ -104,59 +104,59 @@ public class UserServiceImpl implements UserService{
     //회원 중복 검사
     @Override
     public boolean validateDuplicateUserId(String userId){
-        Optional<User> findUser = userJpaRepository.findByUsername(userId);
+        Optional<UPF2022SS.KoonsDiarySpring.domain.User> findUser = userJpaRepository.findByUsername(userId);
         return findUser.isEmpty();
     }
 
     //이메일 중복 검사
     @Override
     public boolean validateDuplicateUserEmail(String userEmail){
-        Optional<User> findUser = userJpaRepository.findByEmail(userEmail);
+        Optional<UPF2022SS.KoonsDiarySpring.domain.User> findUser = userJpaRepository.findByEmail(userEmail);
        return findUser.isEmpty();
     }
 
     //카카오 아이디 중복 검사
     public boolean validateDuplicateKakaoId(Long kakaoId){
-        Optional<User> findUser = userJpaRepository.findByKakaoId(kakaoId);
+        Optional<UPF2022SS.KoonsDiarySpring.domain.User> findUser = userJpaRepository.findByKakaoId(kakaoId);
         return findUser.isEmpty();
     }
 
     @Override
-    public User findById(Long id){
-        User user = userJpaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public UPF2022SS.KoonsDiarySpring.domain.User findById(Long id){
+        UPF2022SS.KoonsDiarySpring.domain.User user = userJpaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return user;
     }
 
     @Override
-    public List<User> findUsers() {
+    public List<UPF2022SS.KoonsDiarySpring.domain.User> findUsers() {
         return userJpaRepository.findAll();
     }
 
     @Override
-    public User findUsername(String username){
+    public UPF2022SS.KoonsDiarySpring.domain.User findUsername(String username){
         return userJpaRepository.findByUsername(username).get();
     }
 
     @Override
-    public User findUserEmail(String email){
+    public UPF2022SS.KoonsDiarySpring.domain.User findUserEmail(String email){
         return userJpaRepository.findByEmail(email).get();
     }
 
     @Override
-    public User findUserKakaoId(Long kakaoId) {
+    public UPF2022SS.KoonsDiarySpring.domain.User findUserKakaoId(Long kakaoId) {
         return userJpaRepository.findByKakaoId(kakaoId).get();
     }
 
 
     @Override
     public ContainedUserResponse findByContainedUser(ContainedUserRequest cur) {
-        List<User> userList = userJpaRepository.findByContainedName(cur.getNickname());
+        List<UPF2022SS.KoonsDiarySpring.domain.User> userList = userJpaRepository.findByContainedName(cur.getNickname());
 
         ObjectMapper mapper = new ObjectMapper();
 
         List<HashMap<String, String>> mapList = new ArrayList<HashMap<String, String>>();
 
-        for (User user : userList) {
+        for (UPF2022SS.KoonsDiarySpring.domain.User user : userList) {
             HashMap<String, String> map= new HashMap<String, String>();
             map.put("id", user.getId().toString());
             map.put("nickname", user.getNickname());
@@ -177,30 +177,18 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void update(User user, UpdateUser.Request request){
-        if(request.getPassword() != null){
-         String pw = passwordEncoder.encode(request.getPassword());
-         user.updatePassword(pw);
+    public UserDto.Delete.ResponseDto delete(String token){
+        User user = null;
+        if(token != null){
+            user = userJpaRepository.findById(jwtService.decodeAccessToken(token)).orElseThrow(EntityNotFoundException::new);
         }
-        if(request.getNickname() != null){
-            user.updateNickname(request.getNickname());
-        }
-        if(request.getImageId() != null){
-            Optional<ImagePath> findImage = imageService.findImage(request.getImageId());
-            user.updateImage(findImage.get());
-        }
-        userJpaRepository.save(user);
+        userJpaRepository.delete(user);
+        return UserDto.Delete.ResponseDto.of();
     }
 
     @Override
     @Transactional
-    public void delete(Long id){
-        userJpaRepository.deleteById(id);
-    }
-
-    @Override
-    @Transactional
-    public Crud.Create.ResponseDto create(Crud.Create.RequestDto requestDto) {
+    public UserDto.Create.ResponseDto create(UserDto.Create.RequestDto requestDto) {
         if(!validateDuplicateUserId(requestDto.getUserId()) || !validateDuplicateUserEmail(requestDto.getEmail())){
             throw new EntityExistsException();
         }
@@ -208,7 +196,7 @@ public class UserServiceImpl implements UserService{
         String password = passwordEncoder.encode(requestDto.getPassword());
         ImagePath imagePath = imageService.findImage(requestDto.getImageId()).orElseThrow(EntityNotFoundException::new);
 
-        User user = requestDto.toEntity(password, imagePath);
+        UPF2022SS.KoonsDiarySpring.domain.User user = requestDto.toEntity(password, imagePath);
 
         RefreshToken refreshToken = new RefreshToken(user, jwtService.createRefreshToken());
         refreshTokenService.save(refreshToken);
@@ -218,11 +206,11 @@ public class UserServiceImpl implements UserService{
 
         String accessToken = jwtService.createAccessToken(user.getId());
 
-        return Crud.Create.ResponseDto.of(user, accessToken);
+        return UserDto.Create.ResponseDto.of(user, accessToken);
     }
 
-    public Crud.Read.ResponseDto readV1(Crud.Read.RequestDto requestDto){
-        User user = null;
+    public UserDto.Read.ResponseDto readV1(UserDto.Read.RequestDto requestDto){
+        UPF2022SS.KoonsDiarySpring.domain.User user = null;
         if (requestDto.getId().contains("@")){
             user = userJpaRepository.findByEmail(requestDto.getId())
                     .orElseThrow(()->new EntityNotFoundException(CustomExceptionMessage.DATA_NOT_FOUND_MESSAGE));;
@@ -234,6 +222,29 @@ public class UserServiceImpl implements UserService{
 
         if (!user.getPassword().equals(passwordEncoder.encode(requestDto.getPassword()))) throw new BadRequestException();
 
-        return Crud.Read.ResponseDto.of(user, jwtService.createAccessToken(user.getId()));
+        return UserDto.Read.ResponseDto.of(user, jwtService.createAccessToken(user.getId()));
+    }
+
+    @Override
+    @Transactional
+    public UserDto.Update.ResponseDto update(String token, UserDto.Update.RequestDto requestDto){
+        User user = null;
+        if (token != null)
+            user = userJpaRepository.findById(jwtService.decodeAccessToken(token)).orElseThrow(EntityNotFoundException::new);
+
+        if(requestDto.getPassword() != null){
+            String pw = passwordEncoder.encode(requestDto.getPassword());
+            user.updatePassword(pw);
+        }
+        if(requestDto.getNickname() != null){
+            user.updateNickname(requestDto.getNickname());
+        }
+        if(requestDto.getImageId() != null){
+            Optional<ImagePath> findImage = imageService.findImage(requestDto.getImageId());
+            user.updateImage(findImage.get());
+        }
+        userJpaRepository.save(user);
+
+        return UserDto.Update.ResponseDto.of(user);
     }
 }

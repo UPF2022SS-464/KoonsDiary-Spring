@@ -6,7 +6,6 @@ import UPF2022SS.KoonsDiarySpring.api.dto.user.Kakao.AccessDto;
 import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.common.StatusCode;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
-import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.service.AuthService;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
@@ -20,10 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 import static UPF2022SS.KoonsDiarySpring.api.dto.user.Kakao.*;
-import static UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp.*;
 import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
@@ -32,7 +29,6 @@ import static org.springframework.http.HttpStatus.*;
 public class UserApiController {
 
     //의존성 주입
-
     private final AuthService authService;
     private final ImageService imageService;
     private final UserService userService;
@@ -56,7 +52,7 @@ public class UserApiController {
     * 회원가입 api
     * */
     @PostMapping(value = "/user")
-    public Crud.Create.ResponseDto signUpWithAccount(@Valid @RequestBody final Crud.Create.RequestDto requestDto){
+    public UserDto.Create.ResponseDto signUpWithAccount(@Valid @RequestBody final UserDto.Create.RequestDto requestDto){
         return userService.create(requestDto);
     }
 
@@ -78,7 +74,7 @@ public class UserApiController {
         try{
             ImagePath imagePath = imageService.findImage(signUpRequset.getImageId()).get();
 
-            User user = User.builder()
+            UPF2022SS.KoonsDiarySpring.domain.User user = UPF2022SS.KoonsDiarySpring.domain.User.builder()
                     .username(signUpRequset.getUserId())
                     .password(passwordEncoder.encode(signUpRequset.getPassword()))
                     .nickname(signUpRequset.getNickname())
@@ -103,7 +99,7 @@ public class UserApiController {
     //헤더 지울것
     //회원가입 시 자동로그인, 로그인 시 자동로그인을 위해 리프레시토큰으로 자동로그인, 리퀘스트 로그인
     @PostMapping(value = "/login/account")
-    public Crud.Read.ResponseDto login(@RequestBody final Crud.Read.RequestDto requestDto){
+    public UserDto.Read.ResponseDto login(@RequestBody final UserDto.Read.RequestDto requestDto){
         return userService.readV1(requestDto);
         }
 
@@ -131,7 +127,7 @@ public class UserApiController {
        @GetMapping(value = "/login/kakao")
         public ResponseEntity<SignInResponse> signInWithKakao(@RequestBody final SignInRequset requset){
             try{
-                User user = userService.findUserKakaoId(requset.getKakaoId());
+                UPF2022SS.KoonsDiarySpring.domain.User user = userService.findUserKakaoId(requset.getKakaoId());
 
                 SignInResponse signInResponse = new SignInResponse(jwtService.createAccessToken(user.getId()));
 
@@ -156,7 +152,7 @@ public class UserApiController {
             }
 
             Long userId = jwtService.decodeAccessToken(header);
-            User findUser = userService.findById(userId);
+            UPF2022SS.KoonsDiarySpring.domain.User findUser = userService.findById(userId);
 
             UserInfoResponse userInfoResponse= UserInfoResponse.builder()
                     .userName(findUser.getUsername())
@@ -181,72 +177,36 @@ public class UserApiController {
 
     //유저 정보(닉네임, 비밀번호, 이미지) 변경 api
     @PatchMapping(value="/user")
-    public ResponseEntity<Object> updateUser(
-            @RequestHeader("Authorization") final String header,
-            @RequestBody UpdateUser.Request request
+    public UserDto.Update.ResponseDto updateUser(
+            @RequestHeader("Authorization") final String token,
+            @RequestBody UserDto.Update.RequestDto requestDto
             ){
-        try{
-            if (header == null){
-                return ResponseEntity
-                        .status(UNAUTHORIZED)
-                        .body(ResponseMessage.UNAUTHORIZED);
-            }
-
-            Long userId = jwtService.decodeAccessToken(header);
-            User findUser = userService.findById(userId);
-
-            userService.update(findUser, request);
-
-            String result = "정보가 업데이트 되었습니다.";
-
-            UpdateUser.Response response = new UpdateUser.Response(result);
-
-            //사용자가 공유일기에 작성했던 모든 기록들의 닉네임을 변경해야 할 필요가 있다.
-            return ResponseEntity.ok().body(response);
-        }catch (Exception e){
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body(ResponseMessage.USER_UPDATE_FAIL);
-            }
+            return userService.update(token, requestDto);
         }
 
     // 회원정보 삭제 api
     @DeleteMapping(value = "/user")
-    public ResponseEntity<Object> deleteUser(
-            @RequestHeader("Authorization") final String header
+    public UserDto.Delete.ResponseDto deleteUser(
+            @RequestHeader("Authorization") final String token
             ){
-
-        try {
-            if(header == null){
-                return ResponseEntity.badRequest().body(ResponseMessage.BAD_REQUEST);
-            }
-            Long userId = jwtService.decodeAccessToken(header);
-            User findUser = userService.findById(userId);
-            userService.delete(findUser.getId());
-            String result = "삭제가 완료되었습니다.";
-
-            DeleteUser.Response response = new DeleteUser.Response(result);
-            return ResponseEntity.ok().body(ResponseMessage.USER_DELETE_SUCCESS);
-        } catch (Exception e){
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().body(ResponseMessage.BAD_REQUEST);
-            }
+            return userService.delete(token);
         }
 
         //그룹 초대 시, 유저의 리스트를 찾기 위한 api
-        @PostMapping(value = "/user/find")
-        public ResponseEntity<Object> findUser(@RequestBody ContainedUserRequest cur){
-            ContainedUserResponse users=  userService.findByContainedUser(cur);
-            try{
-                return ResponseEntity
-                        .ok()
-                        .body(users);
+    @PostMapping(value = "/user/find")
+    public ResponseEntity<Object> findUser(@RequestBody ContainedUserRequest cur){
+        ContainedUserResponse users=  userService.findByContainedUser(cur);
+        try{
+            return ResponseEntity
+                    .ok()
+                    .body(users);
 
-            } catch (Exception e){
-                log.error(e.getMessage());
-                return ResponseEntity
-                        .status(I_AM_A_TEAPOT).
-                        body(ResponseMessage.USER_SEARCH_FAIL);
-            }
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return ResponseEntity
+                    .status(I_AM_A_TEAPOT).
+                    body(ResponseMessage.USER_SEARCH_FAIL);
+        }
         }
     }
 

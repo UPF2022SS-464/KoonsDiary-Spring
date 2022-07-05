@@ -1,25 +1,21 @@
 package UPF2022SS.KoonsDiarySpring.repository.user;
 
+import UPF2022SS.KoonsDiarySpring.QuerydslConfig;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.image.ImageJpaRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-
-@SpringBootTest
-@Transactional
-@ExtendWith(SpringExtension.class)
-public class UserJpaRepositoryTestV2 {
+@DataJpaTest(showSql = false)
+@Import(QuerydslConfig.class)
+class UserDtoJpaRepositoryTest {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
@@ -30,10 +26,10 @@ public class UserJpaRepositoryTestV2 {
     void getByUsername_user_success(){
         ImagePath imagePath = setImage();
         User user = User.builder()
-                .username("test")
+                .username("koon")
                 .password("cucumber52")
-                .email("test@gmail.com")
-                .nickname("test")
+                .email("koon@gmail.com")
+                .nickname("koon")
                 .imagePath(imagePath)
                 .build();
 
@@ -41,6 +37,7 @@ public class UserJpaRepositoryTestV2 {
         System.out.println("user.getId() = " + user.getId());
         User findUser = userJpaRepository.findById(user.getId()).get();
         assertEquals(user, findUser);
+        System.out.println("user = " + user.getId() + " findUser = " + findUser.getId());
     }
 
     @Test

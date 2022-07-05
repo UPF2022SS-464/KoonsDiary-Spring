@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Import(QuerydslConfig.class)
 @ExtendWith(SpringExtension.class)
-public class CreateUserTest {
+public class CreateUserTestDto {
 
     @Autowired
     private UserJpaRepository userJpaRepository;
