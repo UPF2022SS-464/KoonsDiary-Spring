@@ -52,7 +52,7 @@ class UserJpaRepositoryTest {
                 .build();
 
         userJpaRepository.save(user);
-        User findUser = userJpaRepository.findByName(user.getUsername());
+        User findUser = userJpaRepository.findByUsername(user.getUsername()).get();
         assertThat(findUser.getId()).isEqualTo(user.getId());
         System.out.println("findUser = " + findUser.getUsername() + " " + findUser.getNickname());
     }

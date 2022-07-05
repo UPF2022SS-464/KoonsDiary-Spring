@@ -97,7 +97,7 @@ class DiaryJpaRepositoryTest {
 
         diaryJpaRepository.save(diary);
         diary.setUser(user);
-        User test = userJpaRepository.findByName(user.getNickname());
+        User test = userJpaRepository.findByUsername(user.getNickname()).get();
         List<Diary> diaries = diaryJpaRepository.findAllById(test.getId());
 
         for (Diary diary1 : diaries) {

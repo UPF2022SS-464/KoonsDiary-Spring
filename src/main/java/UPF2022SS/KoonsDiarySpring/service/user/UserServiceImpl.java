@@ -1,5 +1,6 @@
 package UPF2022SS.KoonsDiarySpring.service.user;
 
+import UPF2022SS.KoonsDiarySpring.Exception.BadRequestException;
 import UPF2022SS.KoonsDiarySpring.Exception.CustomExceptionMessage;
 import UPF2022SS.KoonsDiarySpring.api.dto.user.*;
 
@@ -218,5 +219,21 @@ public class UserServiceImpl implements UserService{
         String accessToken = jwtService.createAccessToken(user.getId());
 
         return Crud.Create.ResponseDto.of(user, accessToken);
+    }
+
+    public Crud.Read.ResponseDto readV1(Crud.Read.RequestDto requestDto){
+        User user = null;
+        if (requestDto.getId().contains("@")){
+            user = userJpaRepository.findByEmail(requestDto.getId())
+                    .orElseThrow(()->new EntityNotFoundException(CustomExceptionMessage.DATA_NOT_FOUND_MESSAGE));;
+        }
+        else{
+            user = userJpaRepository.findByUsername(requestDto.getId())
+                    .orElseThrow(()->new EntityNotFoundException(CustomExceptionMessage.DATA_NOT_FOUND_MESSAGE));
+        }
+
+        if (!user.getPassword().equals(passwordEncoder.encode(requestDto.getPassword()))) throw new BadRequestException();
+
+        return Crud.Read.ResponseDto.of(user, jwtService.createAccessToken(user.getId()));
     }
 }

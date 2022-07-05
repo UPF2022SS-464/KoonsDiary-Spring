@@ -36,24 +36,24 @@ class CalenderTest {
     private DiaryServiceImpl diaryService;
 
 
-    @Test
-    @DisplayName("월에 대한 다이어리 DTO 출력")
-    void getMonthlyDiaryListByLocalDate() {
-        //given
-        User user = setUser();
-        for(int i = 1; i< 20; i++){
-            setDiary(user, i);
-        }
-
-        LocalDate startDate = LocalDate.of(2022,5,1);
-        LocalDate endDate = LocalDate.of(2022,5,30);
-
-        ResponseEntity<Object> response = diaryService.getMonthlyDiaryListByLocalDate(user, startDate, endDate);
-
-//        Assertions.assertThat(response.getData()).isNotNull();
-
-        System.out.println("response = " + response);
-    }
+//    @Test
+//    @DisplayName("월에 대한 다이어리 DTO 출력")
+//    void getMonthlyDiaryListByLocalDate() {
+//        //given
+//        User user = setUser();
+//        for(int i = 1; i< 20; i++){
+//            setDiary(user, i);
+//        }
+//
+//        LocalDate startDate = LocalDate.of(2022,5,1);
+//        LocalDate endDate = LocalDate.of(2022,5,30);
+//
+//        ResponseEntity<Object> response = diaryService.getMonthlyDiaryListByLocalDate(user, startDate, endDate);
+//
+////        Assertions.assertThat(response.getData()).isNotNull();
+//
+//        System.out.println("response = " + response);
+//    }
 
     //유저 정보 설정
     private User setUser(){
@@ -72,7 +72,7 @@ class CalenderTest {
                 .build();
 
         userJpaRepository.save(user);
-        user = userJpaRepository.findByName("test");
+        user = userJpaRepository.findByUsername("test").get();
         return user;
     }
 

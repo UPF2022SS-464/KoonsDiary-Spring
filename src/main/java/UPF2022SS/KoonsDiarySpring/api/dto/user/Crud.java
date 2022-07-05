@@ -54,7 +54,34 @@ public class Crud {
     }
 
     public static class Read{
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @ToString
+        @Builder
+        @Getter
+        public static class RequestDto{
+            private String id;
+            private String password;
+        }
 
+
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @ToString
+        @Builder
+        @Getter
+        public static class ResponseDto{
+            private String userId;
+            private String accessToken;
+            private String refreshToken;
+
+            public static ResponseDto of(User user, String accessToken){
+                return ResponseDto.builder()
+                        .userId(user.getUsername())
+                        .accessToken(accessToken)
+                        .refreshToken(user.getRefreshToken().getValue()).build();
+            }
+        }
     }
     public static class Update{
 

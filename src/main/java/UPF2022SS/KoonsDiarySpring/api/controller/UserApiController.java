@@ -98,42 +98,26 @@ public class UserApiController {
         }
     }
 
+
+
     //헤더 지울것
     //회원가입 시 자동로그인, 로그인 시 자동로그인을 위해 리프레시토큰으로 자동로그인, 리퀘스트 로그인
     @PostMapping(value = "/login/account")
-    public ResponseEntity<Object> login(@RequestBody final Login.Request request){
-            User findUser;
-            //아이디 형식이 이메일일 경우
-            if (request.getUserId().contains("@")){
-                findUser = userService.findUserEmail(request.getUserId());
-            }
-            //일반 아이디 형식일 경우
-            else{
-               findUser = userService.findUsername(request.getUserId());
-            }
-
-            //찾아낸 사용자가 없을 경우
-            if(findUser == null){
-                return ResponseEntity
-                        .status(UNAUTHORIZED)
-                        .body(ResponseMessage.INVALID_USER);
-                }
-
-            authService.checkExpirationDate(findUser);
-            return authService.requestLogin(request, findUser.getRefreshToken().getValue());
+    public Crud.Read.ResponseDto login(@RequestBody final Crud.Read.RequestDto requestDto){
+        return userService.readV1(requestDto);
         }
 
-        // 토큰을 통한 로그인
-        @GetMapping(value = "/login/token")
-        public ResponseEntity<Object> tokenLogin(@RequestHeader("Authorization") final String header){
-        try{
-            if (header == null) {
-                return ResponseEntity
-                        .badRequest()
-                        .body(ResponseMessage.BAD_REQUEST);
-            }
+    // 토큰을 통한 로그인
+    @GetMapping(value = "/login/token")
+    public ResponseEntity<Object> tokenLogin(@RequestHeader("Authorization") final String header){
+    try{
+        if (header == null) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseMessage.BAD_REQUEST);
+        }
 
-            return authService.tokenLogin(header);
+        return authService.tokenLogin(header);
 
         }catch (Exception e){
             log.error(e.getMessage());

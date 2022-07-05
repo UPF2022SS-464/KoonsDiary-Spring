@@ -23,6 +23,7 @@ public interface UserService {
 
 
     public Crud.Create.ResponseDto create(Crud.Create.RequestDto requestDto);
+    public Crud.Read.ResponseDto readV1(Crud.Read.RequestDto requestDto);
 
     public boolean validateDuplicateUserId(String userId);
     public boolean validateDuplicateUserEmail(String userEmail);

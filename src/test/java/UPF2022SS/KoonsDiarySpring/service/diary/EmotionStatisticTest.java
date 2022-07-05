@@ -76,7 +76,7 @@ class EmotionStatisticTest {
 
         userJpaRepository.save(user);
 
-        User findUser = userJpaRepository.findByName("koon");
+        User findUser = userJpaRepository.findByUsername("koon").get();
         return findUser;
     }
 
