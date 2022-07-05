@@ -92,14 +92,14 @@ public class ShareGroupUserApiController {
 
 
     //방장의 권한으로 유저 추방시킬 때 api
-    @DeleteMapping(value = "/shareGroupUser")
+    @PostMapping(value = "/shareGroupUser/expel")
     public ResponseEntity<String> expelShareGroupUser(
             @RequestHeader("Authorization") final String header,
             @RequestBody final deleteRequest request
     ){
         Long userId = jwtService.decodeAccessToken(header);
-
         shareGroupUserService.expelShareGroupUser(request.getShareGroupUserId());
         return ResponseEntity.ok().body(HttpStatus.OK.toString());
     }
+
 }

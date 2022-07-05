@@ -49,7 +49,6 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public User join(User user){
-            // 유저 정보 저장
             userJpaRepository.save(user);
             return user;
     }
@@ -137,7 +136,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User findUsername(String username){
-        return userJpaRepository.findByName(username);
+        return userJpaRepository.findByUsername(username).get();
     }
 
     @Override
@@ -149,6 +148,7 @@ public class UserServiceImpl implements UserService{
     public User findUserKakaoId(Long kakaoId) {
         return userJpaRepository.findByKakaoId(kakaoId).get();
     }
+
 
     @Override
     public ContainedUserResponse findByContainedUser(ContainedUserRequest cur) {
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void updateUser(User user, UpdateUser.Request request){
+    public void update(User user, UpdateUser.Request request){
         if(request.getPassword() != null){
          String pw = passwordEncoder.encode(request.getPassword());
          user.updatePassword(pw);
@@ -191,11 +191,12 @@ public class UserServiceImpl implements UserService{
             Optional<ImagePath> findImage = imageService.findImage(request.getImageId());
             user.updateImage(findImage.get());
         }
+        userJpaRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void deleteUser(Long id){
+    public void delete(Long id){
         userJpaRepository.deleteById(id);
     }
 }

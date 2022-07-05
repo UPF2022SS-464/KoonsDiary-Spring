@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface UserService {
@@ -23,8 +22,8 @@ public interface UserService {
     public User findUserEmail(String email);
     public User findUserKakaoId(Long kakaoId);
     public ContainedUserResponse findByContainedUser(ContainedUserRequest cur);
-    public void updateUser(User user, UpdateUser.Request request);
-    public void deleteUser(Long id);
+    public void update(User user, UpdateUser.Request request);
+    public void delete(Long id);
 
 
     public boolean validateDuplicateUserId(String userId);

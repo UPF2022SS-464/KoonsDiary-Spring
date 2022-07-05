@@ -236,7 +236,7 @@ public class UserApiController {
             Long userId = jwtService.decodeAccessToken(header);
             User findUser = userService.findById(userId);
 
-            userService.updateUser(findUser, request);
+            userService.update(findUser, request);
 
             String result = "정보가 업데이트 되었습니다.";
 
@@ -262,7 +262,7 @@ public class UserApiController {
             }
             Long userId = jwtService.decodeAccessToken(header);
             User findUser = userService.findById(userId);
-            userService.deleteUser(findUser.getId());
+            userService.delete(findUser.getId());
             String result = "삭제가 완료되었습니다.";
 
             DeleteUser.Response response = new DeleteUser.Response(result);

@@ -54,6 +54,7 @@ public class ShareGroupUserServiceImpl implements ShareGroupUserService{
         return shareGroupUser;
     }
 
+    //해당 공유일기장의 모든 사용자 확인
     @Override
     public List<ShareGroupUser> getShareGroupUsers(Long shareGroupId) {
 
@@ -77,6 +78,13 @@ public class ShareGroupUserServiceImpl implements ShareGroupUserService{
         return shareGroupUser.get();
     }
 
+
+    @Override
+    public ShareGroupUser getShareGroupUserByShareGroupUserId(Long shareGroupUserId){
+        Optional<ShareGroupUser> shareGroupUser = shareGroupUserJpaRepository.findById(shareGroupUserId);
+        return  shareGroupUser.get();
+    }
+
     /*
     * 공유일기장에서 유저 추방하기
     * */
@@ -91,9 +99,21 @@ public class ShareGroupUserServiceImpl implements ShareGroupUserService{
 
         try {
             firebaseCloudMessageService.sendMessageTo(shareGroupUser.get().getUser().getFcmToken(), title, body);
-            shareGroupUserJpaRepository.delete(shareGroupUser.get());
+            shareGroupUser.get().setAuthority(Authority.SECESSION);
+//            shareGroupUserJpaRepository.delete(shareGroupUser.get());
         }catch (Exception e){
             log.error(e.getMessage());
         }
+    }
+
+    /*
+    * 사용자가 공유일기를 탈퇴할 때
+    * */
+    @Override
+    @Transactional
+    public void secedeShareGroupUser(Long shareGroupUserId){
+        Optional<ShareGroupUser> shareGroupUser = shareGroupUserJpaRepository.findById(shareGroupUserId);
+        shareGroupUser.get().setAuthority(Authority.SECESSION);
+        shareGroupUserJpaRepository.save(shareGroupUser.get());
     }
 }

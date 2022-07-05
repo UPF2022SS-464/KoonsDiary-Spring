@@ -21,33 +21,11 @@ public class UserRepositoryImpl implements UserRepository {
     //111
     QUser user  = QUser.user;
 
-
-    @Override
-    public User findByName(String username) {
-        return jqf.selectFrom(user)
-                .where(user.username.eq(username))
-                .fetchOne();
-    }
-
-//    @Override
-//    public User findByEmail(String email){
-//        return jqf.select(user)
-//                .from(user)
-//                .where(user.email.eq(email))
-//                .fetchOne();
-//    }
-
     @Override
     public List<User> findByContainedName(String username) {
         return jqf.select(user)
                 .from(user)
                 .where(user.nickname.contains(username))
-                .fetch();
-    }
-
-    @Override
-    public List<User> findAll() {
-        return jqf.selectFrom(user)
                 .fetch();
     }
 }
