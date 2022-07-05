@@ -1,15 +1,16 @@
 package UPF2022SS.KoonsDiarySpring.service.user;
 
-import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
+import UPF2022SS.KoonsDiarySpring.Exception.CustomExceptionMessage;
+import UPF2022SS.KoonsDiarySpring.api.dto.user.*;
 
-import UPF2022SS.KoonsDiarySpring.api.dto.user.SignUp;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.UpdateUser;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
+import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
-import UPF2022SS.KoonsDiarySpring.common.ResponseMessage;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 
+import UPF2022SS.KoonsDiarySpring.service.AuthService;
+import UPF2022SS.KoonsDiarySpring.service.JwtService;
+import UPF2022SS.KoonsDiarySpring.service.RefreshTokenService;
 import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -22,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,16 +35,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static UPF2022SS.KoonsDiarySpring.api.dto.user.Kakao.*;
-import static UPF2022SS.KoonsDiarySpring.common.ResponseMessage.*;
-import static org.springframework.http.HttpStatus.*;
-
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor()
 public class UserServiceImpl implements UserService{
 
+    private final AuthService authService;
+    private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
     private final UserJpaRepository userJpaRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
@@ -54,21 +56,16 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public ResponseEntity<AccessDto> getKakaoId(String accessToken){
-        try{
-        Long kakaoId = getKakaoToken(accessToken);
-
-            //아이디와 이메일에 대한 유효성 검사
-            if (validateDuplicateKakaoId(kakaoId)){
-                AccessDto accessDto = new AccessDto(kakaoId);
-                return ResponseEntity.ok().body(accessDto);
-            }
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<Kakao.AccessDto> getKakaoId(String accessToken){
+        Long kakaoId = null;
+        try {
+            kakaoId = getKakaoToken(accessToken);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch (Exception e){
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
+        //아이디와 이메일에 대한 유효성 검사
+        Kakao.AccessDto accessDto = new Kakao.AccessDto(kakaoId);
+        return ResponseEntity.ok().body(accessDto);
     }
 
     public Long getKakaoToken(String accessToken) throws RuntimeException, IOException {
@@ -110,7 +107,7 @@ public class UserServiceImpl implements UserService{
         return findUser.isEmpty();
     }
 
-    //이메일을 통한 검사
+    //이메일 중복 검사
     @Override
     public boolean validateDuplicateUserEmail(String userEmail){
         Optional<User> findUser = userJpaRepository.findByEmail(userEmail);
@@ -125,8 +122,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User findById(Long id){
-        Optional<User> user = userJpaRepository.findById(id);
-        return user.get();
+        User user = userJpaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return user;
     }
 
     @Override
@@ -198,5 +195,28 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public void delete(Long id){
         userJpaRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public Crud.Create.ResponseDto create(Crud.Create.RequestDto requestDto) {
+        if(!validateDuplicateUserId(requestDto.getUserId()) || !validateDuplicateUserEmail(requestDto.getEmail())){
+            throw new EntityExistsException();
+        }
+
+        String password = passwordEncoder.encode(requestDto.getPassword());
+        ImagePath imagePath = imageService.findImage(requestDto.getImageId()).orElseThrow(EntityNotFoundException::new);
+
+        User user = requestDto.toEntity(password, imagePath);
+
+        RefreshToken refreshToken = new RefreshToken(user, jwtService.createRefreshToken());
+        refreshTokenService.save(refreshToken);
+        user.setRefreshToken(refreshToken);
+
+        user = userJpaRepository.save(user);
+
+        String accessToken = jwtService.createAccessToken(user.getId());
+
+        return Crud.Create.ResponseDto.of(user, accessToken);
     }
 }

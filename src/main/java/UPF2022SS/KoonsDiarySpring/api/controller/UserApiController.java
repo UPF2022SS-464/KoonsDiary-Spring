@@ -32,6 +32,7 @@ import static org.springframework.http.HttpStatus.*;
 public class UserApiController {
 
     //의존성 주입
+
     private final AuthService authService;
     private final ImageService imageService;
     private final UserService userService;
@@ -51,38 +52,12 @@ public class UserApiController {
         return userService.validateDuplicateUserEmail(validationEmail.getEmail());
     }
 
+    /*
+    * 회원가입 api
+    * */
     @PostMapping(value = "/user")
-    public ResponseEntity signUpWithAccount(@Valid @RequestBody final Request request){
-
-//            if(!userService.validateDuplicateUserId(request.getUserId())){
-//                return ResponseEntity
-//                        .status(CONFLICT)
-//                        .body(ResponseMessage.DUPLICATED_USER);
-//            }
-//
-//            else if(!userService.validateDuplicateUserEmail(request.getEmail())){
-//                return ResponseEntity
-//                        .status(CONFLICT)
-//                        .body(ResponseMessage.DUPLICATED_EMAIL);
-//            }
-
-            //이미지 반환
-            Optional<ImagePath> findImage = imageService.findImage(request.getImageId());
-
-            User user = User.builder()
-                    .username(request.getUserId())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .nickname(request.getNickname())
-                    .imagePath(findImage.get())
-                    .build();
-
-            RefreshToken token = new RefreshToken(user, authService.createRefreshToken());
-            refreshTokenService.save(token);
-            user.setRefreshToken(token);
-            user = userService.join(user);
-
-            return authService.signUpLogin(user, token.getValue());
+    public Crud.Create.ResponseDto signUpWithAccount(@Valid @RequestBody final Crud.Create.RequestDto requestDto){
+        return userService.create(requestDto);
     }
 
     /*
