@@ -9,7 +9,6 @@ import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 
-import UPF2022SS.KoonsDiarySpring.service.AuthService;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.RefreshTokenService;
 import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
@@ -41,33 +40,12 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor()
 public class UserServiceImpl implements UserService{
-
-    private final AuthService authService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserJpaRepository userJpaRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
 
-    @Override
-    @Transactional
-    public UPF2022SS.KoonsDiarySpring.domain.User join(UPF2022SS.KoonsDiarySpring.domain.User user){
-            userJpaRepository.save(user);
-            return user;
-    }
-
-    @Override
-    public ResponseEntity<Kakao.AccessDto> getKakaoId(String accessToken){
-        Long kakaoId = null;
-        try {
-            kakaoId = getKakaoToken(accessToken);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //아이디와 이메일에 대한 유효성 검사
-        Kakao.AccessDto accessDto = new Kakao.AccessDto(kakaoId);
-        return ResponseEntity.ok().body(accessDto);
-    }
 
     public Long getKakaoToken(String accessToken) throws RuntimeException, IOException {
 
@@ -104,59 +82,59 @@ public class UserServiceImpl implements UserService{
     //회원 중복 검사
     @Override
     public boolean validateDuplicateUserId(String userId){
-        Optional<UPF2022SS.KoonsDiarySpring.domain.User> findUser = userJpaRepository.findByUsername(userId);
+        Optional<User> findUser = userJpaRepository.findByUsername(userId);
         return findUser.isEmpty();
     }
 
     //이메일 중복 검사
     @Override
     public boolean validateDuplicateUserEmail(String userEmail){
-        Optional<UPF2022SS.KoonsDiarySpring.domain.User> findUser = userJpaRepository.findByEmail(userEmail);
+        Optional<User> findUser = userJpaRepository.findByEmail(userEmail);
        return findUser.isEmpty();
     }
 
     //카카오 아이디 중복 검사
     public boolean validateDuplicateKakaoId(Long kakaoId){
-        Optional<UPF2022SS.KoonsDiarySpring.domain.User> findUser = userJpaRepository.findByKakaoId(kakaoId);
+        Optional<User> findUser = userJpaRepository.findByKakaoId(kakaoId);
         return findUser.isEmpty();
     }
 
     @Override
-    public UPF2022SS.KoonsDiarySpring.domain.User findById(Long id){
-        UPF2022SS.KoonsDiarySpring.domain.User user = userJpaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public User findById(Long id){
+        User user = userJpaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return user;
     }
 
     @Override
-    public List<UPF2022SS.KoonsDiarySpring.domain.User> findUsers() {
+    public List<User> findUsers() {
         return userJpaRepository.findAll();
     }
 
     @Override
-    public UPF2022SS.KoonsDiarySpring.domain.User findUsername(String username){
+    public User findUsername(String username){
         return userJpaRepository.findByUsername(username).get();
     }
 
     @Override
-    public UPF2022SS.KoonsDiarySpring.domain.User findUserEmail(String email){
+    public User findUserEmail(String email){
         return userJpaRepository.findByEmail(email).get();
     }
 
     @Override
-    public UPF2022SS.KoonsDiarySpring.domain.User findUserKakaoId(Long kakaoId) {
+    public User findUserKakaoId(Long kakaoId) {
         return userJpaRepository.findByKakaoId(kakaoId).get();
     }
 
 
     @Override
     public ContainedUserResponse findByContainedUser(ContainedUserRequest cur) {
-        List<UPF2022SS.KoonsDiarySpring.domain.User> userList = userJpaRepository.findByContainedName(cur.getNickname());
+        List<User> userList = userJpaRepository.findByContainedName(cur.getNickname());
 
         ObjectMapper mapper = new ObjectMapper();
 
         List<HashMap<String, String>> mapList = new ArrayList<HashMap<String, String>>();
 
-        for (UPF2022SS.KoonsDiarySpring.domain.User user : userList) {
+        for (User user : userList) {
             HashMap<String, String> map= new HashMap<String, String>();
             map.put("id", user.getId().toString());
             map.put("nickname", user.getNickname());
@@ -175,16 +153,7 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    @Override
-    @Transactional
-    public UserDto.Delete.ResponseDto delete(String token){
-        User user = null;
-        if(token != null){
-            user = userJpaRepository.findById(jwtService.decodeAccessToken(token)).orElseThrow(EntityNotFoundException::new);
-        }
-        userJpaRepository.delete(user);
-        return UserDto.Delete.ResponseDto.of();
-    }
+
 
     @Override
     @Transactional
@@ -196,7 +165,7 @@ public class UserServiceImpl implements UserService{
         String password = passwordEncoder.encode(requestDto.getPassword());
         ImagePath imagePath = imageService.findImage(requestDto.getImageId()).orElseThrow(EntityNotFoundException::new);
 
-        UPF2022SS.KoonsDiarySpring.domain.User user = requestDto.toEntity(password, imagePath);
+        User user = requestDto.toEntity(password, imagePath);
 
         RefreshToken refreshToken = new RefreshToken(user, jwtService.createRefreshToken());
         refreshTokenService.save(refreshToken);
@@ -210,7 +179,7 @@ public class UserServiceImpl implements UserService{
     }
 
     public UserDto.Read.ResponseDto readV1(UserDto.Read.RequestDto requestDto){
-        UPF2022SS.KoonsDiarySpring.domain.User user = null;
+        User user = null;
         if (requestDto.getId().contains("@")){
             user = userJpaRepository.findByEmail(requestDto.getId())
                     .orElseThrow(()->new EntityNotFoundException(CustomExceptionMessage.DATA_NOT_FOUND_MESSAGE));;
@@ -246,5 +215,50 @@ public class UserServiceImpl implements UserService{
         userJpaRepository.save(user);
 
         return UserDto.Update.ResponseDto.of(user);
+    }
+
+    @Override
+    @Transactional
+    public UserDto.Delete.ResponseDto delete(String token){
+        User user = null;
+        if(token != null){
+            user = userJpaRepository.findById(jwtService.decodeAccessToken(token)).orElseThrow(EntityNotFoundException::new);
+        }
+        userJpaRepository.delete(user);
+        return UserDto.Delete.ResponseDto.of();
+    }
+
+    @Override
+    public KakaoDto.Create.ResponseDto createKakao(KakaoDto.Create.RequestDto requestDto) {
+        ImagePath imagePath = imageService.findImage(requestDto.getImageId()).get();
+
+        User user = User.builder()
+                .username(requestDto.getUserId())
+                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .nickname(requestDto.getNickname())
+                .kakaoId(requestDto.getKakaoId())
+                .imagePath(imagePath)
+                .build();
+
+        userJpaRepository.save(user);
+        String accessToken = jwtService.createAccessToken(user.getId());
+
+        return KakaoDto.Create.ResponseDto.of(user, accessToken);
+
+    }
+
+    @Override
+    public KakaoDto.Read.ResponseDto readKako(String token) {
+        Long kakaoId = null;
+        try {
+            kakaoId = getKakaoToken(token);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //아이디와 이메일에 대한 유효성 검사
+        KakaoDto.AccessDto accessDto = new KakaoDto.AccessDto(kakaoId);
+
+        return KakaoDto.Read.ResponseDto.of(kakaoId);
     }
 }

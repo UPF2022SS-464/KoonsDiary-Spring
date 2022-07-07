@@ -9,8 +9,7 @@ import java.util.List;
 @Service
 public interface UserService {
 
-    public UPF2022SS.KoonsDiarySpring.domain.User join(UPF2022SS.KoonsDiarySpring.domain.User user);
-    public ResponseEntity<Kakao.AccessDto> getKakaoId(String code);
+    public KakaoDto.Read.ResponseDto getKakaoId(String code);
     public List<UPF2022SS.KoonsDiarySpring.domain.User> findUsers();
     public UPF2022SS.KoonsDiarySpring.domain.User findById(Long id);
     public UPF2022SS.KoonsDiarySpring.domain.User findUsername(String username);
@@ -23,6 +22,9 @@ public interface UserService {
     public UserDto.Read.ResponseDto readV1(UserDto.Read.RequestDto requestDto);
     public UserDto.Update.ResponseDto update(String token, UserDto.Update.RequestDto requestDto);
     public UserDto.Delete.ResponseDto delete(String token);
+
+    public KakaoDto.Create.ResponseDto createKakao(KakaoDto.Create.RequestDto requestDto);
+    public KakaoDto.Read.ResponseDto readKako(String token);
 
     public boolean validateDuplicateUserId(String userId);
     public boolean validateDuplicateUserEmail(String userEmail);

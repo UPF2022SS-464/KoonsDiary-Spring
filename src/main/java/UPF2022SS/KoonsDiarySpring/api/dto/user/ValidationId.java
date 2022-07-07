@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 
 
 public class ValidationId {
-
     @Data
     public static class Request{
         @NotBlank(message = "아이디를 입력해 주세요")
