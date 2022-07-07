@@ -9,6 +9,7 @@ import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 
+import UPF2022SS.KoonsDiarySpring.service.AuthService;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.RefreshTokenService;
 import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
@@ -18,7 +19,6 @@ import com.google.gson.JsonArray;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +35,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+
+
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor()
 public class UserServiceImpl implements UserService{
+
+    private final AuthService authService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserJpaRepository userJpaRepository;
@@ -93,11 +97,6 @@ public class UserServiceImpl implements UserService{
        return findUser.isEmpty();
     }
 
-    //카카오 아이디 중복 검사
-    public boolean validateDuplicateKakaoId(Long kakaoId){
-        Optional<User> findUser = userJpaRepository.findByKakaoId(kakaoId);
-        return findUser.isEmpty();
-    }
 
     @Override
     public User findById(Long id){
@@ -118,11 +117,6 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findUserEmail(String email){
         return userJpaRepository.findByEmail(email).get();
-    }
-
-    @Override
-    public User findUserKakaoId(Long kakaoId) {
-        return userJpaRepository.findByKakaoId(kakaoId).get();
     }
 
 
@@ -195,6 +189,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public UserDto.Read.ResponseDto readV2(String token){
+        User user = refreshTokenService.getToken(token).getUser();
+        String accessToken = jwtService.createAccessToken(user.getId());
+        return UserDto.Read.ResponseDto.of(user, accessToken);
+    }
+
+    @Override
     @Transactional
     public UserDto.Update.ResponseDto update(String token, UserDto.Update.RequestDto requestDto){
         User user = null;
@@ -229,9 +230,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public KakaoDto.Create.ResponseDto createKakao(KakaoDto.Create.RequestDto requestDto) {
-        ImagePath imagePath = imageService.findImage(requestDto.getImageId()).get();
-
+        ImagePath imagePath = imageService.findImage(requestDto.getImageId()).orElseThrow(EntityNotFoundException::new);
         User user = User.builder()
                 .username(requestDto.getUserId())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
