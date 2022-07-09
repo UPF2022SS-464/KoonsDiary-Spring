@@ -9,10 +9,10 @@ import UPF2022SS.KoonsDiarySpring.domain.RefreshToken;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 
-import UPF2022SS.KoonsDiarySpring.service.AuthService;
 import UPF2022SS.KoonsDiarySpring.service.JwtService;
 import UPF2022SS.KoonsDiarySpring.service.RefreshTokenService;
 import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -23,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,9 +40,8 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor()
-public class UserServiceImpl implements UserService{
+public class    UserServiceImpl implements UserService{
 
-    private final AuthService authService;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserJpaRepository userJpaRepository;
@@ -85,15 +83,17 @@ public class UserServiceImpl implements UserService{
 
     //회원 중복 검사
     @Override
-    public boolean validateDuplicateUserId(String userId){
-        Optional<User> findUser = userJpaRepository.findByUsername(userId);
+    public boolean validateDuplicateUserId(Validation.Id.RequestDto userId){
+        String nickname = userId.getId();
+        Optional<User> findUser = userJpaRepository.findByUsername(nickname);
         return findUser.isEmpty();
     }
 
     //이메일 중복 검사
     @Override
-    public boolean validateDuplicateUserEmail(String userEmail){
-        Optional<User> findUser = userJpaRepository.findByEmail(userEmail);
+    public boolean validateDuplicateUserEmail(Validation.Email.RequestDto userEmail){
+        String email = userEmail.getEmail();
+        Optional<User> findUser = userJpaRepository.findByEmail(email);
        return findUser.isEmpty();
     }
 
@@ -121,8 +121,8 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public ContainedUserResponse findByContainedUser(ContainedUserRequest cur) {
-        List<User> userList = userJpaRepository.findByContainedName(cur.getNickname());
+    public UserDto.Search.ResponseDto findByContainedUser(String nickname) {
+        List<User> userList = userJpaRepository.findByContainedName(nickname);
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -135,16 +135,14 @@ public class UserServiceImpl implements UserService{
 
             mapList.add(map);
         }
+        String json = null;
         try {
-            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapList);
-
-            ContainedUserResponse containedUserResponse = ContainedUserResponse.builder()
-                    .userListJsonData(json)
-                    .build();
-            return containedUserResponse;
-        } catch (Exception e){
-            return null;
+            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapList);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
+
+        return UserDto.Search.ResponseDto.of(json);
     }
 
 
@@ -152,10 +150,6 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public UserDto.Create.ResponseDto create(UserDto.Create.RequestDto requestDto) {
-        if(!validateDuplicateUserId(requestDto.getUserId()) || !validateDuplicateUserEmail(requestDto.getEmail())){
-            throw new EntityExistsException();
-        }
-
         String password = passwordEncoder.encode(requestDto.getPassword());
         ImagePath imagePath = imageService.findImage(requestDto.getImageId()).orElseThrow(EntityNotFoundException::new);
 
@@ -261,5 +255,15 @@ public class UserServiceImpl implements UserService{
         KakaoDto.AccessDto accessDto = new KakaoDto.AccessDto(kakaoId);
 
         return KakaoDto.Read.ResponseDto.of(kakaoId);
+    }
+
+    // 유저 정보 조회 기능
+    @Override
+    public UserDto.Read.ResponseDtoV2 read(String token) {
+        User user = null;
+        if(token != null)
+            user = userJpaRepository.findById(jwtService.decodeAccessToken(token)).orElseThrow(EntityNotFoundException::new);
+
+        return UserDto.Read.ResponseDtoV2.of(user);
     }
 }

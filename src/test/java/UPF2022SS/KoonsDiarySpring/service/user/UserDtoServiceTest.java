@@ -1,6 +1,4 @@
 package UPF2022SS.KoonsDiarySpring.service.user;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserRequest;
-import UPF2022SS.KoonsDiarySpring.api.dto.user.ContainedUserResponse;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
 import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
@@ -56,7 +54,7 @@ class UserDtoServiceTest {
                 .imagePath(imagePath)
                 .build();
 
-        User saveUser = userService.join(user);
+        User saveUser = userJpaRepository.save(user);
         assertThat(user).isEqualTo(saveUser);
         System.out.println("response = " + saveUser.getUsername());
     }
@@ -76,7 +74,7 @@ class UserDtoServiceTest {
                 .imagePath(imagePath)
                 .build();
 
-        userService.join(user);
+        userJpaRepository.save(user);
         List<User> users = userService.findUsers();
         for (User userObj : users) {
             System.out.println("user = " + userObj);
@@ -106,7 +104,7 @@ class UserDtoServiceTest {
                 .build();
 
 
-       user = userService.join(user);
+        user = userJpaRepository.save(user);
 
         User username = userService.findUsername(user.getNickname());
         System.out.println("username = " + username);
@@ -130,7 +128,7 @@ class UserDtoServiceTest {
                 .build();
 
 
-        user = userService.join(user);
+        user = userJpaRepository.save(user);
         User findUser = userService.findUserEmail(user.getEmail());
 
         System.out.println("username = " + findUser);
@@ -178,44 +176,5 @@ class UserDtoServiceTest {
                 .build();
 
         userJpaRepository.save(user);
-    }
-
-    @Test
-    void findByContainedText_success(){
-        String path1 = "profilePath1";
-        ImagePath imagePath1 = ImagePath.builder().path(path1).build();
-        String path2 = "profilePath2";
-        ImagePath imagePath2 = ImagePath.builder().path(path2).build();
-
-        imageService.createImage(imagePath1);
-        imageService.createImage(imagePath2);
-
-
-
-        User user1 = User.builder()
-                .username("test1")
-                .password("cucumber52")
-                .email("test1@gmail.com")
-                .nickname("test1")
-                .imagePath(imagePath1)
-                .build();
-
-
-        user1 = userService.join(user1);
-
-        User user2 = User.builder()
-                .username("test2")
-                .password("cucumber52")
-                .email("test2@gmail.com")
-                .nickname("test2")
-                .imagePath(imagePath2)
-                .build();
-
-        user2 = userService.join(user2);
-
-        ContainedUserRequest cur = new ContainedUserRequest("te");
-
-        ContainedUserResponse json = userService.findByContainedUser(cur);
-        System.out.println("json = " + json.getUserListJsonData());
     }
 }

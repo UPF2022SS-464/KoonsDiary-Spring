@@ -89,6 +89,25 @@ public class UserDto {
                         .refreshToken(user.getRefreshToken().getValue()).build();
             }
         }
+
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @ToString
+        @Builder
+        @Getter
+        public static class ResponseDtoV2{
+            private String userName;
+            private String nickname;
+            private String email;
+
+            public static ResponseDtoV2 of(User user){
+                return ResponseDtoV2.builder()
+                        .userName(user.getUsername())
+                        .nickname(user.getNickname())
+                        .email(user.getEmail())
+                        .build();
+            }
+        }
     }
     public static class Update{
 
@@ -132,7 +151,21 @@ public class UserDto {
                 return ResponseDto.builder().message("탈퇴 성공").build();
             }
         }
-
     }
 
+    public static class Search{
+
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @ToString
+        @Builder
+        @Getter
+        public static class ResponseDto{
+            private String userList;
+
+            public static ResponseDto of(String userList) {
+                return ResponseDto.builder().userList(userList).build();
+            }
+        }
+    }
 }
