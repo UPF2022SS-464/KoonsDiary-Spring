@@ -1,6 +1,7 @@
 package UPF2022SS.KoonsDiarySpring.api.dto.user;
 
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
+import UPF2022SS.KoonsDiarySpring.domain.User;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -26,8 +27,8 @@ public class UserDto {
             @NotNull(message = "이미지를 제대로 설정해 주세요.")
             private Long imageId;
 
-            public UPF2022SS.KoonsDiarySpring.domain.User toEntity(String password, ImagePath imagePath){
-                UPF2022SS.KoonsDiarySpring.domain.User user = UPF2022SS.KoonsDiarySpring.domain.User.builder().username(userId)
+            public User toEntity(String password, ImagePath imagePath){
+                User user = User.builder().username(userId)
                         .password(password)
                         .email(email)
                         .nickname(nickname)
@@ -48,7 +49,7 @@ public class UserDto {
             private String refreshToken;
             private String accessToken;
 
-            public static ResponseDto of(UPF2022SS.KoonsDiarySpring.domain.User user, String accessToken){
+            public static ResponseDto of(User user, String accessToken){
                 return ResponseDto.builder()
                         .id(user.getId())
                         .userId(user.getUsername())
@@ -81,11 +82,30 @@ public class UserDto {
             private String accessToken;
             private String refreshToken;
 
-            public static ResponseDto of(UPF2022SS.KoonsDiarySpring.domain.User user, String accessToken){
+            public static ResponseDto of(User user, String accessToken){
                 return ResponseDto.builder()
                         .userId(user.getUsername())
                         .accessToken(accessToken)
                         .refreshToken(user.getRefreshToken().getValue()).build();
+            }
+        }
+
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @ToString
+        @Builder
+        @Getter
+        public static class ResponseDtoV2{
+            private String userName;
+            private String nickname;
+            private String email;
+
+            public static ResponseDtoV2 of(User user){
+                return ResponseDtoV2.builder()
+                        .userName(user.getUsername())
+                        .nickname(user.getNickname())
+                        .email(user.getEmail())
+                        .build();
             }
         }
     }
@@ -111,7 +131,7 @@ public class UserDto {
             private String nickname;
             private Long imageId;
 
-            public static ResponseDto of(UPF2022SS.KoonsDiarySpring.domain.User user){
+            public static ResponseDto of(User user){
                 return ResponseDto.builder()
                         .nickname(user.getNickname())
                         .imageId(user.getImagePath().getId())
@@ -132,5 +152,21 @@ public class UserDto {
             }
         }
 
+    }
+
+    public static class Search{
+
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @ToString
+        @Builder
+        @Getter
+        public static class ResponseDto{
+            private String userList;
+
+            public static ResponseDto of(String userList){
+                return ResponseDto.builder().userList(userList).build();
+            }
+        }
     }
 }

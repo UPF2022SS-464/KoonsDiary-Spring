@@ -3,6 +3,7 @@ package UPF2022SS.KoonsDiarySpring.service.diary;
 import UPF2022SS.KoonsDiarySpring.api.dto.diary.PostDiary;
 import UPF2022SS.KoonsDiarySpring.domain.ImagePath;
 import UPF2022SS.KoonsDiarySpring.domain.User;
+import UPF2022SS.KoonsDiarySpring.repository.user.UserJpaRepository;
 import UPF2022SS.KoonsDiarySpring.service.image.ImageService;
 import UPF2022SS.KoonsDiarySpring.service.user.UserService;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,9 @@ import java.util.List;
 @SpringBootTest()
 @ExtendWith(SpringExtension.class)
 class DiaryServiceImplTest {
+
+    @Autowired
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     private UserService userService;
@@ -45,9 +49,7 @@ class DiaryServiceImplTest {
                 .imagePath(imagePath)
                 .build();
 
-        userService.join(user);
-
-        User findUser = userService.findUsername(user.getUsername());
+        user  = userJpaRepository.save(user);
         List<String> comment = new ArrayList<>();
         List<String> files = new ArrayList<String>();
 
@@ -59,7 +61,7 @@ class DiaryServiceImplTest {
 
 
         //이부분을 헤더를 빼고유저 객체가 들어갈 수 있게하자.
-        ResponseEntity<Object> response = diaryService.postDiary(request, findUser, files);
+        ResponseEntity<Object> response = diaryService.postDiary(request, user, files);
         System.out.println("defaultResponse = " + response.toString());
     }
 }
